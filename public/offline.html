@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="bn" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>অফলাইন — DEVSPARK LINK (DSLINK)</title>
+  <meta name="theme-color" content="#000000" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      min-height: 100dvh;
+      background-color: #000000;
+      color: #e5e5e5;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans Bengali", Helvetica, Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.25rem;
+    }
+    .card {
+      max-width: 28rem;
+      width: 100%;
+      background: #0b0b0e;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 6px;
+      padding: 1.75rem;
+      text-align: center;
+    }
+    .brand {
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #a3a3a3;
+      margin-bottom: 1rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+    h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.65rem;
+      color: #ffffff;
+    }
+    p {
+      font-size: 0.875rem;
+      line-height: 1.6;
+      color: #a3a3a3;
+      margin-bottom: 1.25rem;
+    }
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border-radius: 4px;
+      background: #ffffff;
+      color: #000000;
+      font-weight: 600;
+      font-size: 0.85rem;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+    }
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.06);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+    .links {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.6rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="brand">DEVSPARK LINK · DSLINK</div>
+    <h1>ইন্টারনেট সংযোগ বিচ্ছিন্ন রয়েছে</h1>
+    <p>
+      আপনি বর্তমানে অফলাইনে আছেন। সংযোগ ফিরে এলে পেজটি স্বয়ংক্রিয়ভাবে রিলোড হবে, অথবা ক্যাশ করা রেন্টাল চেকআউট ও নীতিমালা পেজগুলো দেখতে পারেন।
+    </p>
+    <div class="actions">
+      <button class="btn" onclick="window.location.reload()">পুনরায় চেষ্টা করুন (Retry)</button>
+      <div class="links">
+        <a class="btn btn-secondary" href="/rental">রেন্টাল চেকআউট</a>
+        <a class="btn btn-secondary" href="/Legal">নীতিমালা (/Legal)</a>
+      </div>
+    </div>
+  </div>
+  <script>
+    window.addEventListener('online', function () {
+      window.location.reload();
+    });
+  </script>
+</body>
+</html>

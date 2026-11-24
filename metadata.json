@@ -1,0 +1,6 @@
+{
+  "name": "DSLink - Official Starlink Hardware Bangladesh",
+  "description": "Official DSLink (DevSpark Link) Starlink distribution platform, technology solutions, and satellite internet products in Bangladesh.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,144 @@
+{
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+        }
+      ]
+    },
+    {
+      "source": "/api/geo",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "private, no-store, max-age=0"
+        },
+        {
+          "key": "Vary",
+          "value": "cf-ipcountry, x-vercel-ip-country, x-appengine-country, cloudfront-viewer-country, fastly-client-country, x-country-code"
+        }
+      ]
+    },
+    {
+      "source": "/(admin|cart|checkout|account|track|promos)(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    },
+    {
+      "source": "/(bn|my|zh-hans)/(admin|cart|checkout|account|track|promos)(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/en",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/en/:path*",
+      "destination": "/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/zh-cn",
+      "destination": "/zh-hans",
+      "permanent": true
+    },
+    {
+      "source": "/zh-cn/:path*",
+      "destination": "/zh-hans/:path*",
+      "permanent": true
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/robots.txt",
+      "has": [
+        {
+          "type": "host",
+          "value": "(?:www\\.)?devsparksoft\\.com\\.bd"
+        }
+      ],
+      "destination": "/robots-devsparksoft.txt"
+    },
+    {
+      "source": "/robots.txt",
+      "has": [
+        {
+          "type": "host",
+          "value": "(?:www\\.)?dslink\\.cyou"
+        }
+      ],
+      "destination": "/robots-dslink.txt"
+    },
+    {
+      "source": "/robots.txt",
+      "destination": "/api/robots"
+    },
+    {
+      "source": "/sitemap.xml",
+      "has": [
+        {
+          "type": "host",
+          "value": "(?:www\\.)?devsparksoft\\.com\\.bd"
+        }
+      ],
+      "destination": "/sitemap-devsparksoft.xml"
+    },
+    {
+      "source": "/sitemap.xml",
+      "has": [
+        {
+          "type": "host",
+          "value": "(?:www\\.)?dslink\\.cyou"
+        }
+      ],
+      "destination": "/sitemap-dslink.xml"
+    },
+    {
+      "source": "/sitemap.xml",
+      "destination": "/api/sitemap"
+    },
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
+    },
+    {
+      "source": "/((?!api/|assets/|bn$|bn/|my$|my/|zh-hans$|zh-hans/|favicon|apple-touch-icon|logo|dslink-logo|brand-logo|og-image|manifest\\.json|robots|sitemap|google2d34e96e89254a29).*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "(?:www\\.)?devsparksoft\\.com\\.bd"
+        }
+      ],
+      "destination": "/devsparksoft.html"
+    },
+    {
+      "source": "/((?!api/|assets/|bn$|bn/|my$|my/|zh-hans$|zh-hans/|favicon|apple-touch-icon|logo|dslink-logo|brand-logo|og-image|manifest\\.json|robots|sitemap|google2d34e96e89254a29).*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "(?:www\\.)?dslink\\.cyou"
+        }
+      ],
+      "destination": "/dslink.html"
+    },
+    {
+      "source": "/((?!api/|assets/|favicon|apple-touch-icon|logo|dslink-logo|brand-logo|og-image|manifest\\.json|robots|sitemap|google2d34e96e89254a29).*)",
+      "destination": "/index.html"
+    }
+  ]
+}

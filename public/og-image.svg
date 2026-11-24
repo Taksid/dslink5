@@ -1,0 +1,152 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" fill="none">
+  <defs>
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#02040a"/>
+      <stop offset="60%" stop-color="#000000"/>
+      <stop offset="100%" stop-color="#020713"/>
+    </linearGradient>
+    <radialGradient id="nebula-cyan" cx="80%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#00f2fe" stop-opacity="0.25"/>
+      <stop offset="40%" stop-color="#0284c7" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="nebula-left" cx="20%" cy="70%" r="50%">
+      <stop offset="0%" stop-color="#0369a1" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="text-white-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#e2e8f0"/>
+    </linearGradient>
+    <linearGradient id="cyan-accent-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00f2fe"/>
+      <stop offset="100%" stop-color="#38bdf8"/>
+    </linearGradient>
+    <filter id="og-glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="0" stdDeviation="16" flood-color="#00f2fe" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+
+  <!-- Deep Black Canvas -->
+  <rect width="1200" height="630" fill="url(#bg-grad)"/>
+  <rect width="1200" height="630" fill="url(#nebula-cyan)"/>
+  <rect width="1200" height="630" fill="url(#nebula-left)"/>
+
+  <!-- Subtle grid lines of satellite orbital space -->
+  <g stroke="#1e293b" stroke-width="1" opacity="0.35">
+    <line x1="0" y1="105" x2="1200" y2="105"/>
+    <line x1="0" y1="210" x2="1200" y2="210"/>
+    <line x1="0" y1="315" x2="1200" y2="315"/>
+    <line x1="0" y1="420" x2="1200" y2="420"/>
+    <line x1="0" y1="525" x2="1200" y2="525"/>
+    <line x1="200" y1="0" x2="200" y2="630"/>
+    <line x1="400" y1="0" x2="400" y2="630"/>
+    <line x1="600" y1="0" x2="600" y2="630"/>
+    <line x1="800" y1="0" x2="800" y2="630"/>
+    <line x1="1000" y1="0" x2="1000" y2="630"/>
+  </g>
+
+  <!-- Starfield dots -->
+  <g fill="#ffffff">
+    <circle cx="140" cy="80" r="1.5" opacity="0.6"/>
+    <circle cx="280" cy="140" r="2" opacity="0.8"/>
+    <circle cx="450" cy="70" r="1" opacity="0.5"/>
+    <circle cx="720" cy="90" r="2.5" opacity="0.9"/>
+    <circle cx="890" cy="160" r="1.5" opacity="0.7"/>
+    <circle cx="1120" cy="85" r="2" opacity="0.85"/>
+    <circle cx="1050" cy="240" r="1" opacity="0.5"/>
+    <circle cx="950" cy="380" r="2" opacity="0.6"/>
+    <circle cx="1140" cy="510" r="1.5" opacity="0.7"/>
+    <circle cx="150" cy="490" r="2" opacity="0.5"/>
+  </g>
+
+  <!-- Left: Content Column -->
+  <g transform="translate(80, 80)">
+    <!-- Top Official Partner Pill / Badge -->
+    <g>
+      <rect x="0" y="0" width="460" height="42" rx="21" fill="#0b172d" stroke="#00f2fe" stroke-width="1.5"/>
+      <circle cx="24" cy="21" r="5" fill="#22c55e"/>
+      <text x="38" y="27" font-family="'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif" font-weight="700" font-size="15" fill="#ffffff" letter-spacing="0.05em">
+        THE OFFICIAL PARTNER STARLINK BD
+      </text>
+    </g>
+
+    <!-- Brand Main Heading -->
+    <text x="0" y="115" font-family="'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif" font-weight="800" font-size="54" fill="url(#text-white-grad)" letter-spacing="-0.02em">
+      DEVSPARK LINK
+    </text>
+
+    <!-- Subtitle in pure clean white -->
+    <text x="0" y="165" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-weight="600" font-size="24" fill="#ffffff">
+      বাংলাদেশে অফিশিয়াল স্টারলিংক পার্টনার
+    </text>
+
+    <!-- Description Lines -->
+    <text x="0" y="215" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-weight="400" font-size="17" fill="#cbd5e1">
+      Buy Genuine Starlink Standard 4X &amp; Mini Satellite Internet Kits
+    </text>
+    <text x="0" y="245" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-weight="400" font-size="17" fill="#cbd5e1">
+      Doorstep delivery across all 64 districts with 24/7 dedicated support.
+    </text>
+
+    <!-- Key Offer Card Pill -->
+    <g transform="translate(0, 280)">
+      <rect x="0" y="0" width="520" height="72" rx="16" fill="#040916" stroke="#1e293b" stroke-width="1.5"/>
+      
+      <!-- Promo Badge inside -->
+      <rect x="16" y="16" width="130" height="40" rx="8" fill="#00e5ff" opacity="0.15"/>
+      <text x="28" y="42" font-family="'Space Grotesk', monospace" font-weight="800" font-size="16" fill="#00f2fe">
+        DSLINK29
+      </text>
+
+      <text x="160" y="34" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-weight="700" font-size="15" fill="#ffffff">
+        Starlink Standard 4X Kit Special
+      </text>
+      <text x="160" y="54" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-weight="600" font-size="14" fill="#94a3b8">
+        Promo Price: <tspan fill="#ffffff" font-weight="800">৳২৯,৯৯৯</tspan> <tspan font-size="12" text-decoration="line-through">৳৪৯,০০০</tspan>
+      </text>
+    </g>
+
+    <!-- Footer Accreditation -->
+    <g transform="translate(0, 400)">
+      <text x="0" y="15" font-family="'Space Grotesk', system-ui, sans-serif" font-weight="500" font-size="13" fill="#64748b">
+        DevSpark Soft Limited • USA Licensed IT &amp; Cloud Company
+      </text>
+      <text x="0" y="35" font-family="'Space Grotesk', system-ui, sans-serif" font-weight="700" font-size="14" fill="#ffffff">
+        https://devsparksoft.com.bd
+      </text>
+    </g>
+  </g>
+
+  <!-- Right: Premium Starlink Dish Artwork (Large high-detail vector) -->
+  <g transform="translate(930, 310)" filter="url(#og-glow)">
+    <!-- Expanding Signal Beams -->
+    <path d="M-140 -170 C-40 -260, 110 -270, 210 -190" stroke="#00f2fe" stroke-width="16" stroke-linecap="round" fill="none" opacity="0.85"/>
+    <path d="M-80 -110 C-10 -180, 120 -190, 190 -130" stroke="#38bdf8" stroke-width="12" stroke-linecap="round" fill="none" opacity="0.7"/>
+    <path d="M-30 -60 C30 -110, 120 -120, 170 -80" stroke="#93c5fd" stroke-width="9" stroke-linecap="round" fill="none" opacity="0.55"/>
+
+    <!-- Orbital Trajectory Line -->
+    <ellipse cx="0" cy="0" rx="260" ry="260" stroke="#0284c7" stroke-width="3" stroke-dasharray="14 12" fill="none" opacity="0.3"/>
+
+    <!-- Dish Stand & Mount -->
+    <polygon points="-120,170 -40,140 -10,190 -90,220" fill="#0f172a" stroke="#334155" stroke-width="7"/>
+    <line x1="-70" y1="155" x2="-25" y2="50" stroke="#475569" stroke-width="18" stroke-linecap="round"/>
+
+    <!-- Starlink Phased Array Dish -->
+    <g transform="translate(-15, 25) rotate(-32)">
+      <ellipse cx="0" cy="0" rx="195" ry="92" fill="#090d16" stroke="#1e293b" stroke-width="12"/>
+      <ellipse cx="0" cy="0" rx="186" ry="84" fill="#0b132b" stroke="url(#cyan-accent-grad)" stroke-width="10"/>
+      <ellipse cx="0" cy="0" rx="145" ry="60" fill="#040814" stroke="#0ea5e9" stroke-width="4" stroke-dasharray="8 6" opacity="0.75"/>
+      <ellipse cx="0" cy="0" rx="38" ry="18" fill="#00e5ff"/>
+      <ellipse cx="0" cy="0" rx="18" ry="9" fill="#ffffff"/>
+    </g>
+
+    <!-- Transceiver Mast & Head -->
+    <line x1="-20" y1="20" x2="95" y2="-105" stroke="#ffffff" stroke-width="16" stroke-linecap="round"/>
+    <circle cx="98" cy="-108" r="22" fill="#00f2fe"/>
+    <circle cx="98" cy="-108" r="12" fill="#ffffff"/>
+
+    <!-- Spark Star on Transceiver -->
+    <polygon points="170,-190 176,-175 192,-170 176,-165 170,-150 164,-165 148,-170 164,-175" fill="#ffffff"/>
+  </g>
+</svg>

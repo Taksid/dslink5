@@ -1,0 +1,23 @@
+User-agent: *
+Allow: /
+Allow: /kits
+Allow: /packages
+Allow: /rental
+Allow: /rental-policy
+Allow: /promos
+Allow: /red-policy-alert
+Allow: /price-syndicate-alert
+Allow: /support
+Allow: /faq
+Allow: /track
+Allow: /privacy
+Allow: /warranty
+Allow: /money-back
+Allow: /assets/
+Disallow: /admin/
+Disallow: /api/
+
+User-agent: Googlebot
+Allow: /
+
+Sitemap: https://dslink.cyou/sitemap.xml

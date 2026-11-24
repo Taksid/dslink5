@@ -1,0 +1,201 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", "Manrope", "Hind Siliguri", "Noto Sans Bengali", sans-serif;
+  --font-mono: "JetBrains Mono", "Roboto Mono", "Hind Siliguri", "Noto Sans Bengali", monospace;
+  --font-display: "Plus Jakarta Sans", "Manrope", "Hind Siliguri", "Noto Sans Bengali", sans-serif;
+}
+
+:root {
+  --font-bangla: "Hind Siliguri", "Noto Sans Bengali", "Plus Jakarta Sans", system-ui, sans-serif;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+}
+
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    touch-action: pan-y pinch-zoom;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+    min-height: 100dvh;
+    height: auto;
+    position: relative;
+    font-family: var(--font-sans);
+    color: #ffffff;
+    background-color: #000000;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y pinch-zoom;
+    overscroll-behavior-y: auto;
+    padding-left: var(--safe-left);
+    padding-right: var(--safe-right);
+  }
+
+  img, video, svg {
+    max-width: 100%;
+  }
+
+  img, video {
+    height: auto;
+  }
+
+  input, select, textarea, button {
+    max-width: 100%;
+    min-width: 0;
+    font-family: inherit;
+  }
+
+  p, h1, h2, h3, td {
+    overflow-wrap: anywhere;
+  }
+}
+
+#root {
+  width: 100%;
+  min-width: 0;
+  min-height: 100dvh;
+  touch-action: pan-y pinch-zoom;
+}
+
+.flex-child,
+.grid-child {
+  min-width: 0;
+}
+
+.responsive-container {
+  width: min(100% - 32px, 1200px);
+  margin-inline: auto;
+}
+
+.responsive-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: 16px;
+}
+
+.safe-top {
+  padding-top: var(--safe-top);
+}
+
+.safe-bottom {
+  padding-bottom: var(--safe-bottom);
+}
+
+html[lang="bn"] body {
+  font-family: var(--font-bangla);
+  line-height: 1.65;
+}
+
+html[lang="bn"] h1,
+html[lang="bn"] h2,
+html[lang="bn"] h3,
+html[lang="bn"] h4,
+html[lang="bn"] button,
+html[lang="bn"] label,
+html[lang="bn"] th,
+html[lang="bn"] td {
+  line-height: 1.5;
+  letter-spacing: 0 !important;
+}
+
+.font-bengali {
+  font-family: var(--font-bangla);
+  line-height: 1.6;
+}
+
+h1, h2, h3, h4, .font-display {
+  font-family: var(--font-display);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+.glass-panel {
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  background: #0a0a0a;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.glass-panel-hover {
+  transition: border-color 0.25s ease, background-color 0.25s ease, transform 0.25s ease;
+}
+
+.glass-panel-hover:hover {
+  background: #111113;
+  border-color: rgba(255, 255, 255, 0.32);
+  transform: translateY(-2px);
+}
+
+.glass-pill {
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #000000;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #262626;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #404040;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none !important;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}

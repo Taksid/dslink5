@@ -1,0 +1,209 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Test Connection
+    match /test/{testId} {
+      allow read, write: if true;
+    }
+
+    // Products Catalog
+    match /products/{productId} {
+      allow read, write: if true;
+    }
+
+    // Packages & Service Plans
+    match /packages/{packageId} {
+      allow read, write: if true;
+    }
+
+    // Services
+    match /services/{serviceId} {
+      allow read, write: if true;
+    }
+
+    // Promotional Coupons
+    match /coupons/{couponId} {
+      allow read, write: if true;
+    }
+
+    // Orders Management
+    match /orders/{orderId} {
+      allow read, write: if true;
+    }
+
+    // Users & Customers Directory
+    match /users/{userId} {
+      allow read, write: if true;
+    }
+
+    match /customers/{customerId} {
+      allow read, write: if true;
+    }
+
+    // System Settings & Verification
+    match /settings/{settingId} {
+      allow read, write: if true;
+    }
+
+    // Admin Users
+    match /admins/{adminUid} {
+      allow read, write: if true;
+    }
+
+    // Invoices & Billing
+    match /invoices/{invoiceId} {
+      allow read, write: if true;
+    }
+
+    // Support Tickets & Live Chat Messages
+    match /support_tickets/{ticketId} {
+      allow read, write: if true;
+
+      match /messages/{messageId} {
+        allow read, write: if true;
+      }
+    }
+
+    // Audit & Security Logs
+    match /audit_logs/{logId} {
+      allow read, write: if true;
+    }
+
+    // Knowledge Base & Articles
+    match /knowledge_base/{articleId} {
+      allow read, write: if true;
+    }
+
+    // Website Content Management
+    match /website_content/{contentId} {
+      allow read, write: if true;
+    }
+
+    // Promotional Credits
+    match /promotional_credits/{creditId} {
+      allow read, write: if true;
+    }
+
+    // Reviews & Feedback
+    match /reviews/{reviewId} {
+      allow read, write: if true;
+    }
+
+    // Subscribers
+    match /subscribers/{subscriberId} {
+      allow read, write: if true;
+    }
+
+    // Data Deletion Requests
+    match /dataDeletionRequests/{requestId} {
+      allow read, write: if true;
+    }
+
+    // Wi-Fi SaaS: ISP Tenants
+    match /isp_tenants/{tenantId} {
+      allow read, write: if true;
+    }
+
+    // Wi-Fi SaaS: ISP Subscribers
+    match /isp_subscribers/{subscriberId} {
+      allow read, write: if true;
+    }
+
+    // Wi-Fi SaaS: ISP Packages
+    match /isp_packages/{packageId} {
+      allow read, write: if true;
+    }
+
+    // Wi-Fi SaaS: ISP Speed Profiles
+    match /isp_speed_profiles/{profileId} {
+      allow read, write: if true;
+    }
+
+    // Wi-Fi SaaS: ISP Hotspot Zones
+    match /isp_hotspot_zones/{zoneId} {
+      allow read, write: if true;
+    }
+
+    // Wi-Fi SaaS: ISP Customer Invoices
+    match /isp_invoices/{invoiceId} {
+      allow read, write: if true;
+    }
+
+    // Wi-Fi SaaS: Hotspot Vouchers & Batches
+    match /isp_vouchers/{voucherId} {
+      allow read, write: if true;
+    }
+
+    match /isp_voucher_batches/{batchId} {
+      allow read, write: if true;
+    }
+
+    // Wi-Fi SaaS: Hotspot Orders
+    match /isp_hotspot_orders/{orderId} {
+      allow read, write: if true;
+    }
+
+    // Wi-Fi SaaS: Payment & Refund Records
+    match /isp_payment_records/{paymentId} {
+      allow read, write: if true;
+    }
+
+    match /isp_refund_records/{refundId} {
+      allow read, write: if true;
+    }
+
+    // Wi-Fi SaaS: Support Tickets
+    match /isp_tickets/{ticketId} {
+      allow read, write: if true;
+    }
+
+    // Wi-Fi SaaS: DevSparkSoft SaaS Plans & Platform Config
+    match /saas_plans/{planId} {
+      allow read, write: if true;
+    }
+
+    match /saas_invoices/{invoiceId} {
+      allow read, write: if true;
+    }
+
+    match /wifi_pay_platform_config/{configId} {
+      allow read, write: if true;
+    }
+
+    // Wi-Fi SaaS: ISP Audit Logs
+    match /isp_audit_logs/{logId} {
+      allow read, write: if true;
+    }
+
+    // Wi-Fi SaaS: Router Command Queue
+    match /isp_router_queue/{queueId} {
+      allow read, write: if true;
+    }
+
+    // System Logs & Auto Mailing State
+    match /system/{systemId} {
+      allow read, write: if true;
+    }
+
+    function isISPAdmin() {
+      return request.auth != null && (
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) ||
+        request.auth.token.email == 'artem.berezinsky@gmail.com' ||
+        request.auth.token.email == 'sales@devsparksoft.com.bd' ||
+        request.auth.token.email == 'taksidwalid150@gmail.com'
+      );
+    }
+
+    match /media/{mediaId} {
+      allow read: if true;
+      allow create: if isISPAdmin() && request.resource.data.ispId != null;
+      allow update, delete: if isISPAdmin() && resource.data.ispId != null;
+    }
+
+    // Fallback for any additional collections
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}

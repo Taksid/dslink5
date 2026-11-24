@@ -1,0 +1,21 @@
+User-agent: *
+Allow: /
+Allow: /services
+Allow: /solutions
+Allow: /case-studies
+Allow: /about
+Allow: /contact
+Allow: /promos
+Allow: /rental
+Allow: /rental-policy
+Allow: /red-policy-alert
+Allow: /price-syndicate-alert
+Allow: /privacy
+Allow: /assets/
+Disallow: /admin/
+Disallow: /api/
+
+User-agent: Googlebot
+Allow: /
+
+Sitemap: https://devsparksoft.com.bd/sitemap.xml

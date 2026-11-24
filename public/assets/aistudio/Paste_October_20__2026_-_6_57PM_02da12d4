@@ -1,0 +1,721 @@
+# WIFI Pay — Complete SaaS Master Prompt
+## Unified Homepage, ISP Website Builder, Broadband Billing, Payment Gateway, MikroTik Automation & Interactive Demo
+
+**Product Name:** WIFI Pay  
+**Primary Domain:** `wifipay.cyou`  
+**Platform Type:** Multi-Tenant ISP Billing & Payment Automation SaaS  
+**Implementation Environment:** Existing project in Google AI Studio, deployed to the configured production hosting environment.
+
+## 1. MASTER OBJECTIVE
+
+Inspect and extend the existing WIFI Pay application into a complete, production-ready SaaS platform for broadband ISPs and Hotspot operators.
+
+Unify all features into one consistent application:
+
+- Professional public homepage and marketing website.
+- Interactive homepage product demonstration.
+- ISP registration, login, onboarding, and subscription management.
+- ISP website builder and custom subdomain support.
+- MikroTik Hotspot and PPPoE management.
+- Subscriber import and synchronization.
+- Automated broadband billing and recurring invoices.
+- Payment gateway integrations.
+- Automated email and SMS notifications.
+- Branded subscriber portals and invoice payment links.
+- Overdue billing, automatic service suspension, and restoration.
+- Cancellation and reactivation workflows.
+- ISP admin dashboard and SaaS super-admin panel.
+- Pricing, free trial, documentation, support, and legal pages.
+
+**Critical implementation rule:** Do not create a second disconnected application or replace existing working features unnecessarily. Inspect the current codebase, database, authentication, APIs, and deployment configuration first. Integrate everything into the existing architecture.
+
+No fake production functionality, hardcoded success states, or frontend-only billing logic.
+
+---
+
+## 2. PROFESSIONAL UI DESIGN SYSTEM
+
+Create one unified design system for the entire platform.
+
+### Visual identity
+
+- Main background: pure white.
+- Primary accent: professional green.
+- Primary text: dark charcoal or near-black.
+- Secondary text: neutral gray.
+- Main footer: solid black or near-black with white text and restrained green accents.
+- Cards: white, with subtle neutral borders and restrained shadows.
+- Buttons: consistent sizes, clear labels, accessible contrast, and visible hover/focus states.
+- Typography: clean, professional, readable, with proper Bangla and English font support.
+- Spacing: consistent margins, padding, line heights, and responsive content widths.
+
+Avoid excessive gradients, glowing borders, unnecessary green lines, excessive rounded cards, oversized typography, generic AI-style decorations, and irrelevant stock images.
+
+### Responsive navigation
+
+Desktop header:
+
+- WIFI Pay logo
+- Features
+- How It Works
+- Interactive Demo
+- Pricing
+- Documentation
+- Login
+- Get Started
+
+Mobile header:
+
+- Compact logo
+- Menu button
+- Important login and registration actions
+- Full-width, touch-friendly navigation when expanded
+
+Inside authenticated dashboards, use an application-specific navigation layout rather than reusing the marketing header.
+
+Ensure all public pages, admin panels, subscriber portals, payment screens, and demo screens follow the same design language.
+
+---
+
+## 3. PUBLIC HOMEPAGE AND MARKETING WEBSITE
+
+Create a complete homepage explaining the actual product and its benefits.
+
+### Hero section
+
+Headline:
+
+**Your ISP. Your Brand. Automated Billing.**
+
+Supporting description:
+
+“Manage broadband subscribers, MikroTik Hotspot and PPPoE connections, automated billing, online payments, customer portals, and payment reminders from one platform.”
+
+Primary CTA: Start Free Trial
+
+Secondary CTA: Explore Interactive Demo
+
+Display a compact, authentic product preview containing invoice status, subscriber information, payment activity, and connection status. Use actual UI components or isolated demo data rather than a static screenshot presented as functional software.
+
+### Homepage sections
+
+1. Hero and product preview.
+2. Interactive billing demonstration.
+3. Core product features.
+4. How WIFI Pay works.
+5. MikroTik integration overview.
+6. ISP website builder and branded subdomains.
+7. Payment methods and payment portal.
+8. Automated billing and collection workflow.
+9. Subscriber management.
+10. Pricing and trial information.
+11. Frequently asked questions.
+12. Final registration CTA.
+13. Professional black footer.
+
+Use concise, meaningful copy. Explain the actual workflows instead of relying on generic promotional slogans.
+
+### Feature presentation
+
+Show these capabilities:
+
+- ISP Website Builder
+- MikroTik Router Integration
+- Hotspot and PPPoE Billing
+- Subscriber Import and Synchronization
+- Recurring Invoice Generation
+- Payment Gateway Integration
+- Email and SMS Automation
+- Subscriber Self-Service Portal
+- Automatic Suspension and Restoration
+- Custom Domains and Subdomains
+- Payment Reconciliation
+- Revenue and Collection Reports
+
+Only describe integrations that are implemented or explicitly label them as requiring configuration or development.
+
+### Branding and promotions
+
+Use the verified WIFI Pay identity and existing company assets. Preserve existing legitimate company details and legal information.
+
+Do not invent company origins, certifications, partnerships, customer testimonials, revenue statistics, or unsupported claims such as “lowest price” or “100% automated.”
+
+Do not add unverified “Made in...” statements. If an origin or company-credit statement already exists, verify and preserve it accurately.
+
+---
+
+## 4. ISP REGISTRATION AND MULTI-TENANT ARCHITECTURE
+
+Allow each ISP to register and manage its own business.
+
+Each ISP must have isolated:
+
+- Admin users and roles.
+- Subscribers.
+- Internet packages.
+- Routers and connection profiles.
+- Invoices and payment transactions.
+- Payment credentials.
+- Email and SMS settings.
+- Website content and branding.
+- Customer portals.
+- Billing policies.
+- Reports and audit records.
+- SaaS subscription and usage information.
+
+No ISP must be able to access another ISP's private data.
+
+Support:
+
+- ISP registration and onboarding.
+- Email verification and secure login.
+- Password reset.
+- Organization profile.
+- Business logo and branding.
+- Time zone and currency configuration.
+- Package creation.
+- Router connection setup.
+- Subscriber import.
+- Payment method setup.
+- Notification setup.
+- Domain and subdomain configuration.
+
+Retain the existing free-trial duration and pricing rules if already configured. Do not silently change the subscription model.
+
+---
+
+## 5. ISP WEBSITE BUILDER AND SUBDOMAINS
+
+Enable each ISP to create a branded public website and subscriber portal.
+
+Example architecture:
+
+- Main platform: `wifipay.cyou`
+- ISP website: `ispname.wifipay.cyou`
+- Subscriber portal: `ispname.wifipay.cyou/portal`
+- Invoice page: `ispname.wifipay.cyou/invoice/{secure-token}`
+- Payment page: `ispname.wifipay.cyou/pay/{secure-token}`
+
+Support custom domains where DNS, TLS, hosting, and domain validation have been configured.
+
+Website builder capabilities:
+
+- Business name and logo.
+- Theme colors within the approved design system.
+- Internet package listings.
+- Contact and support information.
+- Coverage areas.
+- Customer registration or connection-request forms.
+- Payment instructions.
+- Subscriber portal links.
+- SEO metadata and social sharing metadata.
+
+Keep the builder simple and production-oriented. Uploaded images should be stored in configured object storage or another reliable storage backend, not converted into permanent external URLs that users cannot manage.
+
+Validate domain ownership and configure secure tenant resolution. A subdomain must never expose another ISP's data.
+
+---
+
+## 6. MIKROTIK HOTSPOT AND PPPoE MANAGEMENT
+
+Integrate the platform with supported MikroTik RouterOS APIs and connection methods.
+
+Required features:
+
+- Register multiple routers per ISP.
+- Store router connection credentials securely.
+- Test connectivity.
+- Display online/offline status and last successful synchronization.
+- Import supported Hotspot and PPPoE subscribers.
+- Import or map existing profiles and packages.
+- Manage permitted subscriber settings.
+- Associate subscribers with billing accounts.
+- Map billing packages to appropriate router profiles.
+- Track active sessions where supported.
+- Suspend and restore service according to billing policy.
+- Record every router command and its result.
+- Retry failed operations safely.
+- Reconcile router state with the application database.
+
+Provide a router setup guide with required API permissions, connectivity requirements, secure access recommendations, and troubleshooting.
+
+Do not expose router credentials in frontend code, URLs, logs, or browser storage.
+
+If a router cannot be reached, show the actual failure and retain the operation in a retry queue. Never display a successful suspension or restoration until the result has been verified.
+
+---
+
+## 7. SUBSCRIBER IMPORT AND MANAGEMENT
+
+Allow ISPs to import existing subscribers from supported sources.
+
+Support CSV import and documented integrations for compatible billing systems and MikroTik data.
+
+Import workflow:
+
+1. Upload the supported file or connect the supported source.
+2. Preview the available fields.
+3. Map name, username, phone, email, package, connection type, balance, and relevant identifiers.
+4. Validate records.
+5. Identify duplicates and invalid entries.
+6. Preview changes before applying them.
+7. Import records and report success, skipped rows, and errors.
+8. Maintain an import audit log.
+
+Do not silently overwrite existing balances, credentials, or customer information.
+
+Subscriber records should include a stable internal ID, account reference, package, billing cycle, contact information, service status, outstanding balance, and associated router information where applicable.
+
+---
+
+## 8. AUTOMATED BROADBAND BILLING ENGINE
+
+Implement a real backend billing engine.
+
+Support:
+
+- Monthly, weekly, daily, and custom billing cycles.
+- Prepaid and postpaid billing.
+- Automatic recurring invoice generation.
+- Unique invoice numbers per ISP.
+- Billing periods and due dates.
+- Package upgrades and downgrades.
+- Prorated charges where applicable.
+- Discounts and configurable late fees.
+- Partial payments.
+- Advance balances and credits.
+- Outstanding balances and previous dues.
+- Configurable taxes where applicable.
+- Receipts and payment history.
+- Refund and adjustment records.
+- Automated reconciliation.
+
+Invoice statuses should include:
+
+- Draft
+- Issued
+- Unpaid
+- Partially Paid
+- Paid
+- Overdue
+- Void
+- Refunded, where applicable
+
+Prevent duplicate invoices through database constraints and idempotent scheduled jobs.
+
+Financial calculations must be performed on the backend using appropriate decimal or integer minor-unit representations, not unreliable floating-point arithmetic.
+
+---
+
+## 9. PAYMENT GATEWAY INTEGRATION
+
+Create a secure payment integration layer for the providers enabled by each ISP.
+
+Potential payment methods in Bangladesh include:
+
+- bKash
+- Nagad
+- Rocket
+- Supported card and bank gateways
+- Other compatible providers
+- Manually verified payment records, if enabled by the ISP
+
+Requirements:
+
+- ISP-specific merchant configuration.
+- Secure server-side credential storage.
+- Provider-specific checkout and callback flows.
+- Signed webhook verification where supported.
+- Transaction reference and amount validation.
+- Correct currency and invoice ownership validation.
+- Idempotent transaction processing.
+- Pending, successful, failed, expired, refunded, and disputed states.
+- Payment reconciliation and audit history.
+- Separate sandbox and production environments.
+
+Never mark an invoice paid merely because a browser is redirected to a success page. Require verified provider confirmation.
+
+A partial payment must reduce the outstanding balance without incorrectly marking the entire invoice paid.
+
+If credentials or provider access are unavailable, show a configuration-required status and provide setup instructions.
+
+---
+
+## 10. BRANDED SUBSCRIBER PORTAL AND INVOICE LINKS
+
+Every ISP must receive its own branded customer portal.
+
+Subscribers should be able to:
+
+- Log in securely.
+- View their current package.
+- Check their connection status.
+- View current and previous invoices.
+- See the amount due and due date.
+- Open secure invoice links received through email and SMS.
+- Pay the invoice using the ISP's enabled methods.
+- Download invoices and receipts.
+- Review verified transaction history.
+- Make permitted partial payments.
+- Submit payment disputes and support requests.
+- Update permitted contact information.
+
+Secure invoice URLs must be unpredictable, revocable where appropriate, and protected against unauthorized access. Do not rely on a sequential invoice number as an authentication mechanism.
+
+When a subscriber opens a link from an email or SMS, display the correct ISP's identity, invoice information, payment options, and support details.
+
+---
+
+## 11. AUTOMATED EMAIL AND SMS NOTIFICATIONS
+
+Provide configurable notifications for each ISP.
+
+Example schedule:
+
+| Event | Notification |
+|---|---|
+| Invoice generated | Email + SMS |
+| 7 days before due date | Reminder |
+| 3 days before due date | Reminder |
+| Due date | Payment due today |
+| 1 day overdue | Overdue notice |
+| 3 days overdue | Final warning |
+| Grace period expires | Suspension notice |
+| Verified payment | Receipt and confirmation |
+| Service restored | Restoration notice |
+| Cancellation pending | Cancellation warning |
+
+Allow ISPs to configure reminder timing, templates, language, and supported notification channels.
+
+Every invoice notification must include:
+
+- Subscriber name.
+- ISP identity.
+- Invoice reference.
+- Outstanding amount.
+- Due date.
+- Secure invoice or payment link.
+- Support information where configured.
+
+Integrate actual email and SMS providers through backend services and queues.
+
+Track message status, provider response, retry count, and failure reason. Prevent duplicate notifications for the same event.
+
+If no provider is configured, show a clear warning rather than claiming the message was delivered.
+
+---
+
+## 12. AUTOMATIC SUSPENSION, CANCELLATION AND RESTORATION
+
+Implement policy-driven service management.
+
+### Overdue workflow
+
+1. Invoice becomes due.
+2. The system checks the verified outstanding balance.
+3. Scheduled email and SMS reminders are sent.
+4. The configured grace period runs.
+5. Before suspension, recheck recent payments and pending transactions.
+6. Apply the ISP's configured suspension policy.
+7. Execute the appropriate MikroTik action.
+8. Verify the action result.
+9. Notify the subscriber of the actual service status.
+
+Workflow:
+
+**Invoice Due → Reminder Notifications → Grace Period → Balance Verification → Service Suspension**
+
+### Payment after suspension
+
+1. Verify the payment.
+2. Update the financial ledger.
+3. Recalculate outstanding balance.
+4. Check restoration eligibility.
+5. Execute the appropriate router action.
+6. Verify successful restoration.
+7. Send the receipt and service-status notification.
+
+### Cancellation
+
+Provide separate statuses for:
+
+- Active
+- Overdue
+- Grace Period
+- Suspended
+- Cancellation Pending
+- Cancelled
+- Reactivation Pending
+
+Allow configurable cancellation thresholds and approval rules. Preserve subscriber financial records and audit history.
+
+Do not permanently delete subscriber records automatically. Do not restore cancelled accounts unless the ISP's reactivation policy permits it.
+
+---
+
+## 13. INTERACTIVE HOMEPAGE DEMO
+
+**This is a mandatory core requirement. The homepage demo must demonstrate the same billing workflow described in the actual product, not merely display a dashboard screenshot.**
+
+Create a prominent homepage section titled:
+
+**“See How WIFI Pay Works”**
+
+Visitors must be able to explore the complete workflow without registering or connecting real routers.
+
+### Sample subscriber
+
+- ISP: Demo Broadband
+- Subscriber: Rahim Ahmed
+- Package: Home 20 Mbps
+- Monthly bill: ৳800
+- Invoice: DEMO-INV-1001
+- Connection: PPPoE or Hotspot
+- Grace period: Configurable
+
+Clearly mark all data and actions as simulated.
+
+### Demo Stage A — Generate invoice
+
+Show the invoice, billing period, due date, amount, ISP branding, and invoice link.
+
+Allow visitors to open the simulated subscriber portal and inspect the invoice.
+
+### Demo Stage B — Send reminders
+
+Provide a simulated timeline covering invoice issuance, approaching due date, overdue reminders, and grace-period expiration.
+
+Display realistic email and SMS previews, delivery states, and payment links.
+
+### Demo Stage C — Pay the bill
+
+Let visitors choose a simulated payment method, such as bKash, Nagad, or card.
+
+Demonstrate pending, success, and failure outcomes without collecting real payment credentials or initiating real financial transactions.
+
+### Demo Stage D — Automatic suspension
+
+Advance the simulated clock beyond the grace period.
+
+Show the overdue balance, reminder history, suspension decision, and mock MikroTik response.
+
+### Demo Stage E — Payment and restoration
+
+Simulate a verified payment, generate a receipt, recalculate the balance, and demonstrate restoration eligibility and the mock router result.
+
+### Demo Stage F — Failure recovery
+
+Allow visitors to explore delayed payments, duplicate callbacks, failed SMS delivery, offline routers, and partial payments.
+
+### Demo controls
+
+- Previous
+- Next
+- Play Scenario
+- Pause
+- Reset Demo
+- Timeline controls
+- Scenario progress
+
+The interface must respond to user interactions and update its displayed state.
+
+Use a dedicated demo state engine or sandbox backend. Demo data and simulated gateway events must never affect real ISP accounts, invoices, merchant credentials, or routers.
+
+Label simulated notifications and router operations as simulated. Never present them as real messages or production activity.
+
+---
+
+## 14. ISP ADMIN DASHBOARD
+
+Create a unified administration interface with the following sections:
+
+- Overview
+- Subscribers
+- Packages
+- Routers
+- Billing
+- Invoices
+- Payments
+- Overdue Accounts
+- Email and SMS Logs
+- Payment Gateway Settings
+- Subscriber Portal Settings
+- Website Builder
+- Domain Management
+- Suspension and Restoration Queue
+- Cancellation Queue
+- Import and Synchronization
+- Reports
+- Audit Logs
+- ISP Subscription and Usage
+- Billing Demo
+
+Display actual database-backed metrics, including:
+
+- Active subscribers.
+- Suspended subscribers.
+- Total invoices.
+- Paid amount.
+- Outstanding balance.
+- Overdue balance.
+- Successful and failed transactions.
+- Pending payments.
+- Notification delivery status.
+- Failed router actions.
+- Restoration queue.
+- Accounts awaiting cancellation.
+
+Include filtering, search, pagination, loading states, empty states, error handling, and appropriate confirmation dialogs.
+
+---
+
+## 15. WIFI PAY SUPER-ADMIN PANEL
+
+Provide a separate, protected platform administration interface.
+
+Authorized platform administrators should be able to manage:
+
+- ISP accounts.
+- Trial and subscription plans.
+- Subscription status and renewals.
+- Feature entitlements.
+- Platform-level usage limits.
+- Configured integration availability.
+- Support requests.
+- Platform announcements.
+- Security and audit logs.
+- Failed background jobs.
+- Domain provisioning status.
+- System health and operational errors.
+
+Keep super-admin permissions separate from ordinary ISP administrator permissions.
+
+Do not expose ISP payment credentials, customer records, or sensitive data unnecessarily. Enforce access controls on the server, not only through hidden frontend routes.
+
+---
+
+## 16. PRICING, FREE TRIAL AND SUBSCRIPTION MANAGEMENT
+
+Use the existing pricing configuration and free-trial policy.
+
+Do not invent prices or introduce conflicting subscription plans.
+
+Display configured plans with:
+
+- Subscription price.
+- Trial duration.
+- Subscriber and router limits, if applicable.
+- Included features.
+- Additional charges, if applicable.
+- Upgrade and renewal options.
+
+Implement subscription status checks on the backend.
+
+If a trial expires, follow the configured access policy. Preserve customer data and invoices according to the platform's retention rules. Do not silently delete business records or terminate real subscribers merely because an ISP's WIFI Pay subscription expires.
+
+Keep SaaS subscription billing separate from the ISP's subscriber billing.
+
+---
+
+## 17. FOOTER AND BRAND PRESENTATION
+
+Create a professional full-width black footer with white text and restrained green accents.
+
+Include:
+
+- WIFI Pay logo.
+- Short product description.
+- Product and feature links.
+- Pricing.
+- Documentation.
+- Support and contact information from verified configuration.
+- Privacy Policy.
+- Terms of Service.
+- Refund and cancellation policy, where applicable.
+- Copyright statement using the correct business identity and current year.
+
+Ensure the footer is responsive and readable on mobile.
+
+Preserve verified company information. Do not invent social accounts, addresses, legal entities, origin statements, certifications, or partnerships.
+
+Use product-focused marketing that explains the actual workflow and benefits.
+
+---
+
+## 18. TECHNICAL ARCHITECTURE AND PRODUCTION REQUIREMENTS
+
+Before implementation, inspect the existing repository and identify the current framework, backend, database, authentication, tenant routing, deployment, and integration status.
+
+Then implement the missing functionality within the existing architecture.
+
+Required engineering principles:
+
+- Real database persistence.
+- Server-side authorization and tenant isolation.
+- Database migrations.
+- Background jobs and scheduled billing.
+- Queue-based email and SMS processing.
+- Secure payment webhooks.
+- Idempotent invoice generation.
+- Idempotent financial transaction processing.
+- Secure invoice token management.
+- Reliable MikroTik command execution.
+- Retry queues and reconciliation.
+- Audit logs.
+- Error monitoring.
+- Backup and recovery procedures.
+- Rate limiting.
+- CSRF protection where applicable.
+- Secure secret management.
+- Responsive and accessible UI.
+- SEO and performance optimization.
+
+Use the infrastructure already configured where appropriate. Do not add unnecessary databases, services, or dependencies without justification.
+
+If an external provider requires credentials or approval, implement the integration interface, setup form, validation, and clear configuration status. Do not claim it is live until it has been tested successfully.
+
+---
+
+## 19. END-TO-END TESTING AND ACCEPTANCE CRITERIA
+
+Verify all of the following before reporting completion:
+
+1. The homepage and all public routes work.
+2. Mobile and desktop UI are properly optimized.
+3. ISP registration and tenant isolation work.
+4. Subscriber import validates records and reports errors.
+5. Billing jobs generate invoices exactly once.
+6. Invoice links open the correct ISP-branded portal.
+7. Configured email and SMS providers deliver messages correctly.
+8. Unconfigured providers display accurate setup warnings.
+9. Verified payments update balances and generate receipts.
+10. Unverified callbacks cannot mark invoices as paid.
+11. Duplicate payment callbacks do not create duplicate transactions.
+12. Grace periods and suspension policies work correctly.
+13. Successful payments trigger restoration when policy permits.
+14. Router failures are logged, retried, and visible.
+15. Cancellation and reactivation policies are enforced.
+16. SaaS subscription billing remains separate from ISP subscriber billing.
+17. The homepage demo demonstrates invoice, reminder, payment, suspension, and restoration workflows.
+18. Demo operations cannot affect production accounts or routers.
+19. Pricing, branding, and legal details use verified information.
+20. Every major button, form, navigation item, and CTA performs its intended action.
+21. Automated tests cover critical financial, security, and billing workflows.
+22. Deployment configuration, environment variables, database migrations, and scheduled jobs are documented.
+
+## FINAL DELIVERABLE
+
+Deliver one integrated WIFI Pay platform with:
+
+- A premium white-and-green homepage.
+- A professional black footer.
+- An interactive homepage billing demonstration.
+- Multi-tenant ISP websites and branded subscriber portals.
+- Real broadband billing and payment infrastructure.
+- Email and SMS automation.
+- MikroTik Hotspot and PPPoE integration.
+- Policy-driven overdue suspension, restoration, and cancellation.
+- ISP admin and platform super-admin panels.
+- Responsive UI, reliable backend logic, security controls, and automated tests.
+
+Do not deliver only a design mockup or a collection of disconnected pages. Implement the workflows end-to-end, verify them, and explicitly report which integrations are live, which require credentials, and which remain incomplete.

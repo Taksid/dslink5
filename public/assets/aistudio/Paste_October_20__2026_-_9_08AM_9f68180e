@@ -1,0 +1,1144 @@
+# WIFI Pay — Complete A–Z Production Master Prompt
+## ISP Billing SaaS, MikroTik, Hotspot Zone, Automatic Vouchers, Multi-Domain Website Builder, Visual CMS & Interactive Demos
+
+**Platform:** WIFI Pay  
+**Primary domain:** `wifipay.cyou`  
+**Additional website domains:** `mrwht.bond`, `ispbd.cyou`  
+**Deployment target:** Existing production project and its configured hosting infrastructure  
+**Objective:** Build a complete, secure, multi-tenant ISP billing and hotspot management SaaS with automatic ISP website creation, visual website editing, payment integrations, customer portals and interactive public demos.
+
+This is an extension of the existing WIFI Pay application, not a new standalone demo.
+
+First inspect the entire existing codebase, framework, routes, database, authentication, ISP dashboard, super-admin panel, payment integrations, MikroTik integrations, deployment configuration and environment variables. Preserve working functionality. Implement missing functionality in compatible stages.
+
+Do not replace the existing application with a generic template. Do not create fake functionality, hardcoded success states, dummy production records, or frontend-only simulations presented as real.
+
+---
+
+# PART 1 — CORE SAAS ARCHITECTURE
+
+## 1. Multi-Tenant ISP Platform
+
+Every ISP must have its own isolated account and business environment.
+
+Each ISP must be able to manage:
+
+- Company profile and branding.
+- Internet packages and pricing.
+- Broadband and PPPoE subscribers.
+- Wi-Fi hotspot customers.
+- Routers and network zones.
+- Payment methods and transactions.
+- Invoices and subscriptions.
+- Vouchers and authentication.
+- Public ISP website.
+- Website pages and design.
+- Customer portal.
+- Support requests.
+- Email and notification settings.
+- Business reports and authorized subscriber data.
+
+Enforce tenant isolation in the backend and database. An ISP must never access another ISP's private information, router credentials, subscribers, transactions, website drafts or media.
+
+## 2. Separate Platform Administration
+
+Maintain three separate experiences:
+
+1. Public WIFI Pay landing page and demos.
+2. ISP business dashboard and customer-facing ISP website.
+3. WIFI Pay super-admin dashboard.
+
+The super-admin dashboard must control SaaS plans, trial periods, tenant accounts, domain availability, website-builder settings, system integrations, global templates, feature permissions, support escalation and platform subscription billing.
+
+ISP administrators must not receive super-admin permissions.
+
+Enforce permissions through server-side authorization, not merely by hiding frontend links.
+
+## 3. Production Technology Compatibility
+
+Use the existing project's framework, authentication, database and deployment architecture wherever possible.
+
+Implement reliable database migrations, unique constraints, transactions, audit logs, validation, error handling, backups and rollback procedures.
+
+Store secrets only in secure server-side environment variables or an appropriate secrets manager.
+
+Do not expose database credentials, payment tokens, router passwords or private API keys to the browser.
+
+---
+
+# PART 2 — ISP REGISTRATION AND FREE TRIAL
+
+## 4. ISP Account Creation
+
+Allow an ISP to register with the information required by the existing authentication and billing architecture.
+
+Include:
+
+- Business name.
+- Administrator name.
+- Email and verified contact information as configured.
+- Secure password and account recovery.
+- Business address and service area.
+- Preferred language.
+- Initial website setup.
+- Payment and billing configuration.
+- Router integration setup.
+
+Show only the fields necessary at each onboarding step.
+
+## 5. Thirty-Day Free Trial
+
+Provide a 30-day free trial for eligible ISP accounts, consistent with the configured SaaS plans.
+
+Requirements:
+
+- Start the trial when the account becomes eligible according to the platform's trial policy.
+- Display the actual trial start and end dates.
+- Show remaining trial time.
+- Send configured expiry reminders.
+- Display upgrade options.
+- Apply the correct access restrictions when the trial ends.
+- Preserve ISP data according to the configured retention policy.
+- Prevent repeated trial abuse through appropriate eligibility controls.
+
+Do not charge an ISP without an authorized subscription and payment process.
+
+The super-admin must be able to manage subscription plans, prices, trial eligibility and account status.
+
+---
+
+# PART 3 — ISP BILLING AND SUBSCRIBER MANAGEMENT
+
+## 6. Broadband and PPPoE Billing
+
+Implement or preserve real billing workflows for:
+
+- Subscriber registration.
+- Internet package assignment.
+- Monthly billing.
+- Invoice creation.
+- Due dates.
+- Advance payments.
+- Partial payments if supported.
+- Outstanding balances.
+- Payment history.
+- Subscription renewals.
+- Expired accounts.
+- Suspension and restoration.
+- Receipts.
+- Billing reminders.
+- Subscriber account status.
+- Authorized package changes.
+
+The billing engine must use real database records and server-side business rules.
+
+## 7. Internet Package Management
+
+Each ISP can configure packages with fields supported by the actual network integration, such as:
+
+- Package name.
+- Price.
+- Validity.
+- Bandwidth profile.
+- Data limit where applicable.
+- Applicable connection type.
+- Renewal rules.
+- Availability status.
+- Description and display order.
+
+Support monthly broadband packages and daily, weekly and monthly hotspot packages.
+
+Do not invent package prices. Use each ISP's configured production data.
+
+## 8. Subscriber Portal
+
+Each ISP website must provide access to its own subscriber portal.
+
+Depending on the subscriber's permissions and the configured integrations, customers can:
+
+- View account information.
+- View their active package.
+- Check expiry.
+- View outstanding invoices.
+- Review payment history.
+- Download available receipts.
+- Request renewal.
+- View voucher information where applicable.
+- Update permitted profile fields.
+- Contact support.
+
+Protect subscriber accounts using the existing secure authentication architecture.
+
+---
+
+# PART 4 — MIKROTIK, PPPoE AND ROUTER MANAGEMENT
+
+## 9. Router Management
+
+Support the existing project's MikroTik integration or implement a compatible integration where needed.
+
+Allow authorized ISPs to:
+
+- Register a router.
+- Configure connection settings.
+- Verify connectivity.
+- View router status.
+- Manage supported PPPoE subscriber operations.
+- Assign configured bandwidth profiles.
+- Synchronize applicable subscriber information.
+- Handle expiry and authorized suspension workflows.
+- Inspect connection and session information where supported.
+- Review router integration errors.
+
+Use the actual router API or supported integration for production data.
+
+A demo router must be explicitly labeled as simulated. Never report fabricated connection status as real.
+
+## 10. Router Security
+
+- Store router credentials securely on the server.
+- Never expose credentials in frontend responses or logs.
+- Restrict router operations by tenant and role.
+- Validate commands and API requests.
+- Log sensitive administrative operations without logging secrets.
+- Apply connection timeouts, error handling and appropriate rate limits.
+- Do not expose routers directly to public demo sessions.
+
+Production router changes must be confirmed by the actual integration.
+
+---
+
+# PART 5 — HOTSPOT ZONE: THE PRIMARY PRODUCT FEATURE
+
+## 11. Hotspot Zone Management
+
+Hotspot Zone is a central feature of WIFI Pay and must receive prominent placement in the product and demo experience.
+
+Allow each ISP to configure multiple hotspot zones, where supported by its network architecture.
+
+Each zone should include:
+
+- Zone name.
+- Associated router or hotspot gateway.
+- Service area and internal identifier.
+- Available packages.
+- Authentication configuration.
+- Captive portal branding.
+- Voucher policies.
+- Payment methods.
+- Connection status from the actual integration.
+- Zone-level reports and applicable session information.
+
+Support MikroTik HotSpot where configured.
+
+## 12. Automatic Captive Portal
+
+When a customer connects to an ISP's configured hotspot network, the router should redirect the customer to the correct ISP-branded captive portal.
+
+The portal must show:
+
+- ISP name and logo.
+- Wi-Fi network or zone information when available.
+- Bangla and English language options.
+- Available daily, weekly and monthly packages.
+- Package price and validity.
+- Speed and data allowance where applicable.
+- Buy Internet Package.
+- Existing Voucher Login.
+- Support and terms of service.
+
+Use a responsive, mobile-first layout.
+
+The real captive portal must use the correct ISP and hotspot zone based on a securely validated router integration and tenant mapping. Do not trust arbitrary tenant IDs or redirect parameters supplied by the browser.
+
+## 13. Hotspot Purchase Flow
+
+Implement the following production workflow:
+
+1. Customer connects to the configured hotspot.
+2. Captive portal displays the ISP's real available packages.
+3. Customer selects a package.
+4. Customer selects a configured payment method or another explicitly authorized purchase method.
+5. Backend creates a pending purchase or payment record.
+6. The configured payment integration processes the transaction.
+7. Backend verifies the payment or other authorization.
+8. Backend generates a voucher according to the selected package.
+9. Voucher is provisioned to the appropriate router or authentication service.
+10. Customer receives the voucher and login instructions.
+11. Customer authenticates through the configured hotspot service.
+12. Session, validity and usage follow the package's actual rules.
+
+Do not generate a production voucher merely because a browser shows a successful payment page.
+
+Prevent duplicate voucher issuance during repeated callbacks or payment retries through idempotency and database transactions.
+
+## 14. Automatic Voucher System
+
+Every successfully authorized production purchase must generate a unique voucher where voucher-based access is the configured authentication method.
+
+Store the voucher securely and associate it with:
+
+- ISP tenant.
+- Hotspot zone.
+- Selected package.
+- Purchase and payment records.
+- Creation time.
+- Expiry.
+- Configured session policy.
+- Usage limits.
+- Activation state.
+- Applicable router provisioning status.
+
+Display the voucher to the authorized customer with clear login instructions.
+
+Allow the customer to retrieve an existing valid voucher through an authenticated or appropriately verified recovery workflow.
+
+Never reveal another customer's voucher.
+
+## 15. Voucher Login, Logout and Reconnection
+
+Customers must be able to log in using a valid voucher.
+
+The system must support:
+
+- Voucher validation.
+- Authentication.
+- Session tracking where available.
+- Expiry checks.
+- Applicable data and time limits.
+- Logout or simulated disconnection.
+- Reconnection using the same voucher while valid and permitted.
+- Appropriate invalid, expired, exhausted or restricted-session messages.
+
+Logging out must not automatically destroy a valid voucher.
+
+Do not reset the voucher's original expiry when a customer logs in again. Enforce the actual package and router session policy, including simultaneous-session restrictions where configured.
+
+## 16. Voucher Provisioning and Recovery
+
+The backend must track whether a voucher has been generated, provisioned, activated or failed.
+
+If provisioning fails:
+
+- Do not display a false success state.
+- Record the failure.
+- Provide a safe retry mechanism.
+- Prevent duplicate vouchers.
+- Show an accurate status to the authorized ISP administrator.
+
+Do not issue real internet access until the actual authentication system confirms the required authorization.
+
+---
+
+# PART 6 — PAYMENT INTEGRATIONS
+
+## 17. ISP-Owned Payment Methods
+
+Each ISP must configure its own supported customer-payment methods independently.
+
+Support bKash, Nagad, Rocket and other providers only when the relevant payment flow or integration is actually implemented and configured.
+
+Depending on the provider, support appropriate methods such as:
+
+- Official API checkout.
+- Merchant or business payment integration.
+- Verified payment callback.
+- Manual payment instructions and authorized verification.
+- Sandbox transactions where supported.
+
+Do not claim that entering a personal payment number creates automatic transaction verification.
+
+## 18. Payment Processing and Verification
+
+Implement a reliable payment lifecycle:
+
+- Pending.
+- Successful.
+- Failed.
+- Cancelled.
+- Expired.
+- Refunded, where supported.
+
+Use server-side verification and signed callbacks where the provider supports them.
+
+Never mark a payment as successful based solely on a browser redirect, query parameter or frontend action.
+
+Prevent duplicate payment processing and duplicate voucher issuance.
+
+Maintain an audit trail of relevant transaction state changes.
+
+## 19. Separate ISP Revenue and SaaS Fees
+
+Customer payments for internet services belong to the respective ISP according to its configured payment integration and legal/payment-provider arrangement.
+
+WIFI Pay collects its own SaaS subscription fees separately.
+
+Do not mix ISP customer payments with WIFI Pay's subscription revenue.
+
+Do not claim that a payment is routed directly to an ISP's account unless the selected integration and actual transaction flow establish that behavior.
+
+## 20. Customer Payment Page
+
+Provide each ISP with a branded payment page showing:
+
+- ISP identity.
+- Customer or subscriber identification.
+- Invoice or purchase details.
+- Amount due.
+- Due date where applicable.
+- Available payment methods.
+- Payment instructions.
+- Current transaction status.
+- Receipt or invoice access.
+
+For hotspot purchases, integrate the payment flow with the actual voucher lifecycle.
+
+---
+
+# PART 7 — AUTOMATIC ISP WEBSITE GENERATOR
+
+## 21. Three Supported Platform Domains
+
+Allow ISP users to create their websites using any available username on these domains:
+
+1. `wifipay.cyou`
+2. `mrwht.bond`
+3. `ispbd.cyou`
+
+Examples:
+
+- `rahim.wifipay.cyou`
+- `rahim.mrwht.bond`
+- `rahim.ispbd.cyou`
+
+These are examples only. Check real availability before assignment.
+
+## 22. Domain Selection During Onboarding
+
+Let the ISP:
+
+- Enter a preferred username.
+- Check availability across all enabled root domains.
+- Select an available domain.
+- Reserve the hostname safely.
+- Choose another available hostname when necessary.
+- Change the hostname later if the replacement is available.
+
+Use server-side validation and database uniqueness constraints.
+
+Protect reserved usernames and prevent duplicate assignments or race conditions.
+
+The super-admin must be able to enable or disable supported root domains.
+
+## 23. One-Click Website Creation
+
+After selecting a hostname and completing any essential business information, the ISP clicks **Create My Website**.
+
+Generate a real public ISP website using its configured business data.
+
+Include:
+
+- Homepage.
+- ISP logo and branding.
+- Internet packages.
+- Hotspot packages when enabled.
+- Broadband and PPPoE package information where applicable.
+- Subscriber login.
+- Customer portal access.
+- Payment page.
+- Voucher login when applicable.
+- Contact information.
+- Coverage area.
+- FAQ.
+- Terms and privacy pages.
+- Support information.
+- Mobile-responsive navigation and footer.
+- SEO metadata.
+- Bangla and English support.
+
+Load packages and relevant billing information from the actual backend.
+
+Do not create fake packages or placeholder production transactions.
+
+## 24. Website Dashboard
+
+After website creation, provide a permanent Website Builder section in the ISP dashboard.
+
+Include:
+
+- Visit My Website.
+- Edit My Website.
+- Manage Domain.
+- Website Settings.
+- Preview Website.
+- Publish Changes.
+- Unpublish Website.
+- Page Management.
+- Media Library.
+- SEO Settings.
+- Theme Settings.
+
+Display the actual assigned URL and publishing status.
+
+The Edit My Website option must remain available after initial publication.
+
+---
+
+# PART 8 — WORDPRESS-LIKE VISUAL WEBSITE EDITOR
+
+## 25. Visual Editing
+
+Build a real visual editor that allows ISP users to customize their websites without writing code.
+
+Include:
+
+- Live preview.
+- Click-to-edit text and headings.
+- Image and logo replacement.
+- Media library.
+- Section drag-and-drop.
+- Add and remove sections.
+- Duplicate and reorder sections.
+- Hide and show sections.
+- Editable buttons and links.
+- Color and typography controls.
+- Backgrounds, spacing and layouts.
+- Header and footer customization.
+- Desktop, tablet and mobile preview.
+- Undo and redo.
+- Draft saving.
+- Preview before publication.
+- Publish changes without rebuilding the website manually.
+
+Every visible editor control must have a working implementation.
+
+## 26. Page Management
+
+Allow ISPs to create, edit, duplicate, reorder and delete their own pages.
+
+Support:
+
+- Home.
+- Internet Packages.
+- Hotspot Packages.
+- About Us.
+- Coverage Area.
+- Contact.
+- FAQ.
+- Privacy Policy.
+- Terms of Service.
+- Custom Pages.
+
+Each page should support its own URL slug, SEO title, description and publication status.
+
+## 27. Section Library
+
+Provide reusable sections such as:
+
+- Hero banner.
+- Internet package cards.
+- Hotspot package cards.
+- Coverage map.
+- Features.
+- Testimonials when genuine content is supplied.
+- FAQ.
+- Contact form.
+- Business information.
+- Payment methods.
+- Call-to-action banner.
+- Custom content sections.
+
+Allow custom HTML only under an appropriate platform policy and safe sanitization rules.
+
+Do not allow arbitrary JavaScript or server-side code execution.
+
+## 28. Themes and Publication
+
+Provide multiple professional ISP themes.
+
+Allow customization of:
+
+- Brand colors.
+- Fonts.
+- Logo.
+- Favicon.
+- Layout.
+- Header.
+- Footer.
+- Navigation.
+- Section order.
+
+Save drafts separately from published versions.
+
+Publishing must be atomic. Visitors must not see incomplete content.
+
+---
+
+# PART 9 — CUSTOM DOMAIN SUPPORT
+
+## 29. Connect ISP-Owned Domains
+
+Allow each ISP to connect a domain such as `exampleisp.com` or `www.exampleisp.com`.
+
+Implement:
+
+1. Domain input and validation.
+2. Duplicate-domain checking.
+3. Ownership verification.
+4. DNS instructions.
+5. DNS resolution checks.
+6. Host routing.
+7. HTTPS provisioning.
+8. Status display.
+9. Safe domain removal and replacement.
+10. Primary-domain selection.
+
+Use DNS TXT verification or another reliable ownership verification mechanism.
+
+Generate DNS records according to the actual hosting architecture. Do not provide generic records that conflict with the deployed infrastructure.
+
+## 30. Domain Security and Routing
+
+Resolve the incoming hostname to the correct ISP tenant on the server.
+
+Prevent:
+
+- Domain takeover.
+- Cross-tenant routing.
+- Unauthorized custom-domain claims.
+- Duplicate domain assignment.
+- Unverified-domain activation.
+- Incorrect cross-tenant caching.
+
+Do not mark SSL or DNS as active before infrastructure confirms it.
+
+---
+
+# PART 10 — PRODUCTION DNS AND HOSTING
+
+## 31. Multi-Domain Infrastructure
+
+Configure the actual production infrastructure to support:
+
+- `*.wifipay.cyou`
+- `*.mrwht.bond`
+- `*.ispbd.cyou`
+- Verified ISP-owned custom domains.
+
+Implement appropriate wildcard DNS, TLS certificates, hostname routing and tenant resolution.
+
+Inspect whether the existing Vercel deployment supports the required domain setup and whether external DNS configuration or other infrastructure is required.
+
+Do not assume frontend routing alone creates working subdomains.
+
+If a manual DNS, hosting-provider, certificate, database or environment-variable change is required, provide the exact configuration and clearly identify the remaining action.
+
+Never claim that a hostname is live until verified.
+
+---
+
+# PART 11 — EMAILS, NOTIFICATIONS AND AUTOMATION
+
+## 32. Transactional Email
+
+Use the existing configured email service or implement a production-compatible provider.
+
+Support appropriate emails for:
+
+- Account registration and verification.
+- Password recovery.
+- Invoice creation.
+- Payment confirmation.
+- Payment failure where applicable.
+- Subscription reminders.
+- Trial expiry.
+- Voucher delivery or retrieval instructions where appropriate.
+- Support requests.
+- Domain verification.
+- Website publication status.
+
+Use professional email templates with ISP branding where appropriate.
+
+Do not expose secrets or send real emails from demo sessions.
+
+## 33. Billing Automation
+
+Implement reliable scheduled jobs for configured tasks such as:
+
+- Invoice generation.
+- Upcoming due-date reminders.
+- Subscription expiry notices.
+- Authorized suspension or restoration.
+- Payment reconciliation where supported.
+- SaaS trial reminders.
+- Failed voucher provisioning alerts.
+
+Jobs must be idempotent, logged and protected against duplicate execution.
+
+Do not promise that a scheduled job is active until the actual scheduler is configured and tested.
+
+---
+
+# PART 12 — WIFI PAY LANDING PAGE
+
+## 34. Professional Product Landing Page
+
+Build or update the public landing page to explain WIFI Pay as a complete ISP billing and hotspot management SaaS.
+
+Include:
+
+- Professional hero section.
+- Clear Start Free Trial CTA.
+- Explore Demos CTA.
+- Product feature overview.
+- Hotspot Zone feature showcase.
+- ISP billing overview.
+- MikroTik and PPPoE feature overview.
+- Automatic voucher system overview.
+- ISP website builder overview.
+- Customer payment page overview.
+- Subscriber portal overview.
+- Pricing and 30-day trial information based on actual configured plans.
+- FAQ.
+- Documentation link if documentation exists.
+- Login and registration links.
+- Professional footer.
+
+Use a clean, fast, responsive design optimized for mobile users in Bangladesh.
+
+Avoid fake statistics, fabricated customer logos, invented testimonials, excessive animations and generic AI-generated-looking layouts.
+
+## 35. Navigation
+
+Provide suitable public navigation, including:
+
+- Home.
+- Features.
+- Demos.
+- Pricing.
+- Documentation, if available.
+- Login.
+- Start Free Trial.
+
+Preserve existing routes and authentication flows.
+
+---
+
+# PART 13 — INTERACTIVE DEMOS
+
+## 36. Demo-Only Scope
+
+Create the interactive demos on the landing page and a dedicated `/demos` page.
+
+Do not repeat the previous feature requirements in multiple places or build unrelated extra products.
+
+The demo gallery must use shared UI components where practical and accurately represent the real product.
+
+**Hotspot Zone must be the first, largest and primary featured demo.**
+
+## 37. Hotspot Zone Demo — Primary Demo
+
+Show a complete simulated Wi-Fi customer journey:
+
+1. Open the demo hotspot portal.
+2. View available packages.
+3. Select a package.
+4. Complete a simulated purchase.
+5. Receive an automatically generated demo voucher.
+6. Copy the voucher.
+7. Log in with the voucher.
+8. View session validity and remaining access where supported by the demo model.
+9. Log out or simulate disconnection.
+10. Log in again with the same voucher while valid and permitted.
+
+Include package validity, expiry, usage limits and appropriate error states.
+
+Do not reset voucher expiry on every login.
+
+Retain the demo voucher in an isolated server-managed demo session long enough to complete the flow.
+
+All demo vouchers must remain separate from production vouchers and real routers.
+
+## 38. ISP Billing Dashboard Demo
+
+Show an isolated example of:
+
+- Subscriber records.
+- Package assignment.
+- Invoice status.
+- Outstanding balances.
+- Subscription expiry.
+- Payment history.
+- Billing summaries.
+
+Clearly identify all demo data.
+
+## 39. Custom ISP Website Demo
+
+Show a complete example of a generated ISP website with:
+
+- Company branding.
+- Package cards.
+- Contact information.
+- Customer login.
+- Payment entry point.
+- Hotspot voucher login where appropriate.
+- Responsive navigation.
+- Example subdomain.
+
+Provide a Customize This Demo action.
+
+## 40. Customer Payment Page Demo
+
+Allow visitors to:
+
+- Enter a sample subscriber ID.
+- View sample invoice details.
+- Select a simulated payment method.
+- View pending, successful or failed demo states.
+- Preview a receipt.
+
+Never move money, contact real payment gateways or change production invoices.
+
+## 41. Subscriber Portal Demo
+
+Demonstrate:
+
+- Package information.
+- Expiry information.
+- Sample invoices.
+- Payment history.
+- Receipt preview.
+- Renewal request flow.
+- Permitted profile settings.
+
+Use isolated demo records.
+
+## 42. MikroTik and PPPoE Demo
+
+Show a simulated router, PPPoE subscribers, package assignment and connection status.
+
+Clearly label simulated router data.
+
+Do not connect public demo actions to real routers.
+
+## 43. Visual Website Editor Demo
+
+Provide a working sandbox editor with:
+
+- Editable text.
+- Editable colors.
+- Logo or image replacement using safe demo assets.
+- Section reordering.
+- Page creation.
+- Desktop and mobile preview.
+- Draft changes.
+- Simulated publishing.
+
+Do not publish demo edits to a real public website.
+
+## 44. Multi-Domain Demo
+
+Demonstrate domain selection using:
+
+- `wifipay.cyou`
+- `mrwht.bond`
+- `ispbd.cyou`
+
+Show sample subdomain previews and the custom-domain setup workflow.
+
+Do not claim availability or reservation without actual backend verification.
+
+## 45. Support and Billing Automation Demo
+
+Show representative workflows for:
+
+- Billing reminders.
+- Invoice generation.
+- Subscription expiry.
+- Payment status updates.
+- Support requests.
+- Voucher provisioning status.
+
+Do not send external emails, notifications or messages from the demo.
+
+## 46. Demo Routes and Navigation
+
+Create suitable routes, adapted to the existing framework:
+
+- `/demos`
+- `/demos/hotspot-zone`
+- `/demos/isp-billing`
+- `/demos/isp-website`
+- `/demos/payment-page`
+- `/demos/subscriber-portal`
+- `/demos/mikrotik-pppoe`
+- `/demos/website-editor`
+
+Each demo must have a working View Demo action and a relevant Start Free Trial CTA.
+
+## 47. Demo Isolation
+
+Enforce demo restrictions on the server.
+
+Demo sessions must never be able to:
+
+- Access production subscriber data.
+- Modify production invoices.
+- Initiate real payments.
+- Create production vouchers.
+- Connect to production routers.
+- Publish real websites.
+- Send real notifications.
+- Access other tenants' data.
+
+Use isolated demo records and an explicit sandbox architecture. Do not rely only on a browser-side demo flag.
+
+Clearly label every simulated transaction, voucher, router state and publishing operation.
+
+---
+
+# PART 14 — SEO, MOBILE AND USER EXPERIENCE
+
+## 48. Public Website Quality
+
+Implement:
+
+- Responsive desktop and mobile layouts.
+- Proper Bangla text rendering.
+- Accessible controls and keyboard navigation.
+- Unique page titles and descriptions.
+- Canonical URLs.
+- Open Graph metadata.
+- Sitemap and robots configuration.
+- Optimized assets.
+- Lazy loading where appropriate.
+- Efficient caching with tenant-aware cache keys.
+- Clear loading, empty, error and success states.
+
+Avoid unnecessary JavaScript and animations that reduce mobile performance.
+
+## 49. Professional UI Requirements
+
+Keep the visual design consistent across:
+
+- Public landing page.
+- ISP dashboard.
+- Subscriber portal.
+- Captive portal.
+- Website builder.
+- Payment pages.
+- Demo gallery.
+
+Use a restrained professional color palette, consistent spacing, clear typography and functional navigation.
+
+Avoid decorative green lines, unnecessary borders, oversized headings and fake UI controls.
+
+Do not add images when a clean interface or actual product screenshot is more appropriate.
+
+---
+
+# PART 15 — DATABASE AND SECURITY
+
+## 50. Data Model
+
+Inspect the existing database before adding tables or modifying schemas.
+
+Implement compatible models or migrations for required entities, including:
+
+- ISP tenants.
+- SaaS subscriptions and trials.
+- Subscribers.
+- Packages.
+- Invoices.
+- Payment transactions.
+- Routers.
+- Hotspot zones.
+- Vouchers.
+- Authentication sessions where applicable.
+- Websites.
+- Domain reservations.
+- Custom-domain verification.
+- Pages and page revisions.
+- Website sections.
+- Media assets.
+- Draft and published versions.
+- Notifications.
+- Support records.
+- Audit logs.
+- Isolated demo sessions and demo records.
+
+Do not create duplicate tables for functionality that already exists.
+
+## 51. Security Requirements
+
+Implement appropriate:
+
+- Server-side authentication and authorization.
+- Tenant isolation.
+- Input validation.
+- Database constraints.
+- CSRF protection where applicable.
+- Rate limiting.
+- Secure upload validation.
+- Audit logging.
+- Secret management.
+- Payment callback verification.
+- Idempotent transaction processing.
+- Secure domain verification.
+- Safe HTML sanitization.
+- Session security.
+- Backup and recovery procedures.
+
+Never trust frontend claims for payment success, domain ownership, router status or production voucher validity.
+
+---
+
+# PART 16 — SUPER-ADMIN CONTROLS
+
+## 52. Platform Management
+
+The WIFI Pay super-admin should be able to:
+
+- View and manage ISP accounts.
+- Manage SaaS subscription plans.
+- Manage free-trial settings.
+- Enable or disable root domains.
+- Review hostname reservations.
+- Review custom-domain verification.
+- Suspend or restore tenant websites.
+- Manage global website themes.
+- Manage section templates.
+- Set website-builder permissions.
+- Review router integration errors.
+- Inspect voucher provisioning failures.
+- Review platform payment records.
+- Review website publication failures.
+- Inspect relevant audit logs.
+- Configure platform-level integrations.
+
+Keep all super-admin controls separate from ISP business settings.
+
+---
+
+# PART 17 — PRODUCTION TESTING
+
+## 53. Required Tests
+
+Test actual functionality, not just whether pages render.
+
+### Account and tenancy
+
+1. Register two separate ISP accounts.
+2. Confirm tenant data isolation.
+3. Verify ISP permissions.
+4. Verify super-admin separation.
+5. Test trial eligibility and expiry behavior.
+
+### Website builder and domains
+
+6. Create a website on each enabled root domain.
+7. Reject duplicate hostnames.
+8. Edit website text and images.
+9. Reorder sections.
+10. Create a custom page.
+11. Save a draft.
+12. Publish changes.
+13. Confirm drafts are not publicly visible.
+14. Verify custom-domain ownership.
+15. Test DNS and HTTPS status handling.
+
+### Billing and payment
+
+16. Create a real test invoice in the authorized test environment.
+17. Test pending, successful and failed payment states.
+18. Verify that frontend redirects cannot falsely confirm payment.
+19. Confirm that ISP customer payments and SaaS fees remain separate.
+20. Test invoice history and receipts.
+
+### Hotspot Zone
+
+21. Open the captive portal.
+22. Select a package.
+23. Complete a simulated demo purchase.
+24. Receive a unique demo voucher.
+25. Log in using the voucher.
+26. Log out and reconnect with the same valid voucher.
+27. Test expired and invalid voucher errors.
+28. Confirm that demo vouchers cannot authenticate against production routers.
+29. Verify real voucher provisioning in a properly configured production test environment.
+
+### MikroTik and PPPoE
+
+30. Test router registration.
+31. Test connection verification.
+32. Test subscriber synchronization where implemented.
+33. Verify that public demo actions cannot reach real routers.
+
+### Isolation and performance
+
+34. Confirm demo sessions cannot modify production data.
+35. Test mobile and desktop layouts.
+36. Test Bangla rendering.
+37. Test error handling and failed integrations.
+38. Test backup and rollback procedures where available.
+
+Use a proper test environment for payment and router tests. Never conduct destructive tests on production subscribers or live routers without explicit authorization.
+
+---
+
+# PART 18 — IMPLEMENTATION ORDER
+
+## 54. Work in Stages
+
+Implement in this order:
+
+**Stage 1:** Inspect the existing application, identify completed features, missing functionality, infrastructure dependencies and existing bugs.
+
+**Stage 2:** Complete tenant isolation, account setup and the core billing architecture without breaking existing functionality.
+
+**Stage 3:** Implement router integration, Hotspot Zone, captive portal, payment verification, voucher generation and reconnection workflows.
+
+**Stage 4:** Implement multi-domain routing, hostname reservations and one-click ISP website creation.
+
+**Stage 5:** Implement the WordPress-like visual editor, page management, drafts, publication and custom-domain workflow.
+
+**Stage 6:** Build the public landing page and interactive demo gallery, with Hotspot Zone as the primary demo.
+
+**Stage 7:** Implement and verify email, notifications, trial management and super-admin controls.
+
+**Stage 8:** Run tests, resolve regressions, verify deployment requirements and produce an accurate implementation report.
+
+Do not claim that a stage is complete merely because its frontend interface exists.
+
+---
+
+# FINAL ACCEPTANCE REQUIREMENTS
+
+The completed WIFI Pay platform must provide:
+
+- A real multi-tenant ISP billing SaaS.
+- A 30-day free trial according to the configured policy.
+- ISP-controlled customer payment integrations.
+- MikroTik and PPPoE management where the integration is configured.
+- Hotspot Zone management.
+- An automatic captive portal.
+- Verified payment or authorized purchase processing.
+- Automatic production voucher generation and provisioning.
+- Voucher login, logout and valid reconnection.
+- One-click ISP website generation.
+- The three supported platform domain options.
+- Custom-domain verification and HTTPS.
+- A persistent WordPress-like visual website editor.
+- ISP subscriber portals and payment pages.
+- A professional WIFI Pay landing page.
+- Interactive demos for the major product features.
+- Hotspot Zone as the main featured demo.
+- Strict separation between demo and production systems.
+- A separate platform super-admin panel.
+- Real backend integrations and accurate error states.
+- Production testing and a documented deployment checklist.
+
+**Final instruction:** Make changes directly in the existing WIFI Pay codebase. Inspect before modifying, preserve working functionality, use real backend operations for production, and isolate all demos. Report implemented features, verified test results, failed tests and outstanding external configuration separately.
+
+Never fabricate functionality, payment success, voucher provisioning, router connectivity, domain availability or SSL activation.

@@ -1,0 +1,32 @@
+{
+  "id": "/",
+  "name": "DEVSPARK LINK (DSLINK) — DEV SPARK SOFT LIMITED",
+  "short_name": "DEVSPARK",
+  "description": "Official SpaceX Starlink Standard 4X Kit (৳41,500), Starlink Mini Kit (৳21,500), and Free Starlink Rental Kits (৳2,700 shipping via Bangla QR Only) by DEV SPARK SOFT LIMITED.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "/favicon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon-devspark.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "maskable"
+    }
+  ]
+}

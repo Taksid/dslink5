@@ -1,0 +1,401 @@
+{
+  "entities": {
+    "Product": {
+      "title": "Product",
+      "description": "Starlink Kit hardware details",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Name of the Starlink kit" },
+        "price": { "type": "number", "description": "Price in BDT" },
+        "description": { "type": "string", "description": "Product description" },
+        "features": { "type": "array", "description": "List of features" },
+        "specifications": { "type": "object", "description": "Verification specifications" },
+        "images": { "type": "array", "description": "List of image URLs" },
+        "stock": { "type": "number", "description": "Current stock count" },
+        "active": { "type": "boolean", "description": "Whether the product is visible" }
+      },
+      "required": ["name", "price", "active"]
+    },
+    "Package": {
+      "title": "Package",
+      "description": "Internet service plans",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Plan name" },
+        "price": { "type": "number", "description": "Monthly price in BDT" },
+        "dataAllowance": { "type": "string", "description": "Data allowance (e.g. Unlimited, 50GB)" },
+        "description": { "type": "string", "description": "Plan description" },
+        "features": { "type": "array", "description": "List of features" },
+        "terms": { "type": "string", "description": "Service terms" },
+        "active": { "type": "boolean", "description": "Whether the plan is visible" }
+      },
+      "required": ["name", "price", "active"]
+    },
+    "Coupon": {
+      "title": "Coupon",
+      "description": "Discount coupons",
+      "type": "object",
+      "properties": {
+        "code": { "type": "string", "description": "Unique coupon code" },
+        "discountType": { "type": "string", "enum": ["percentage", "fixed"], "description": "Type of discount" },
+        "discountValue": { "type": "number", "description": "Value of the discount" },
+        "expiryDate": { "type": "string", "format": "date-time", "description": "Expiration date" },
+        "usageLimit": { "type": "number", "description": "Maximum number of uses" },
+        "usageCount": { "type": "number", "description": "Number of times used" },
+        "active": { "type": "boolean", "description": "Whether the coupon is active" }
+      },
+      "required": ["code", "discountType", "discountValue", "active"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "Customer order details",
+      "type": "object",
+      "properties": {
+        "orderId": { "type": "string", "description": "Friendly order ID (e.g. DSL-2026-000001)" },
+        "customerName": { "type": "string", "description": "Full name of the customer" },
+        "mobile": { "type": "string", "description": "Mobile number" },
+        "email": { "type": "string", "description": "Email address" },
+        "address": { "type": "string", "description": "Full address" },
+        "district": { "type": "string", "description": "District" },
+        "upazila": { "type": "string", "description": "Upazila" },
+        "postalCode": { "type": "string", "description": "Postal code" },
+        "installationRequired": { "type": "boolean", "description": "If installation service is needed" },
+        "preferredInstallationDate": { "type": "string", "format": "date", "description": "Preferred date" },
+        "notes": { "type": "string", "description": "Additional notes" },
+        "productId": { "type": "string", "description": "Reference to Product ID" },
+        "packageId": { "type": "string", "description": "Reference to Package ID" },
+        "quantity": { "type": "number", "description": "Number of kits" },
+        "originalPrice": { "type": "number", "description": "Base price before discount" },
+        "discount": { "type": "number", "description": "Discount amount applied" },
+        "totalAmount": { "type": "number", "description": "Final amount to pay" },
+        "orderStatus": { "type": "string", "enum": ["Received", "Processing", "Confirmed", "Accepted", "Preparing", "Shipped", "Delivered", "Installation", "Completed", "Cancelled"], "description": "Current status" },
+        "paymentStatus": { "type": "string", "enum": ["Pending", "Paid", "Failed"], "description": "Payment status" },
+        "installationStatus": { "type": "string", "enum": ["Pending", "Completed"], "description": "Installation status" },
+        "paymentDetails": { "type": "object", "description": "Details for manual payment verification" },
+        "cancellationReason": { "type": "string", "description": "Reason for cancellation if cancelled" },
+        "source": { "type": "string", "description": "Traffic source e.g. single_checkout_ad" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["orderId", "customerName", "mobile", "totalAmount", "orderStatus", "createdAt"]
+    },
+    "Customer": {
+      "title": "Customer",
+      "description": "Customer profile",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Auth UID" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "mobile": { "type": "string" },
+        "orders": { "type": "array", "description": "List of Order IDs" },
+        "blocked": { "type": "boolean", "description": "Whether the account is blocked" }
+      },
+      "required": ["uid", "email"]
+    },
+    "Settings": {
+      "title": "Settings",
+      "description": "Website content configuration",
+      "type": "object",
+      "properties": {
+        "key": { "type": "string", "description": "Config key (e.g. hero_title)" },
+        "value": { "type": "string", "description": "Config value" }
+      },
+      "required": ["key", "value"]
+    },
+    "Invoice": {
+      "title": "Invoice",
+      "description": "Professional customer and commercial invoices",
+      "type": "object",
+      "properties": {
+        "invoiceNumber": { "type": "string", "description": "Unique invoice identifier e.g. INV-2026-0001" },
+        "orderId": { "type": "string", "description": "Associated website order ID" },
+        "accessToken": { "type": "string", "description": "Unguessable access token for secure viewing" },
+        "issueDate": { "type": "string", "description": "Issue date YYYY-MM-DD" },
+        "dueDate": { "type": "string", "description": "Payment due date YYYY-MM-DD" },
+        "status": { "type": "string", "enum": ["draft", "unpaid", "partially_paid", "paid", "overdue", "cancelled"] },
+        "currency": { "type": "string", "enum": ["BDT", "USD"] },
+        "businessInfo": { "type": "object", "description": "Company legal and banking information" },
+        "customerInfo": { "type": "object", "description": "Customer contact and billing address" },
+        "items": { "type": "array", "description": "Line items on the invoice" },
+        "subtotal": { "type": "number", "description": "Pre-tax items subtotal" },
+        "totalDiscount": { "type": "number", "description": "Total discounts applied" },
+        "totalTax": { "type": "number", "description": "Total VAT / Tax calculated" },
+        "shippingCharges": { "type": "number", "description": "Shipping fee" },
+        "additionalCharges": { "type": "number", "description": "Additional charges" },
+        "grandTotal": { "type": "number", "description": "Grand invoice total" },
+        "amountPaid": { "type": "number", "description": "Amount already paid" },
+        "outstandingBalance": { "type": "number", "description": "Remaining unpaid balance" },
+        "paymentMethod": { "type": "string", "description": "Payment method" },
+        "emailStatus": { "type": "string", "enum": ["draft", "pending", "sent", "failed"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["invoiceNumber", "grandTotal", "status", "currency", "createdAt"]
+    },
+    "PromotionalCredit": {
+      "title": "PromotionalCredit",
+      "description": "3-Month free promotional credit ledger for verified Bangla QR customers",
+      "type": "object",
+      "properties": {
+        "orderId": { "type": "string", "description": "Associated website order ID" },
+        "customerName": { "type": "string" },
+        "customerMobile": { "type": "string" },
+        "customerEmail": { "type": "string" },
+        "packageId": { "type": "string" },
+        "packageName": { "type": "string" },
+        "packageMonthlyPrice": { "type": "number" },
+        "creditMonths": { "type": "number", "description": "Number of promotional credit months (e.g. 3)" },
+        "creditTotalAmount": { "type": "number", "description": "Total monetary credit value in BDT" },
+        "paymentMethod": { "type": "string" },
+        "paymentTrxId": { "type": "string" },
+        "paymentBank": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending_verification", "active", "applied", "revoked"] },
+        "firstMonthVerified": { "type": "boolean" },
+        "verifiedAt": { "type": "string" },
+        "verifiedBy": { "type": "string" },
+        "validUntil": { "type": "string" },
+        "notes": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["orderId", "customerMobile", "packageMonthlyPrice", "creditMonths", "creditTotalAmount", "status"]
+    },
+    "SupportTicket": {
+      "title": "SupportTicket",
+      "description": "Customer support ticket opened for technical, billing, or Starlink inquiries",
+      "type": "object",
+      "properties": {
+        "ticketId": { "type": "string", "description": "Unique identifier for the ticket e.g. TCK-2026-0001" },
+        "userId": { "type": "string", "description": "Firebase Auth UID or customer identifier" },
+        "email": { "type": "string", "format": "email", "description": "Customer email address" },
+        "subject": { "type": "string", "description": "Subject or title of the support request" },
+        "category": { "type": "string", "description": "Category of the issue e.g. Billing, Technical, Starlink Setup" },
+        "status": { "type": "string", "enum": ["Open", "AI", "In Progress", "Resolved", "Closed"], "description": "Current lifecycle status of the ticket" },
+        "priority": { "type": "string", "enum": ["LOW", "MEDIUM", "HIGH", "URGENT"], "description": "Urgency and priority level of the ticket" },
+        "lastUpdated": { "type": "string", "format": "date-time", "description": "Timestamp when the ticket was last updated" }
+      },
+      "required": ["ticketId", "userId", "email", "subject", "category", "status", "priority", "lastUpdated"]
+    },
+    "TicketMessage": {
+      "title": "TicketMessage",
+      "description": "Individual message in a support ticket sub-collection conversation",
+      "type": "object",
+      "properties": {
+        "sender": { "type": "string", "description": "Sender identifier, role, or name" },
+        "text": { "type": "string", "description": "Message content or reply text" },
+        "timestamp": { "type": "string", "format": "date-time", "description": "Timestamp when the message was sent" },
+        "attachments": { "type": "array", "description": "List of attachment URLs or file metadata" }
+      },
+      "required": ["sender", "text", "timestamp"]
+    },
+    "IspTenant": {
+      "title": "IspTenant",
+      "description": "Registered ISP tenant company utilizing DevSparkSoft Wi-Fi & Billing platform",
+      "type": "object",
+      "properties": {
+        "tenantId": { "type": "string", "description": "Unique ISP tenant identifier e.g. isp-fastnet" },
+        "slug": { "type": "string", "description": "URL slug for customer portal" },
+        "companyName": { "type": "string", "description": "Legal/Operating name of the ISP" },
+        "logoUrl": { "type": "string", "description": "Company logo URL or asset path" },
+        "contactEmail": { "type": "string" },
+        "contactPhone": { "type": "string" },
+        "address": { "type": "string" },
+        "ownerUid": { "type": "string", "description": "User UID of tenant owner" },
+        "subscriptionPlanId": { "type": "string", "enum": ["starter", "growth", "unlimited"] },
+        "subscriptionStatus": { "type": "string", "enum": ["trial", "active", "past_due", "suspended", "cancelled"] },
+        "subscriptionExpiresAt": { "type": "string", "format": "date-time" },
+        "trialEndsAt": { "type": "string", "format": "date-time" },
+        "subscriberCount": { "type": "number" },
+        "paymentConfig": { "type": "object", "description": "ISP's direct payment accounts" },
+        "mikrotikConfig": { "type": "object", "description": "MikroTik router connection configuration" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["tenantId", "slug", "companyName", "subscriptionPlanId", "subscriptionStatus"]
+    },
+    "IspSubscriber": {
+      "title": "IspSubscriber",
+      "description": "Subscriber account managed by an ISP tenant (PPPoE or Hotspot)",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "tenantId": { "type": "string" },
+        "username": { "type": "string", "description": "MikroTik PPPoE / Hotspot username" },
+        "password": { "type": "string" },
+        "name": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string" },
+        "address": { "type": "string" },
+        "serviceType": { "type": "string", "enum": ["pppoe", "hotspot", "static_ip"] },
+        "ipAddress": { "type": "string" },
+        "macAddress": { "type": "string" },
+        "packageId": { "type": "string" },
+        "packageName": { "type": "string" },
+        "monthlyFee": { "type": "number" },
+        "billingCycleDay": { "type": "number" },
+        "status": { "type": "string", "enum": ["active", "suspended", "expired", "pending"] },
+        "expiryDate": { "type": "string", "format": "date-time" },
+        "balance": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "tenantId", "username", "serviceType", "packageId", "status"]
+    },
+    "IspPackage": {
+      "title": "IspPackage",
+      "description": "Bandwidth package created by an ISP tenant",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "tenantId": { "type": "string" },
+        "name": { "type": "string" },
+        "type": { "type": "string", "enum": ["pppoe", "hotspot"] },
+        "speedUploadMbps": { "type": "number" },
+        "speedDownloadMbps": { "type": "number" },
+        "mikrotikRateLimit": { "type": "string", "description": "e.g. 10M/10M" },
+        "price": { "type": "number" },
+        "durationDays": { "type": "number" },
+        "simultaneousDevices": { "type": "number" },
+        "active": { "type": "boolean" }
+      },
+      "required": ["id", "tenantId", "name", "price", "active"]
+    },
+    "IspInvoice": {
+      "title": "IspInvoice",
+      "description": "Internet monthly bill issued by ISP to its subscriber (direct collection)",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "tenantId": { "type": "string" },
+        "subscriberId": { "type": "string" },
+        "subscriberName": { "type": "string" },
+        "subscriberPhone": { "type": "string" },
+        "subscriberUsername": { "type": "string" },
+        "packageId": { "type": "string" },
+        "packageName": { "type": "string" },
+        "amount": { "type": "number" },
+        "billingMonth": { "type": "string" },
+        "dueDate": { "type": "string" },
+        "status": { "type": "string", "enum": ["unpaid", "pending_verification", "paid", "cancelled"] },
+        "paymentMethod": { "type": "string" },
+        "submittedTrxId": { "type": "string" },
+        "submittedPhone": { "type": "string" },
+        "paymentDate": { "type": "string" },
+        "verifiedBy": { "type": "string" },
+        "verifiedAt": { "type": "string" },
+        "notes": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "tenantId", "subscriberId", "amount", "status"]
+    },
+    "IspVoucher": {
+      "title": "IspVoucher",
+      "description": "Wi-Fi Hotspot prepaid access voucher",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "tenantId": { "type": "string" },
+        "code": { "type": "string" },
+        "pin": { "type": "string" },
+        "packageId": { "type": "string" },
+        "packageName": { "type": "string" },
+        "durationHours": { "type": "number" },
+        "price": { "type": "number" },
+        "status": { "type": "string", "enum": ["active", "used", "expired"] },
+        "usedByMac": { "type": "string" },
+        "usedAt": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "tenantId", "code", "price", "status"]
+    },
+    "SaasSubscriptionPlan": {
+      "title": "SaasSubscriptionPlan",
+      "description": "DevSparkSoft software subscription plans for ISPs",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "priceMonthly": { "type": "number" },
+        "maxSubscribers": { "type": "number" },
+        "features": { "type": "array" }
+      },
+      "required": ["id", "name", "priceMonthly"]
+    },
+    "SaasInvoice": {
+      "title": "SaasInvoice",
+      "description": "DevSparkSoft software fee invoice charged to an ISP tenant",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "tenantId": { "type": "string" },
+        "tenantName": { "type": "string" },
+        "tenantOwnerEmail": { "type": "string" },
+        "planId": { "type": "string" },
+        "planName": { "type": "string" },
+        "amount": { "type": "number" },
+        "billingPeriod": { "type": "string" },
+        "status": { "type": "string", "enum": ["unpaid", "pending_verification", "paid"] },
+        "paymentMethod": { "type": "string" },
+        "submittedTrxId": { "type": "string" },
+        "paymentDate": { "type": "string" },
+        "verifiedBy": { "type": "string" },
+        "verifiedAt": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "tenantId", "planId", "amount", "status"]
+    },
+    "IspAuditLog": {
+      "title": "IspAuditLog",
+      "description": "Tenant-level and platform-level audit events",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "tenantId": { "type": "string" },
+        "action": { "type": "string" },
+        "actor": { "type": "string" },
+        "details": { "type": "object" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "action", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/products/{productId}": { "schema": "Product", "description": "Starlink Kits" },
+    "/packages/{packageId}": { "schema": "Package", "description": "Internet Plans" },
+    "/coupons/{couponId}": { "schema": "Coupon", "description": "Discount Coupons" },
+    "/orders/{orderId}": { "schema": "Order", "description": "Customer Orders" },
+    "/customers/{customerId}": { "schema": "Customer", "description": "User Profiles" },
+    "/settings/{settingId}": { "schema": "Settings", "description": "Website Content" },
+    "/admins/{adminUid}": { "schema": { "type": "object", "properties": { "email": { "type": "string" } } }, "description": "Admin Users" },
+    "/invoices/{invoiceId}": { "schema": "Invoice", "description": "Commercial Invoices" },
+    "/promotional_credits/{creditId}": { "schema": "PromotionalCredit", "description": "Promotional Credit Records" },
+    "/support_tickets/{ticketId}": { "schema": "SupportTicket", "description": "Support tickets raised by customers or escalated from Andromeda AI" },
+    "/support_tickets/{ticketId}/messages/{messageId}": { "schema": "TicketMessage", "description": "Conversation messages sub-collection for a support ticket" },
+    "/isp_tenants/{tenantId}": { "schema": "IspTenant", "description": "Registered ISP tenants on Wi-Fi SaaS" },
+    "/isp_subscribers/{subscriberId}": { "schema": "IspSubscriber", "description": "Subscribers managed by an ISP" },
+    "/isp_packages/{packageId}": { "schema": "IspPackage", "description": "Bandwidth and hotspot packages for an ISP" },
+    "/isp_invoices/{invoiceId}": { "schema": "IspInvoice", "description": "Internet monthly bill invoices for an ISP customer" },
+    "/isp_vouchers/{voucherId}": { "schema": "IspVoucher", "description": "Hotspot prepaid access vouchers" },
+    "/saas_plans/{planId}": { "schema": "SaasSubscriptionPlan", "description": "DevSparkSoft SaaS plans" },
+    "/saas_invoices/{invoiceId}": { "schema": "SaasInvoice", "description": "DevSparkSoft software subscription invoices" },
+    "/isp_audit_logs/{logId}": { "schema": "IspAuditLog", "description": "Audit trail of tenant operations" },
+    "/isp_router_queue/{queueId}": { "schema": { "type": "object" }, "description": "Queued router commands for offline routers" },
+    "/media/{mediaId}": {
+      "schema": {
+        "type": "object",
+        "properties": {
+          "label": { "type": "string" },
+          "url": { "type": "string" },
+          "fileId": { "type": "string" },
+          "mimeType": { "type": "string" },
+          "size": { "type": "number" },
+          "ispId": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "usage": { "type": "string" }
+        }
+      },
+      "description": "Uploaded media assets stored in Google Drive"
+    }
+  }
+}
