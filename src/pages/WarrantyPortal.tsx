@@ -76,7 +76,6 @@ export const WarrantyPortalPage: React.FC<WarrantyPortalProps> = ({
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    document.title = '24-Month DSLink Replacement Warranty — Purchase & Rental Kits | DSLink';
   }, []);
 
   const handleVerify = async (e: React.FormEvent) => {
@@ -370,26 +369,26 @@ export const WarrantyPortalPage: React.FC<WarrantyPortalProps> = ({
                         : 'Warranty Inactive / Expired'}
                     </span>
                   </div>
-                  <dl className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-neutral-300 font-mono">
+                  <dl className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-slate-200 font-mono">
                     <div>
-                      <dt className="text-neutral-500">KIT Serial</dt>
-                      <dd className="text-white">{verifyResult.registration.kitSerial}</dd>
+                      <dt className="text-slate-300">KIT Serial</dt>
+                      <dd className="text-white break-all">{verifyResult.registration.kitSerial}</dd>
                     </div>
                     <div>
-                      <dt className="text-neutral-500">Kit Type &amp; Model</dt>
+                      <dt className="text-slate-300">Kit Type &amp; Model</dt>
                       <dd className="text-white">
                         {verifyResult.registration.kitModel} ({verifyResult.registration.kitType})
                       </dd>
                     </div>
                     <div>
-                      <dt className="text-neutral-500">Coverage Window</dt>
+                      <dt className="text-slate-300">Coverage Window</dt>
                       <dd className="text-white">
                         {verifyResult.registration.purchaseDate} → {verifyResult.registration.expiresAt}
                       </dd>
                     </div>
                     <div>
-                      <dt className="text-neutral-500">Order Reference</dt>
-                      <dd className="text-white">{verifyResult.registration.orderId}</dd>
+                      <dt className="text-slate-300">Order Reference</dt>
+                      <dd className="text-white break-all">{verifyResult.registration.orderId}</dd>
                     </div>
                   </dl>
                   {verifyResult.eligible && (

@@ -39,7 +39,7 @@ export const PWAInstallButton: React.FC<PWAInstallButtonProps> = ({
   const buttonNode =
     variant === 'floating' ? (
       <div
-        className={`fixed left-3 sm:left-5 z-40 transition-all duration-200 safe-bottom ${
+        className={`fixed left-3 sm:left-5 z-30 transition-all duration-200 safe-bottom ${
           isOnline ? 'bottom-20 lg:bottom-5' : 'bottom-36 lg:bottom-20'
         } ${className}`}
       >
@@ -48,14 +48,14 @@ export const PWAInstallButton: React.FC<PWAInstallButtonProps> = ({
           onClick={handleInstallClick}
           disabled={isInstalling}
           aria-label={buttonLabel}
-          className="group inline-flex items-center gap-2 px-3.5 py-2.5 rounded-[4px] bg-[#0b0b0e]/95 hover:bg-white text-white hover:text-black border border-white/30 hover:border-white shadow-2xl backdrop-blur-md text-xs font-semibold tracking-wide transition-colors cursor-pointer disabled:opacity-60 whitespace-nowrap"
+          className="group inline-flex items-center gap-2 min-h-[44px] px-3.5 py-2.5 rounded-lg bg-[#0b0f17]/95 hover:bg-cyan-400 text-white hover:text-[#04131a] border border-cyan-400/45 hover:border-cyan-300 shadow-2xl backdrop-blur-md text-xs font-semibold tracking-wide transition-colors cursor-pointer disabled:opacity-60 whitespace-nowrap"
         >
-          <span className="w-6 h-6 rounded-[3px] bg-white/10 group-hover:bg-black/10 flex items-center justify-center shrink-0">
-            <Download className="w-3.5 h-3.5 shrink-0" />
+          <span className="w-6 h-6 rounded bg-cyan-400/15 group-hover:bg-black/15 flex items-center justify-center shrink-0">
+            <Download className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
           </span>
           <span className="flex flex-col text-left leading-tight">
             <span>{buttonLabel}</span>
-            <span className="text-[10px] font-normal text-neutral-400 group-hover:text-neutral-700 hidden sm:inline">
+            <span className="text-xs font-normal text-slate-300 group-hover:text-slate-900 hidden sm:inline">
               DEVSPARK LINK PWA
             </span>
           </span>
@@ -66,9 +66,9 @@ export const PWAInstallButton: React.FC<PWAInstallButtonProps> = ({
         type="button"
         onClick={handleInstallClick}
         disabled={isInstalling}
-        className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-[4px] bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-medium transition-colors cursor-pointer disabled:opacity-60 whitespace-nowrap shrink-0 ${className}`}
+        className={`inline-flex items-center gap-1.5 min-h-[44px] px-3.5 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 border border-cyan-400/40 text-cyan-200 hover:text-cyan-100 text-xs font-semibold transition-colors cursor-pointer disabled:opacity-60 whitespace-nowrap shrink-0 ${className}`}
       >
-        <Download className="w-3.5 h-3.5 shrink-0" />
+        <Download className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
         <span>{buttonLabel}</span>
       </button>
     );

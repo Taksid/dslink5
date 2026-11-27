@@ -210,12 +210,7 @@ export const RentalPolicyPage: React.FC<RentalPolicyPageProps> = ({ onBackToMain
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    document.title = t3(
-      'Starlink Rental Policy & Restriction Notice | DEVSPARK LINK — DEV SPARK SOFT LIMITED',
-      'Starlink ငှားရမ်းခြင်း မူဝါဒနှင့် ကန့်သတ်ချက်များ | DEVSPARK LINK',
-      'Starlink Rental Kit – Full Restriction & Usage Policy | DEVSPARK LINK'
-    );
-  }, [language]);
+  }, []);
 
   const handleGoHome = (e: React.MouseEvent) => {
     e.preventDefault();

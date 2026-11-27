@@ -48,9 +48,16 @@ import {
 } from "./src/lib/currencyConfig";
 import { normalizeValidIsoCountry } from "./src/lib/heroGeoCopy";
 import {
+  isKnownSiteRoute,
   isPrivateOrNonIndexablePath,
   parseLocalePath,
 } from "./src/lib/localeRouting";
+import {
+  createStripeCheckoutSessionForOrder,
+  generateOrderAccessToken,
+  handleVerifiedStripeWebhook,
+  isStripeEnabled,
+} from "./src/lib/stripeServer";
 
 // Suppress internal @firebase/firestore gRPC retry chatter in Node.js
 setLogLevel("silent");
@@ -166,6 +173,7 @@ let cachedVoiceoverBase64: string | null = null;
 // In-memory stores (merged with Firestore where available; never deletes existing orders)
 const inMemoryOrders: any[] = [];
 const inMemoryInquiries: any[] = [];
+const processedStripeEventIds = new Set<string>();
 const serverAuditLogs: Array<{
   id: string;
   action: string;
@@ -500,13 +508,47 @@ const loadLocalStore = () => {
     if (Array.isArray(parsed?.refundClaims)) {
       refundClaims.push(...parsed.refundClaims);
     }
+    if (Array.isArray(parsed?.processedStripeEventIds)) {
+      parsed.processedStripeEventIds.forEach((evId: unknown) => {
+        if (typeof evId === "string" && evId.trim()) {
+          processedStripeEventIds.add(evId.trim());
+        }
+      });
+    }
     if (parsed?.pricingProducts && typeof parsed.pricingProducts === "object") {
       Object.entries(parsed.pricingProducts).forEach(([id, prod]: [string, any]) => {
         if (prod && typeof prod.price === "number" && Number.isFinite(prod.price)) {
-          serverPricingCatalog.products[id] = {
-            ...(serverPricingCatalog.products[id] || {}),
-            ...prod,
-          };
+          const canonical = serverPricingCatalog.products[id];
+          if (canonical) {
+            const isLegacyStd4x =
+              id === "starlink-standard-4x" &&
+              typeof prod.name === "string" &&
+              (prod.name.includes("Global Purchase") || prod.name.includes("Standard Kit 4X"));
+            serverPricingCatalog.products[id] = {
+              ...canonical,
+              ...prod,
+              id,
+              ...(isLegacyStd4x
+                ? {
+                    name: canonical.name,
+                    nameBn: canonical.nameBn,
+                    shortName: canonical.shortName,
+                    description: canonical.description,
+                    descriptionBn: canonical.descriptionBn,
+                  }
+                : {}),
+              // Keep verified local product artwork and variant metadata intact
+              image: canonical.image.startsWith("/assets/products/")
+                ? canonical.image
+                : String(prod.image || canonical.image),
+              imageAlt: canonical.imageAlt || prod.imageAlt,
+              referencePrice: canonical.referencePrice ?? prod.referencePrice,
+              variantLabel: canonical.variantLabel || prod.variantLabel,
+              variantType: canonical.variantType || prod.variantType,
+            };
+          } else {
+            serverPricingCatalog.products[id] = { ...prod, id };
+          }
         }
       });
     }
@@ -524,6 +566,7 @@ const persistLocalStore = () => {
       warrantyRegistrations: warrantyRegistrations.slice(0, 500),
       warrantyClaims: warrantyClaims.slice(0, 500),
       refundClaims: refundClaims.slice(0, 500),
+      processedStripeEventIds: Array.from(processedStripeEventIds).slice(-1000),
       pricingProducts: serverPricingCatalog.products,
     };
     fs.writeFileSync(LOCAL_STORE_PATH, JSON.stringify(payload), "utf-8");
@@ -559,10 +602,15 @@ const hydratePricingFromFirestore = async () => {
       }
 
       if (serverPricingCatalog.products[id]) {
+        const canonical = serverPricingCatalog.products[id];
+        const isLegacyStd4x =
+          id === "starlink-standard-4x" &&
+          typeof data.name === "string" &&
+          (data.name.includes("Global Purchase") || data.name.includes("Standard Kit 4X"));
         serverPricingCatalog.products[id] = {
-          ...serverPricingCatalog.products[id],
+          ...canonical,
           price: Math.round(numericPrice),
-          ...(data.name ? { name: String(data.name) } : {}),
+          ...(data.name && !isLegacyStd4x ? { name: String(data.name) } : {}),
           ...(typeof data.active === "boolean" ? { active: data.active } : {}),
           ...(Number.isFinite(Number(data.stock)) ? { stock: Number(data.stock) } : {}),
         };
@@ -601,10 +649,19 @@ const resolveAuthoritativeProduct = (productId?: string, productName?: string) =
   if (idClean.includes("rental") || nameClean.includes("rental")) {
     return serverPricingCatalog.products["starlink-rental-kit"];
   }
+  const isBdResidentialHint =
+    idClean.includes("bd-residential") ||
+    idClean.includes("bangladesh-residential") ||
+    nameClean.includes("bangladesh residential") ||
+    nameClean.includes("bd residential");
+
   if (
     idClean.includes("mini") ||
     (nameClean.includes("mini") && !nameClean.includes("router"))
   ) {
+    if (isBdResidentialHint && serverPricingCatalog.products["starlink-mini-bd-residential"]) {
+      return serverPricingCatalog.products["starlink-mini-bd-residential"];
+    }
     return serverPricingCatalog.products["starlink-mini-kit"];
   }
   if (
@@ -612,6 +669,12 @@ const resolveAuthoritativeProduct = (productId?: string, productName?: string) =
     nameClean.includes("standard") ||
     nameClean.includes("4x")
   ) {
+    if (
+      isBdResidentialHint &&
+      serverPricingCatalog.products["starlink-standard-4x-bd-residential"]
+    ) {
+      return serverPricingCatalog.products["starlink-standard-4x-bd-residential"];
+    }
     return serverPricingCatalog.products["starlink-standard-4x"];
   }
   if (idClean.includes("high-performance") || nameClean.includes("high performance")) {
@@ -744,6 +807,62 @@ const recentActivityEmailCache = new Map<string, number>();
 async function startServer() {
   const app = express();
   const PORT = 3000;
+
+  // Stripe Webhook MUST receive the untouched raw Buffer body BEFORE express.json() parses requests
+  app.post(
+    "/api/stripe/webhook",
+    express.raw({ type: "application/json", limit: "2mb" }),
+    async (req, res) => {
+      const signatureHeader =
+        typeof req.headers["stripe-signature"] === "string"
+          ? req.headers["stripe-signature"]
+          : undefined;
+      const rawBody = Buffer.isBuffer(req.body)
+        ? req.body
+        : Buffer.from(typeof req.body === "string" ? req.body : JSON.stringify(req.body || {}));
+
+      const result = await handleVerifiedStripeWebhook({
+        rawBody,
+        signatureHeader,
+        processedEventIds: processedStripeEventIds,
+        findOrder: (orderId, sessionId) =>
+          inMemoryOrders.find(
+            (o) =>
+              (orderId && o.orderId === orderId) ||
+              (sessionId && o.stripeSessionId === sessionId)
+          ),
+        onPersist: async (order, eventId, action) => {
+          persistLocalStore();
+          recordAuditLog(
+            `stripe_webhook_${action}`,
+            "stripe_webhook",
+            order?.orderId || eventId,
+            {
+              eventId,
+              action,
+              paymentStatus: order?.paymentStatus,
+              stripeSessionId: order?.stripeSessionId,
+            },
+            "stripe"
+          );
+          if (order) {
+            const activeDb = await getActiveFirestoreDb();
+            if (activeDb) {
+              try {
+                await setDoc(doc(activeDb, "orders", order.orderId), order, { merge: true });
+              } catch (dbErr: any) {
+                if (isFirestoreUnavailableError(dbErr)) {
+                  disableFirestoreGracefully(dbErr?.message || "stripe webhook persist failed");
+                }
+              }
+            }
+          }
+        },
+      });
+
+      return res.status(result.httpStatus).json(result);
+    }
+  );
 
   app.use(express.json({ limit: "5mb" }));
 
@@ -911,6 +1030,101 @@ async function startServer() {
 
   app.get("/api/health", (_req, res) => {
     res.json({ status: "ok" });
+  });
+
+  // Public safe payment configuration (never exposes secrets; stripeEnabled defaults to false)
+  app.get("/api/payments/config", (_req, res) => {
+    res.setHeader("Cache-Control", "no-store");
+    return res.json({
+      success: true,
+      stripeEnabled: isStripeEnabled(),
+    });
+  });
+
+  // Stripe-Hosted Checkout Session Creation (rejected BEFORE any Stripe API call when STRIPE_ENABLED !== "true")
+  app.post("/api/stripe/create-checkout-session", rateLimitMutation(20), async (req, res) => {
+    // Enforce hard kill-switch immediately before any Stripe SDK initialization or API call
+    if (!isStripeEnabled()) {
+      return res.status(403).json({
+        success: false,
+        error: "Stripe Checkout is currently disabled.",
+      });
+    }
+
+    const orderId = String(req.body?.orderId || "").trim();
+    if (!orderId) {
+      return res.status(400).json({ success: false, error: "orderId is required." });
+    }
+
+    const order = inMemoryOrders.find((o) => o.orderId === orderId);
+    const proto = String(req.headers["x-forwarded-proto"] || req.protocol || "https").split(",")[0].trim();
+    const host = String(req.headers["x-forwarded-host"] || req.headers.host || "devsparksoft.com.bd")
+      .split(",")[0]
+      .trim();
+    const origin = `${proto}://${host}`;
+
+    const result = await createStripeCheckoutSessionForOrder({
+      order,
+      origin,
+      auth: {
+        accessToken: String(req.body?.orderAccessToken || req.headers["x-order-token"] || ""),
+        email: String(req.body?.email || ""),
+        phone: String(req.body?.phone || ""),
+        isAdmin: isAuthorizedAdminRequest(req),
+      },
+      idempotencyKey: String(req.headers["idempotency-key"] || req.body?.idempotencyKey || ""),
+      onOrderMutated: async (updatedOrder) => {
+        persistLocalStore();
+        recordAuditLog(
+          "stripe_checkout_session_created",
+          updatedOrder.customerEmail || updatedOrder.customerPhone || "customer",
+          updatedOrder.orderId,
+          {
+            stripeSessionId: updatedOrder.stripeSessionId,
+            expectedAmountMinor: updatedOrder.stripeExpectedAmountMinor,
+            expectedCurrency: updatedOrder.stripeExpectedCurrency,
+          },
+          extractClientIp(req)
+        );
+      },
+    });
+
+    return res.status(result.httpStatus).json({
+      success: result.success,
+      ...(result.sessionId ? { sessionId: result.sessionId } : {}),
+      ...(result.url ? { url: result.url } : {}),
+      ...(result.error ? { error: result.error } : {}),
+    });
+  });
+
+  // Safe non-PII Order Status Lookup (used by checkout return URLs & tracking; never mutates payment state)
+  app.get("/api/orders/:orderId/status", (req, res) => {
+    const orderId = String(req.params.orderId || "").trim();
+    const order = inMemoryOrders.find((o) => o.orderId === orderId);
+    if (!order) {
+      return res.status(404).json({ success: false, error: "Order not found." });
+    }
+    res.setHeader("Cache-Control", "no-store");
+    return res.json({
+      success: true,
+      order: {
+        orderId: order.orderId,
+        status: order.status,
+        paymentStatus: order.paymentStatus,
+        fulfillmentStatus: order.fulfillmentStatus || "Pending",
+        paymentMethod: order.paymentMethod,
+        countryCode: order.countryCode,
+        carriers: order.carriers || [],
+        productId: order.productId,
+        productName: order.productName,
+        items: order.items || [],
+        subtotal: order.subtotal,
+        shippingFee: order.shippingFee,
+        totalAmount: order.totalAmount,
+        stripePaymentStatus: order.stripePaymentStatus,
+        createdAt: order.createdAt,
+      },
+    });
   });
 
   // Centralized Pricing API (Single Source of Truth for Frontend, Cart, Checkout & Admin)
@@ -2097,20 +2311,23 @@ async function startServer() {
 
       let subtotal = 0;
       let isRentalOrder = false;
+      let hasBangladeshOnlyItem = false;
       let totalQty = 0;
-      let resolvedItems: Array<{ productId: string; name: string; unitPrice: number; quantity: number; lineTotal: number }> = [];
+      let resolvedItems: Array<{ productId: string; name: string; variantLabel?: string; unitPrice: number; quantity: number; lineTotal: number }> = [];
 
       if (Array.isArray(items) && items.length > 0) {
         for (const rawItem of items.slice(0, 20)) {
           const itemQty = Math.min(20, Math.max(1, Math.floor(Number(rawItem?.quantity) || 1)));
           const prod = resolveAuthoritativeProduct(rawItem?.productId, rawItem?.name);
           if (prod.category === "rental") isRentalOrder = true;
+          if (!prod.globalDeliveryAvailable) hasBangladeshOnlyItem = true;
           const lineTotal = prod.price * itemQty;
           subtotal += lineTotal;
           totalQty += itemQty;
           resolvedItems.push({
             productId: prod.id,
             name: prod.name,
+            variantLabel: prod.variantLabel,
             unitPrice: prod.price,
             quantity: itemQty,
             lineTotal,
@@ -2120,14 +2337,24 @@ async function startServer() {
         const qty = Math.min(50, Math.max(1, Math.floor(Number(quantity) || 1)));
         const matchedProduct = resolveAuthoritativeProduct(productId, productName);
         isRentalOrder = matchedProduct.category === "rental";
+        if (!matchedProduct.globalDeliveryAvailable) hasBangladeshOnlyItem = true;
         subtotal = matchedProduct.price * qty;
         totalQty = qty;
         resolvedItems.push({
           productId: matchedProduct.id,
-          name: productName || matchedProduct.name,
+          name: matchedProduct.name,
+          variantLabel: matchedProduct.variantLabel,
           unitPrice: matchedProduct.price,
           quantity: qty,
           lineTotal: subtotal,
+        });
+      }
+
+      if (hasBangladeshOnlyItem && resolvedCountry !== "BD") {
+        return res.status(400).json({
+          success: false,
+          error:
+            "Bangladesh Residential Purchase and Standard 4X Rental offers are available only for delivery inside Bangladesh. For international destinations, please select the Starlink Standard 4X USA Kit + Roam Unlimited Internet or Starlink Mini Global Roam variant.",
         });
       }
 
@@ -2154,8 +2381,10 @@ async function startServer() {
       const fulfillmentStatus = "Pending";
       const orderStatus = isManualQrPayment ? "Awaiting Payment" : "Pending Confirmation";
 
+      const orderAccessToken = generateOrderAccessToken();
       const orderDoc = {
         orderId,
+        orderAccessToken,
         customerName: fullName,
         fullName,
         customerPhone: phone,
@@ -2249,6 +2478,7 @@ async function startServer() {
       return res.json({
         success: true,
         orderId,
+        orderAccessToken,
         status: orderStatus,
         paymentStatus,
         fulfillmentStatus,
@@ -2256,6 +2486,9 @@ async function startServer() {
         carriers: orderDoc.carriers,
         codAvailable: codAllowed,
         paymentMethod: effectivePaymentMethod,
+        productId: primaryItem.productId,
+        productName: orderDoc.productName,
+        items: resolvedItems,
         unitPrice: primaryItem.unitPrice,
         quantity: totalQty,
         subtotal,
@@ -3510,13 +3743,20 @@ async function startServer() {
       const domain = getRequestDomain(req);
       const indexPath = path.join(distPath, "index.html");
       if (fs.existsSync(indexPath)) {
+        const knownRoute = isKnownSiteRoute(req.path);
+        const isNoindex = !knownRoute || isPrivateOrNonIndexablePath(req.path);
         const visitorCountry = resolveVisitorCountryFromRequest(req);
         const rawHtml = fs.readFileSync(indexPath, "utf-8");
-        const renderedHtml = buildDomainHtmlDocument(rawHtml, domain, req.path, visitorCountry);
+        const renderedHtml = buildDomainHtmlDocument(rawHtml, domain, req.path, visitorCountry, {
+          isNotFound: !knownRoute,
+        });
         res.setHeader("Content-Type", "text/html; charset=utf-8");
         res.setHeader("Cache-Control", "private, no-store, max-age=0");
         res.setHeader("Vary", VARY_GEO_HEADERS);
-        res.status(200).send(renderedHtml);
+        if (isNoindex) {
+          res.setHeader("X-Robots-Tag", "noindex, nofollow");
+        }
+        res.status(knownRoute ? 200 : 404).send(renderedHtml);
       } else {
         next();
       }
@@ -3594,17 +3834,24 @@ export class ErrorOverlay extends HTMLElement {}
       }
       try {
         const domain = getRequestDomain(req);
+        const knownRoute = isKnownSiteRoute(req.path);
+        const isNoindex = !knownRoute || isPrivateOrNonIndexablePath(req.path);
         const visitorCountry = resolveVisitorCountryFromRequest(req);
         const indexPath = path.join(process.cwd(), "index.html");
         const rawTemplate = fs.readFileSync(indexPath, "utf-8");
-        const domainHtml = buildDomainHtmlDocument(rawTemplate, domain, req.path, visitorCountry);
+        const domainHtml = buildDomainHtmlDocument(rawTemplate, domain, req.path, visitorCountry, {
+          isNotFound: !knownRoute,
+        });
         const transformedHtml = (
           await vite.transformIndexHtml(req.originalUrl, domainHtml)
         ).replace(/<script[^>]*src="\/@vite\/client"[^>]*><\/script>\s*/gi, "");
         res.setHeader("Content-Type", "text/html; charset=utf-8");
         res.setHeader("Cache-Control", "private, no-store, max-age=0");
         res.setHeader("Vary", VARY_GEO_HEADERS);
-        res.status(200).send(transformedHtml);
+        if (isNoindex) {
+          res.setHeader("X-Robots-Tag", "noindex, nofollow");
+        }
+        res.status(knownRoute ? 200 : 404).send(transformedHtml);
       } catch (err) {
         next(err);
       }

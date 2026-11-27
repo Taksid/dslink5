@@ -1,4 +1,6 @@
 import type { AppLanguage } from './i18n';
+import { DEFAULT_CENTRAL_PRODUCTS } from './pricingConfig';
+import { resolveLegalPolicyBySlug } from '../data/legalPolicies';
 
 export type PublishedSeoLanguage = 'en' | 'bn' | 'my' | 'zh-CN';
 
@@ -234,6 +236,9 @@ export function isPrivateOrNonIndexablePath(pathnameInput?: string | null): bool
     '/reseller/reset-password',
     '/reseller/confirmation',
     '/resell/confirmation',
+    '/order-success',
+    '/invoice',
+    '/invoices',
   ]);
 
   if (exactNonIndexable.has(lower)) return true;
@@ -244,12 +249,95 @@ export function isPrivateOrNonIndexablePath(pathnameInput?: string | null): bool
     '/checkout/',
     '/order-success/',
     '/invoice/',
+    '/invoices/',
     '/track/',
     '/promo/',
+    '/promos/',
     '/api/',
     '/reseller/',
     '/resell/confirmation/',
   ];
 
   return prefixNonIndexable.some((p) => lower.startsWith(p));
+}
+
+const KNOWN_PUBLIC_EXACT_ROUTES = new Set([
+  '/',
+  '/devsparksoft',
+  '/dslink',
+  '/kits',
+  '/products',
+  '/rental',
+  '/rental-plan',
+  '/rent',
+  '/roaming-packages',
+  '/money-back',
+  '/refund-policy',
+  '/guarantee',
+  '/worldwide-delivery',
+  '/starlink-bangladesh',
+  '/starlink-myanmar',
+  '/warranty',
+  '/warranty-policy',
+  '/legal',
+  '/rental-policy',
+  '/terms/rental',
+  '/terms/rental-policy',
+  '/red-policy-alert',
+  '/policy-alert',
+  '/terms/red-policy-alert',
+  '/price-syndicate-alert',
+  '/syndicate-alert',
+  '/rental-kit-alert',
+  '/resell',
+  '/resell/authorized-retailer',
+  '/resell/business-partnership',
+  '/packages',
+  '/services',
+  '/offers',
+  '/image-gallery',
+  '/gallery',
+  '/blog',
+  '/partnerships',
+  '/partnership',
+  '/partners',
+  '/affiliate',
+  '/support',
+  '/faq',
+  '/privacy',
+]);
+
+const KNOWN_CATALOG_PRODUCT_IDS = new Set(
+  Object.keys(DEFAULT_CENTRAL_PRODUCTS).map((k) => k.toLowerCase())
+);
+
+/**
+ * Returns true if the URL maps to an existing public or known private/transactional route.
+ * Unknown paths return false so the server serves a real HTTP 404 with noindex.
+ */
+export function isKnownSiteRoute(pathnameInput?: string | null): boolean {
+  const { basePath } = parseLocalePath(pathnameInput);
+  const lower = basePath.toLowerCase();
+
+  if (KNOWN_PUBLIC_EXACT_ROUTES.has(lower)) return true;
+  if (isPrivateOrNonIndexablePath(basePath)) return true;
+
+  if (lower.startsWith('/kits/') || lower.startsWith('/products/')) {
+    const slug = lower.startsWith('/kits/')
+      ? lower.slice('/kits/'.length)
+      : lower.slice('/products/'.length);
+    return Boolean(slug && !slug.includes('/') && KNOWN_CATALOG_PRODUCT_IDS.has(slug));
+  }
+
+  if (lower.startsWith('/legal/')) {
+    const slug = lower.slice('/legal/'.length);
+    return Boolean(slug && resolveLegalPolicyBySlug(slug));
+  }
+
+  if (lower.startsWith('/blog/')) {
+    const slug = lower.slice('/blog/'.length);
+    return Boolean(slug && !slug.includes('/'));
+  }
+
+  return false;
 }

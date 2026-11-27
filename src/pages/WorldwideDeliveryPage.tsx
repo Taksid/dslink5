@@ -54,13 +54,9 @@ export const WorldwideDeliveryPage: React.FC<WorldwideDeliveryPageProps> = ({
   useEffect(() => {
     window.scrollTo(0, 0);
     if (regionMode === 'bangladesh') {
-      document.title = 'Starlink Kits in Bangladesh — FREE Delivery & COD (Steadfast / Pathao) | DSLink';
       setCountryCode('BD');
     } else if (regionMode === 'myanmar') {
-      document.title = 'Starlink Kits for Myanmar — DHL / FedEx Delivery (৳2,500) | DSLink';
       setCountryCode('MM');
-    } else {
-      document.title = 'Worldwide Starlink Kit Delivery — Bangladesh FREE & Global DHL / FedEx | DSLink';
     }
   }, [regionMode]);
 
@@ -254,9 +250,9 @@ export const WorldwideDeliveryPage: React.FC<WorldwideDeliveryPageProps> = ({
             {[
               {
                 id: 'starlink-standard-4x',
-                name: 'Starlink Standard Kit 4X (Purchase)',
+                name: 'Starlink Standard 4X USA Kit + Roam Unlimited Internet',
                 price: standard4xPrice,
-                tag: 'Purchase · Gen 3 Wi-Fi 6',
+                tag: 'ROAM UNLIMITED',
                 category: 'purchase' as const,
                 cta: '/cart',
               },
@@ -450,7 +446,7 @@ export const WorldwideDeliveryPage: React.FC<WorldwideDeliveryPageProps> = ({
                 onChange={(e) => setInqProduct(e.target.value)}
                 className="w-full bg-black border border-white/20 rounded-[4px] px-3 py-2.5 text-white text-sm outline-none"
               >
-                <option value="starlink-standard-4x">Starlink Standard Kit 4X (৳41,500)</option>
+                <option value="starlink-standard-4x">Starlink Standard 4X USA Kit + Roam Unlimited Internet (৳41,500)</option>
                 <option value="starlink-mini-kit">Starlink Mini Kit (৳21,500)</option>
                 <option value="starlink-high-performance">Starlink Flat High Performance</option>
               </select>

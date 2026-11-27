@@ -7,13 +7,13 @@ import {
   Clock,
   ShieldCheck,
 } from 'lucide-react';
+import { SiteHeader } from '../components/SiteHeader';
 import { Footer } from '../components/Footer';
 import {
   LEGAL_POLICY_MAP,
   LegalPolicyDocument,
   resolveLegalPolicyBySlug,
 } from '../data/legalPolicies';
-import { OFFICIAL_HEADER_LOGO_URL } from '../lib/domainConfig';
 import { useGeoLanguage } from '../lib/geoLanguage';
 import { renderLegalPolicyIcon } from './LegalCenter';
 
@@ -33,22 +33,7 @@ export const LegalPolicyDetailPage: React.FC<LegalPolicyDetailPageProps> = ({
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    if (policy) {
-      const localizedTitle = t3(policy.titleBn, policy.titleMy, policy.titleEn);
-      const localizedDesc = `${t3(policy.shortDescBn, policy.shortDescMy, policy.shortDescEn)} ${t3(policy.introBn, policy.introMy, policy.introEn)}`.slice(0, 220);
-      document.title = `${localizedTitle} | DevSparkSoft — Legal & Policies`;
-      const descEl = document.querySelector('meta[name="description"]');
-      if (descEl) {
-        descEl.setAttribute('content', localizedDesc);
-      }
-    } else {
-      document.title = t3(
-        'নীতিমালা পাওয়া যায়নি | DevSparkSoft — লিগ্যাল ও নীতিমালা',
-        'မူဝါဒ မတွေ့ပါ | DevSparkSoft — ဥပဒေနှင့် မူဝါဒ',
-        'Policy Not Found | DevSparkSoft — Legal & Policies'
-      );
-    }
-  }, [policy, language, t3]);
+  }, [slug]);
 
   const navigateTo = (e: React.MouseEvent, path: string) => {
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
@@ -89,53 +74,21 @@ export const LegalPolicyDetailPage: React.FC<LegalPolicyDetailPageProps> = ({
       : p.conditionsEn;
 
   return (
-    <div className="min-h-[100dvh] bg-black text-neutral-200 font-sans selection:bg-white selection:text-black flex flex-col">
-      {/* Sticky Safe-Area Header */}
-      <header className="sticky top-0 z-40 border-b border-white/15 bg-black/95 backdrop-blur-md safe-top">
-        <div className="max-w-[1200px] mx-auto px-3 sm:px-6 min-h-14 sm:min-h-16 py-2 flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-            <a
-              href="/"
-              onClick={(e) => navigateTo(e, '/')}
-              className="flex items-center shrink min-w-0"
-            >
-              <img
-                src={OFFICIAL_HEADER_LOGO_URL}
-                alt="DEVSPARK LINK — DEV SPARK SOFT LIMITED"
-                width={308}
-                height={74}
-                className="w-[136px] min-[375px]:w-[154px] sm:w-[178px] md:w-[194px] max-w-full h-auto aspect-[308/74] object-contain object-left block"
-              />
-            </a>
-            <a
-              href="/Legal"
-              onClick={(e) => navigateTo(e, '/Legal')}
-              className="hidden md:inline-block text-[11px] font-mono uppercase tracking-widest text-neutral-400 hover:text-white border-l border-white/15 pl-3 truncate transition-colors"
-            >
-              {t3('লিগ্যাল ও নীতিমালা', 'ဥပဒေနှင့် မူဝါဒများ', 'Legal & Policies')}
-            </a>
-          </div>
+    <div className="min-h-[100dvh] bg-[#04070c] text-slate-200 font-sans flex flex-col">
+      <SiteHeader
+        sectionLabel={t3('লিগ্যাল ও নীতিমালা', 'ဥပဒေနှင့် မူဝါဒများ', 'Legal & Policies')}
+        onNavigate={onNavigate}
+        onBackToMainSite={onBackToMainSite}
+      />
 
-          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-            <a
-              href="/cart"
-              onClick={(e) => navigateTo(e, '/cart')}
-              className="hidden sm:inline-flex items-center px-3 py-1.5 rounded-[4px] border border-white/20 bg-white/5 hover:bg-white/15 text-xs font-medium text-white transition-colors whitespace-nowrap"
-            >
-              {t3('কার্ট', 'ခြင်းတောင်း', 'Cart')}
-            </a>
-          </div>
-        </div>
-      </header>
-
-      <main className="flex-1 w-full max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+      <main id="main-content" className="flex-1 w-full max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
         {!policy ? (
-          <div className="rounded-[4px] border border-white/15 bg-[#0b0b0e] p-8 text-center space-y-4">
-            <AlertCircle className="w-8 h-8 text-neutral-400 mx-auto" />
+          <div className="rounded-xl border border-slate-700 bg-[#0b0f17] p-8 text-center space-y-4">
+            <AlertCircle className="w-8 h-8 text-amber-300 mx-auto" aria-hidden="true" />
             <h1 className="text-xl font-bold text-white">
               {t3('নীতিমালা পাওয়া যায়নি', 'မူဝါဒ မတွေ့ပါ', 'Policy Not Found')}
             </h1>
-            <p className="text-sm text-neutral-400">
+            <p className="text-sm text-slate-300">
               {t3(
                 'অনুরোধকৃত লিগ্যাল ডকুমেন্টটি পাওয়া যায়নি। অনুগ্রহ করে লিগ্যাল সেন্টার থেকে নির্বাচন করুন।',
                 'တောင်းဆိုထားသော စာမျက်နှာ မတွေ့ပါ။ Legal Center မှ ရွေးချယ်ဖတ်ရှုပါ။',
@@ -145,74 +98,77 @@ export const LegalPolicyDetailPage: React.FC<LegalPolicyDetailPageProps> = ({
             <a
               href="/Legal"
               onClick={(e) => navigateTo(e, '/Legal')}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-[4px] bg-white text-black text-xs font-semibold hover:bg-neutral-200 transition-colors"
+              className="min-h-[44px] inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-cyan-400 text-[#04131a] text-xs sm:text-sm font-bold hover:bg-cyan-300 transition-colors"
             >
-              <ArrowLeft className="w-3.5 h-3.5" />
+              <ArrowLeft className="w-4 h-4" aria-hidden="true" />
               <span>{t3('লিগ্যাল সেন্টারে ফিরুন', 'Legal Center သို့ ပြန်သွားရန်', 'Back to Legal Center')}</span>
             </a>
           </div>
         ) : (
           <article className="space-y-8">
-            {/* Back Button + Breadcrumb */}
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <a
-                href="/Legal"
-                onClick={(e) => navigateTo(e, '/Legal')}
-                className="inline-flex items-center gap-1.5 text-xs font-medium text-neutral-300 hover:text-white transition-colors"
-              >
-                <ArrowLeft className="w-4 h-4 shrink-0" />
-                <span>
-                  {t3(
-                    'লিগ্যাল ও নীতিমালা কেন্দ্রে ফিরুন',
-                    'ဥပဒေနှင့် မူဝါဒ စင်တာသို့ ပြန်သွားရန်',
-                    'Back to Legal Center'
-                  )}
-                </span>
-              </a>
-              <span className="text-[11px] font-mono text-neutral-500">
+            {/* Breadcrumb */}
+            <nav aria-label="Breadcrumb" className="flex flex-wrap items-center justify-between gap-3 text-xs sm:text-sm">
+              <ol className="flex flex-wrap items-center gap-2 text-slate-300">
+                <li>
+                  <a href="/" onClick={(e) => navigateTo(e, '/')} className="hover:text-cyan-300 underline-offset-4 hover:underline">
+                    Home
+                  </a>
+                </li>
+                <li aria-hidden="true" className="text-slate-500">/</li>
+                <li>
+                  <a href="/Legal" onClick={(e) => navigateTo(e, '/Legal')} className="hover:text-cyan-300 underline-offset-4 hover:underline">
+                    {t3('লিগ্যাল ও নীতিমালা', 'Legal & Policies', 'Legal & Policies')}
+                  </a>
+                </li>
+                <li aria-hidden="true" className="text-slate-500">/</li>
+                <li aria-current="page" className="text-white font-semibold break-words">
+                  {getTitle(policy)}
+                </li>
+              </ol>
+              <span className="text-xs font-mono text-slate-300 break-all">
                 {policy.path}
               </span>
-            </div>
+            </nav>
 
             {/* Policy Header */}
-            <header className="space-y-4 border-b border-white/15 pb-6">
+            <header className="space-y-4 border-b border-slate-800 pb-6">
               <div className="flex items-start gap-3 sm:gap-4">
-                <div className="w-11 h-11 rounded-[4px] border border-white/15 bg-white/5 flex items-center justify-center text-white shrink-0 mt-0.5">
+                <div className="w-11 h-11 rounded-lg border border-slate-700 bg-slate-900 flex items-center justify-center text-cyan-300 shrink-0 mt-0.5">
                   {renderLegalPolicyIcon(policy.icon, 'w-5 h-5')}
                 </div>
                 <div className="min-w-0 space-y-2">
-                  <p className="text-[11px] font-mono uppercase tracking-[0.18em] text-neutral-400">
+                  <p className="text-xs font-mono uppercase tracking-[0.16em] text-cyan-300">
                     DEV SPARK SOFT LIMITED · OFFICIAL STORE POLICY
                   </p>
-                  <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight leading-snug">
+                  <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight leading-snug break-words">
                     {getTitle(policy)}
                   </h1>
                 </div>
               </div>
 
               {/* Effective & Last Updated Dates */}
-              <div className="flex flex-wrap items-center gap-x-5 gap-y-2 pt-1 text-xs text-neutral-400">
+              <div className="flex flex-wrap items-center gap-x-5 gap-y-2 pt-1 text-xs sm:text-sm text-slate-300">
                 <span className="inline-flex items-center gap-1.5">
-                  <Calendar className="w-3.5 h-3.5 text-neutral-500 shrink-0" />
+                  <Calendar className="w-4 h-4 text-cyan-300 shrink-0" aria-hidden="true" />
                   <span>
                     {t3('কার্যকর তারিখ:', 'အကျုံးဝင်သည့်နေ့:', 'Effective Date:')}{' '}
-                    <strong className="text-neutral-200 font-medium">
+                    <strong className="text-white font-semibold">
                       {getEffectiveDate(policy)}
                     </strong>
                   </span>
                 </span>
                 <span className="inline-flex items-center gap-1.5">
-                  <Clock className="w-3.5 h-3.5 text-neutral-500 shrink-0" />
+                  <Clock className="w-4 h-4 text-cyan-300 shrink-0" aria-hidden="true" />
                   <span>
                     {t3('সর্বশেষ হালনাগাদ:', 'နောက်ဆုံးပြင်ဆင်ချိန်:', 'Last Updated:')}{' '}
-                    <strong className="text-neutral-200 font-medium">
+                    <strong className="text-white font-semibold">
                       {getLastUpdated(policy)}
                     </strong>
                   </span>
                 </span>
               </div>
 
-              <p className="text-sm sm:text-base text-neutral-300 leading-relaxed pt-1">
+              <p className="text-sm sm:text-base text-slate-200 leading-relaxed pt-1">
                 {getIntro(policy)}
               </p>
             </header>

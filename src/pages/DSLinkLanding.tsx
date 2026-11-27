@@ -55,18 +55,18 @@ const STARLINK_PRODUCTS: StarlinkProduct[] = [
   {
     id: 'starlink-standard-4x',
     sku: 'DSL-SL-STD4X',
-    nameEn: 'Starlink Standard 4X Kit (Gen 3 Full Package)',
-    nameBn: 'স্টারলিংক স্ট্যান্ডার্ড ৪এক্স কিট (জেন ৩ ফুল প্যাকেজ)',
+    nameEn: 'Starlink Standard 4X USA Kit + Roam Unlimited Internet',
+    nameBn: 'Starlink Standard 4X USA Kit + Roam Unlimited Internet',
     priceBdt: 41500,
-    tag: '01 · MOST POPULAR IN BANGLADESH',
-    image: '/assets/aistudio/image_1a66081b.png',
+    tag: 'ROAM UNLIMITED',
+    image: '/assets/products/starlink-standard-4x-roam-unlimited.jpg',
     speedSpec: '150–300+ Mbps',
     latencySpec: '20–30 ms LEO',
     warrantySpec: '24-Month Replacement',
     descriptionEn:
-      'Electronic phased-array satellite dish with Gen 3 Wi-Fi 6 Tri-Band Router. Engineered for homes, offices, resorts, and regional branches across all 64 districts.',
+      'Starlink Standard 4X USA Kit for use with the Starlink Roam Unlimited internet plan. The kit costs BDT 41,500. An active Roam Unlimited subscription is required and billed separately. Use Starlink while traveling in supported destinations, subject to local authorization, coverage, and Starlink’s roaming terms. Planning to use the kit in Myanmar, Thailand, Japan, Iran, Russia, or Ukraine? Contact DSLink before ordering so we can check availability for your exact destination.',
     descriptionBn:
-      'বাসাবাড়ি, কর্পোরেট অফিস ও রিসোর্টের জন্য অরিজিনাল স্টারলিংক স্ট্যান্ডার্ড ৪এক্স কিট। সাথে থাকছে জেন-৩ ওয়াই-ফাই ৬ রাউটার এবং ২৪ মাসের অফিশিয়াল রিপ্লেসমেন্ট ওয়ারেন্টি।',
+      'Starlink Roam Unlimited ইন্টারনেট প্ল্যানের সাথে ব্যবহারের জন্য Starlink Standard 4X USA Kit — কিটের মূল্য ৳৪১,৫০০। একটি সক্রিয় Roam Unlimited সাবস্ক্রিপশন প্রয়োজন যা আলাদাভাবে বিল করা হয়। সমর্থিত গন্তব্যে ভ্রমণের সময় ব্যবহারযোগ্য (স্থানীয় অনুমোদন, কভারেজ ও Starlink-এর রোমিং শর্তাবলি প্রযোজ্য)। মিয়ানমার, থাইল্যান্ড, জাপান, ইরান, রাশিয়া বা ইউক্রেনে ব্যবহারের আগে DSLink-এ যোগাযোগ করুন।',
     inBox: [
       'Starlink Standard Actuated/Phased-Array Dish',
       'Gen 3 Wi-Fi 6 Tri-Band Router (Dual Ethernet)',

@@ -76,10 +76,6 @@ export const RoamingGuaranteePage: React.FC<RoamingGuaranteePageProps> = ({
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    document.title =
-      initialSection === 'refund'
-        ? '90-Day Roaming Money-Back Guarantee | DSLink'
-        : 'Starlink Roaming Packages & 90-Day Guarantee | DSLink';
 
     fetch('/api/roaming/packages')
       .then((r) => r.json())

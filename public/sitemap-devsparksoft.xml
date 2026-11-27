@@ -1,74 +1,1367 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://devsparksoft.com.bd/</loc>
-    <lastmod>2026-11-17</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/" />
+    <lastmod>2026-11-27</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://devsparksoft.com.bd/rental</loc>
-    <lastmod>2026-11-17</lastmod>
+    <loc>https://devsparksoft.com.bd/bn</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/my</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/zh-hans</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/kits</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/kits" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/kits" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/kits" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/kits" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/kits" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/bn/kits</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/kits" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/kits" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/kits" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/kits" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/kits" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/my/kits</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/kits" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/kits" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/kits" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/kits" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/kits" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/zh-hans/kits</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/kits" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/kits" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/kits" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/kits" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/kits" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/kits/starlink-standard-4x</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/kits/starlink-standard-4x" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/kits/starlink-standard-4x" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/kits/starlink-standard-4x" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/kits/starlink-standard-4x" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/kits/starlink-standard-4x" />
+    <lastmod>2026-11-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/bn/kits/starlink-standard-4x</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/kits/starlink-standard-4x" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/kits/starlink-standard-4x" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/kits/starlink-standard-4x" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/kits/starlink-standard-4x" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/kits/starlink-standard-4x" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/my/kits/starlink-standard-4x</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/kits/starlink-standard-4x" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/kits/starlink-standard-4x" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/kits/starlink-standard-4x" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/kits/starlink-standard-4x" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/kits/starlink-standard-4x" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/zh-hans/kits/starlink-standard-4x</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/kits/starlink-standard-4x" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/kits/starlink-standard-4x" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/kits/starlink-standard-4x" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/kits/starlink-standard-4x" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/kits/starlink-standard-4x" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/kits/starlink-mini-kit</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/kits/starlink-mini-kit" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/kits/starlink-mini-kit" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/kits/starlink-mini-kit" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/kits/starlink-mini-kit" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/kits/starlink-mini-kit" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/bn/kits/starlink-mini-kit</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/kits/starlink-mini-kit" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/kits/starlink-mini-kit" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/kits/starlink-mini-kit" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/kits/starlink-mini-kit" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/kits/starlink-mini-kit" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/my/kits/starlink-mini-kit</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/kits/starlink-mini-kit" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/kits/starlink-mini-kit" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/kits/starlink-mini-kit" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/kits/starlink-mini-kit" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/kits/starlink-mini-kit" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/zh-hans/kits/starlink-mini-kit</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/kits/starlink-mini-kit" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/kits/starlink-mini-kit" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/kits/starlink-mini-kit" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/kits/starlink-mini-kit" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/kits/starlink-mini-kit" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/rental</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/rental" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/rental" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/rental" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/rental" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/rental" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/bn/rental</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/rental" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/rental" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/rental" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/rental" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/rental" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/my/rental</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/rental" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/rental" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/rental" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/rental" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/rental" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/zh-hans/rental</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/rental" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/rental" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/rental" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/rental" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/rental" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/resell</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/resell" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/resell" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/resell" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/resell" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/resell" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/bn/resell</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/resell" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/resell" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/resell" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/resell" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/resell" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/my/resell</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/resell" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/resell" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/resell" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/resell" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/resell" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/zh-hans/resell</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/resell" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/resell" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/resell" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/resell" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/resell" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/resell/authorized-retailer</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/resell/authorized-retailer" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/resell/authorized-retailer" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/resell/authorized-retailer" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/resell/authorized-retailer" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/resell/authorized-retailer" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/bn/resell/authorized-retailer</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/resell/authorized-retailer" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/resell/authorized-retailer" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/resell/authorized-retailer" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/resell/authorized-retailer" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/resell/authorized-retailer" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/my/resell/authorized-retailer</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/resell/authorized-retailer" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/resell/authorized-retailer" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/resell/authorized-retailer" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/resell/authorized-retailer" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/resell/authorized-retailer" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/zh-hans/resell/authorized-retailer</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/resell/authorized-retailer" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/resell/authorized-retailer" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/resell/authorized-retailer" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/resell/authorized-retailer" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/resell/authorized-retailer" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/resell/business-partnership</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/resell/business-partnership" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/resell/business-partnership" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/resell/business-partnership" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/resell/business-partnership" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/resell/business-partnership" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/bn/resell/business-partnership</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/resell/business-partnership" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/resell/business-partnership" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/resell/business-partnership" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/resell/business-partnership" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/resell/business-partnership" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/my/resell/business-partnership</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/resell/business-partnership" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/resell/business-partnership" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/resell/business-partnership" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/resell/business-partnership" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/resell/business-partnership" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/zh-hans/resell/business-partnership</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/resell/business-partnership" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/resell/business-partnership" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/resell/business-partnership" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/resell/business-partnership" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/resell/business-partnership" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/starlink-bangladesh</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/starlink-bangladesh" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/starlink-bangladesh" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/starlink-bangladesh" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/starlink-bangladesh" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/starlink-bangladesh" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/bn/starlink-bangladesh</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/starlink-bangladesh" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/starlink-bangladesh" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/starlink-bangladesh" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/starlink-bangladesh" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/starlink-bangladesh" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/my/starlink-bangladesh</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/starlink-bangladesh" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/starlink-bangladesh" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/starlink-bangladesh" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/starlink-bangladesh" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/starlink-bangladesh" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/zh-hans/starlink-bangladesh</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/starlink-bangladesh" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/starlink-bangladesh" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/starlink-bangladesh" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/starlink-bangladesh" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/starlink-bangladesh" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/starlink-myanmar</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/starlink-myanmar" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/starlink-myanmar" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/starlink-myanmar" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/starlink-myanmar" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/starlink-myanmar" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/bn/starlink-myanmar</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/starlink-myanmar" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/starlink-myanmar" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/starlink-myanmar" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/starlink-myanmar" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/starlink-myanmar" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/my/starlink-myanmar</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/starlink-myanmar" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/starlink-myanmar" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/starlink-myanmar" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/starlink-myanmar" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/starlink-myanmar" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/zh-hans/starlink-myanmar</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/starlink-myanmar" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/starlink-myanmar" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/starlink-myanmar" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/starlink-myanmar" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/starlink-myanmar" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/worldwide-delivery</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/worldwide-delivery" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/worldwide-delivery" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/worldwide-delivery" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/worldwide-delivery" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/worldwide-delivery" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/bn/worldwide-delivery</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/worldwide-delivery" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/worldwide-delivery" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/worldwide-delivery" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/worldwide-delivery" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/worldwide-delivery" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/my/worldwide-delivery</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/worldwide-delivery" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/worldwide-delivery" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/worldwide-delivery" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/worldwide-delivery" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/worldwide-delivery" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/zh-hans/worldwide-delivery</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/worldwide-delivery" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/worldwide-delivery" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/worldwide-delivery" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/worldwide-delivery" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/worldwide-delivery" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/roaming-packages</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/roaming-packages" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/roaming-packages" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/roaming-packages" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/roaming-packages" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/roaming-packages" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/bn/roaming-packages</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/roaming-packages" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/roaming-packages" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/roaming-packages" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/roaming-packages" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/roaming-packages" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/my/roaming-packages</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/roaming-packages" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/roaming-packages" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/roaming-packages" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/roaming-packages" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/roaming-packages" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/zh-hans/roaming-packages</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/roaming-packages" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/roaming-packages" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/roaming-packages" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/roaming-packages" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/roaming-packages" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/warranty</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/warranty" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/warranty" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/warranty" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/warranty" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/warranty" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/bn/warranty</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/warranty" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/warranty" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/warranty" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/warranty" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/warranty" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/my/warranty</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/warranty" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/warranty" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/warranty" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/warranty" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/warranty" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/zh-hans/warranty</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/warranty" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/warranty" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/warranty" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/warranty" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/warranty" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/money-back</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/money-back" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/money-back" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/money-back" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/money-back" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/money-back" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/bn/money-back</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/money-back" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/money-back" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/money-back" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/money-back" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/money-back" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/my/money-back</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/money-back" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/money-back" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/money-back" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/money-back" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/money-back" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/zh-hans/money-back</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/money-back" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/money-back" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/money-back" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/money-back" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/money-back" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/Legal</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/Legal" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/Legal" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/Legal" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/Legal" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/Legal" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/bn/Legal</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/Legal" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/Legal" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/Legal" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/Legal" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/Legal" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/my/Legal</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/Legal" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/Legal" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/Legal" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/Legal" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/Legal" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/zh-hans/Legal</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/Legal" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/Legal" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/Legal" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/Legal" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/Legal" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/Legal/rental-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/Legal/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/Legal/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/Legal/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/Legal/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/Legal/rental-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/bn/Legal/rental-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/Legal/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/Legal/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/Legal/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/Legal/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/Legal/rental-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/my/Legal/rental-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/Legal/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/Legal/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/Legal/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/Legal/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/Legal/rental-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/zh-hans/Legal/rental-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/Legal/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/Legal/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/Legal/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/Legal/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/Legal/rental-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/Legal/shipping-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/Legal/shipping-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/Legal/shipping-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/Legal/shipping-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/Legal/shipping-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/Legal/shipping-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/bn/Legal/shipping-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/Legal/shipping-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/Legal/shipping-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/Legal/shipping-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/Legal/shipping-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/Legal/shipping-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/my/Legal/shipping-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/Legal/shipping-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/Legal/shipping-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/Legal/shipping-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/Legal/shipping-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/Legal/shipping-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/zh-hans/Legal/shipping-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/Legal/shipping-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/Legal/shipping-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/Legal/shipping-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/Legal/shipping-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/Legal/shipping-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/Legal/payment-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/Legal/payment-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/Legal/payment-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/Legal/payment-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/Legal/payment-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/Legal/payment-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/bn/Legal/payment-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/Legal/payment-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/Legal/payment-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/Legal/payment-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/Legal/payment-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/Legal/payment-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/my/Legal/payment-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/Legal/payment-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/Legal/payment-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/Legal/payment-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/Legal/payment-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/Legal/payment-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/zh-hans/Legal/payment-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/Legal/payment-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/Legal/payment-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/Legal/payment-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/Legal/payment-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/Legal/payment-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/Legal/subscription-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/Legal/subscription-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/Legal/subscription-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/Legal/subscription-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/Legal/subscription-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/Legal/subscription-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/bn/Legal/subscription-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/Legal/subscription-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/Legal/subscription-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/Legal/subscription-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/Legal/subscription-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/Legal/subscription-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/my/Legal/subscription-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/Legal/subscription-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/Legal/subscription-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/Legal/subscription-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/Legal/subscription-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/Legal/subscription-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/zh-hans/Legal/subscription-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/Legal/subscription-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/Legal/subscription-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/Legal/subscription-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/Legal/subscription-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/Legal/subscription-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/Legal/location-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/Legal/location-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/Legal/location-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/Legal/location-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/Legal/location-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/Legal/location-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/bn/Legal/location-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/Legal/location-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/Legal/location-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/Legal/location-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/Legal/location-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/Legal/location-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/my/Legal/location-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/Legal/location-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/Legal/location-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/Legal/location-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/Legal/location-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/Legal/location-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/zh-hans/Legal/location-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/Legal/location-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/Legal/location-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/Legal/location-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/Legal/location-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/Legal/location-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/Legal/fair-usage-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/Legal/fair-usage-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/Legal/fair-usage-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/Legal/fair-usage-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/Legal/fair-usage-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/Legal/fair-usage-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/bn/Legal/fair-usage-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/Legal/fair-usage-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/Legal/fair-usage-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/Legal/fair-usage-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/Legal/fair-usage-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/Legal/fair-usage-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/my/Legal/fair-usage-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/Legal/fair-usage-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/Legal/fair-usage-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/Legal/fair-usage-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/Legal/fair-usage-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/Legal/fair-usage-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/zh-hans/Legal/fair-usage-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/Legal/fair-usage-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/Legal/fair-usage-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/Legal/fair-usage-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/Legal/fair-usage-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/Legal/fair-usage-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/Legal/restriction-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/Legal/restriction-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/Legal/restriction-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/Legal/restriction-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/Legal/restriction-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/Legal/restriction-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/bn/Legal/restriction-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/Legal/restriction-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/Legal/restriction-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/Legal/restriction-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/Legal/restriction-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/Legal/restriction-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/my/Legal/restriction-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/Legal/restriction-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/Legal/restriction-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/Legal/restriction-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/Legal/restriction-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/Legal/restriction-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/zh-hans/Legal/restriction-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/Legal/restriction-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/Legal/restriction-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/Legal/restriction-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/Legal/restriction-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/Legal/restriction-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/Legal/return-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/Legal/return-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/Legal/return-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/Legal/return-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/Legal/return-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/Legal/return-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/bn/Legal/return-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/Legal/return-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/Legal/return-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/Legal/return-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/Legal/return-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/Legal/return-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/my/Legal/return-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/Legal/return-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/Legal/return-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/Legal/return-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/Legal/return-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/Legal/return-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/zh-hans/Legal/return-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/Legal/return-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/Legal/return-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/Legal/return-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/Legal/return-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/Legal/return-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/Legal/cancellation-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/Legal/cancellation-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/Legal/cancellation-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/Legal/cancellation-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/Legal/cancellation-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/Legal/cancellation-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/bn/Legal/cancellation-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/Legal/cancellation-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/Legal/cancellation-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/Legal/cancellation-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/Legal/cancellation-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/Legal/cancellation-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/my/Legal/cancellation-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/Legal/cancellation-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/Legal/cancellation-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/Legal/cancellation-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/Legal/cancellation-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/Legal/cancellation-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/zh-hans/Legal/cancellation-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/Legal/cancellation-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/Legal/cancellation-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/Legal/cancellation-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/Legal/cancellation-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/Legal/cancellation-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/Legal/privacy-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/Legal/privacy-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/Legal/privacy-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/Legal/privacy-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/Legal/privacy-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/Legal/privacy-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/bn/Legal/privacy-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/Legal/privacy-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/Legal/privacy-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/Legal/privacy-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/Legal/privacy-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/Legal/privacy-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/my/Legal/privacy-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/Legal/privacy-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/Legal/privacy-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/Legal/privacy-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/Legal/privacy-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/Legal/privacy-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/zh-hans/Legal/privacy-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/Legal/privacy-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/Legal/privacy-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/Legal/privacy-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/Legal/privacy-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/Legal/privacy-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/Legal/terms</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/Legal/terms" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/Legal/terms" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/Legal/terms" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/Legal/terms" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/Legal/terms" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/bn/Legal/terms</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/Legal/terms" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/Legal/terms" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/Legal/terms" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/Legal/terms" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/Legal/terms" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/my/Legal/terms</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/Legal/terms" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/Legal/terms" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/Legal/terms" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/Legal/terms" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/Legal/terms" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/zh-hans/Legal/terms</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/Legal/terms" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/Legal/terms" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/Legal/terms" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/Legal/terms" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/Legal/terms" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
   </url>
   <url>
     <loc>https://devsparksoft.com.bd/rental-policy</loc>
-    <lastmod>2026-11-17</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/rental-policy" />
+    <lastmod>2026-11-27</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.95</priority>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/bn/rental-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/rental-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/my/rental-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/rental-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/zh-hans/rental-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/rental-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
   </url>
   <url>
     <loc>https://devsparksoft.com.bd/red-policy-alert</loc>
-    <lastmod>2026-11-17</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/red-policy-alert" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/red-policy-alert" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/red-policy-alert" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/red-policy-alert" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/red-policy-alert" />
+    <lastmod>2026-11-27</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.95</priority>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/bn/red-policy-alert</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/red-policy-alert" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/red-policy-alert" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/red-policy-alert" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/red-policy-alert" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/red-policy-alert" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/my/red-policy-alert</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/red-policy-alert" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/red-policy-alert" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/red-policy-alert" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/red-policy-alert" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/red-policy-alert" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/zh-hans/red-policy-alert</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/red-policy-alert" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/red-policy-alert" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/red-policy-alert" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/red-policy-alert" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/red-policy-alert" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
   </url>
   <url>
     <loc>https://devsparksoft.com.bd/price-syndicate-alert</loc>
-    <lastmod>2026-11-17</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/price-syndicate-alert" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/price-syndicate-alert" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/price-syndicate-alert" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/price-syndicate-alert" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/price-syndicate-alert" />
+    <lastmod>2026-11-27</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.95</priority>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/bn/price-syndicate-alert</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/price-syndicate-alert" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/price-syndicate-alert" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/price-syndicate-alert" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/price-syndicate-alert" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/price-syndicate-alert" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/my/price-syndicate-alert</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/price-syndicate-alert" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/price-syndicate-alert" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/price-syndicate-alert" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/price-syndicate-alert" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/price-syndicate-alert" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/zh-hans/price-syndicate-alert</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/price-syndicate-alert" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/price-syndicate-alert" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/price-syndicate-alert" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/price-syndicate-alert" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/price-syndicate-alert" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
   </url>
   <url>
     <loc>https://devsparksoft.com.bd/services</loc>
-    <lastmod>2026-11-17</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://devsparksoft.com.bd/solutions</loc>
-    <lastmod>2026-11-17</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://devsparksoft.com.bd/case-studies</loc>
-    <lastmod>2026-11-17</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/services" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/services" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/services" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/services" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/services" />
+    <lastmod>2026-11-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://devsparksoft.com.bd/about</loc>
-    <lastmod>2026-11-17</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://devsparksoft.com.bd/contact</loc>
-    <lastmod>2026-11-17</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://devsparksoft.com.bd/bn/services</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/services" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/services" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/services" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/services" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/services" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://devsparksoft.com.bd/promos</loc>
-    <lastmod>2026-11-17</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
+    <loc>https://devsparksoft.com.bd/my/services</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/services" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/services" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/services" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/services" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/services" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/zh-hans/services</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/services" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/services" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/services" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/services" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/services" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
   </url>
   <url>
     <loc>https://devsparksoft.com.bd/privacy</loc>
-    <lastmod>2026-11-17</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/privacy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/privacy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/privacy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/privacy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/privacy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/bn/privacy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/privacy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/privacy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/privacy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/privacy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/privacy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/my/privacy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/privacy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/privacy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/privacy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/privacy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/privacy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/zh-hans/privacy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/privacy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/privacy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/privacy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/privacy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/privacy" />
+    <lastmod>2026-11-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>

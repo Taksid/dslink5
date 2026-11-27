@@ -14,6 +14,7 @@ import {
   Truck,
   XCircle,
 } from 'lucide-react';
+import { SiteHeader } from '../components/SiteHeader';
 import { Footer } from '../components/Footer';
 import {
   LegalPolicySearchBar,
@@ -25,7 +26,6 @@ import {
   LegalIconKey,
   LegalPolicyDocument,
 } from '../data/legalPolicies';
-import { OFFICIAL_HEADER_LOGO_URL } from '../lib/domainConfig';
 import { useGeoLanguage } from '../lib/geoLanguage';
 
 interface LegalCenterPageProps {
@@ -71,23 +71,7 @@ export const LegalCenterPage: React.FC<LegalCenterPageProps> = ({
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    document.title = t3(
-      'DevSparkSoft — লিগ্যাল ও নীতিমালা কেন্দ্র (Legal & Policies)',
-      'DevSparkSoft — ဥပဒေနှင့် မူဝါဒ စင်တာ (Legal & Policies)',
-      'DevSparkSoft — Legal & Policies'
-    );
-    const descEl = document.querySelector('meta[name="description"]');
-    if (descEl) {
-      descEl.setAttribute(
-        'content',
-        t3(
-          'DevSparkSoft লিগ্যাল ও নীতিমালা কেন্দ্র: স্টারলিংক রেন্টাল কিট, শিপিং, Bangla QR পেমেন্ট, মাসিক সাবস্ক্রিপশন, নিবন্ধিত লোকেশন, ৫ টিবি ফেয়ার ইউসেজ, সার্ভিস বিধিনিষেধ, রিটার্ন, প্রাইভেসি ও শর্তাবলি।',
-          'DevSparkSoft ဥပဒေနှင့် မူဝါဒ စင်တာ — Starlink ငှားရမ်းစက်၊ ပို့ဆောင်ရေး၊ Bangla QR ငွေပေးချေမှု၊ လစဉ်ကြေး၊ မှတ်ပုံတင်လိပ်စာ၊ 5 TB Fair Usage၊ ကန့်သတ်ချက်များနှင့် ကိုယ်ရေးလုံခြုံမှု မူဝါဒများ။',
-          'DevSparkSoft Legal & Policy Center — Starlink Rental Kit Policy, Shipping, Bangla QR Payment, Monthly Subscription, Registered Location, Fair Usage, Restrictions, Return, Cancellation, Privacy & Terms.'
-        )
-      );
-    }
-  }, [language, t3]);
+  }, []);
 
   const navigateTo = (e: React.MouseEvent, path: string) => {
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
@@ -113,53 +97,20 @@ export const LegalCenterPage: React.FC<LegalCenterPageProps> = ({
   }, [searchQuery]);
 
   return (
-    <div className="min-h-[100dvh] bg-black text-neutral-200 font-sans selection:bg-white selection:text-black flex flex-col">
-      {/* Sticky Safe-Area Header */}
-      <header className="sticky top-0 z-40 border-b border-white/15 bg-black/95 backdrop-blur-md safe-top">
-        <div className="max-w-[1200px] mx-auto px-3 sm:px-6 min-h-14 sm:min-h-16 py-2 flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-            <a
-              href="/"
-              onClick={(e) => navigateTo(e, '/')}
-              className="flex items-center shrink min-w-0"
-            >
-              <img
-                src={OFFICIAL_HEADER_LOGO_URL}
-                alt="DEVSPARK LINK — DEV SPARK SOFT LIMITED"
-                width={308}
-                height={74}
-                className="w-[136px] min-[375px]:w-[154px] sm:w-[178px] md:w-[194px] max-w-full h-auto aspect-[308/74] object-contain object-left block"
-              />
-            </a>
-            <span className="hidden md:inline-block text-[11px] font-mono uppercase tracking-widest text-neutral-400 border-l border-white/15 pl-3 truncate">
-              {t3('লিগ্যাল ও নীতিমালা কেন্দ্র', 'ဥပဒေနှင့် မူဝါဒ စင်တာ', 'Legal & Policy Center')}
-            </span>
-          </div>
+    <div className="min-h-[100dvh] bg-[#04070c] text-slate-200 font-sans flex flex-col">
+      <SiteHeader
+        sectionLabel={t3('লিগ্যাল ও নীতিমালা কেন্দ্র', 'ဥပဒေနှင့် မူဝါဒ စင်တာ', 'Legal & Policy Center')}
+        onNavigate={onNavigate}
+        onBackToMainSite={onBackToMainSite}
+      />
 
-          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-            <a
-              href="/cart"
-              onClick={(e) => navigateTo(e, '/cart')}
-              className="hidden sm:inline-flex items-center px-3 py-1.5 rounded-[4px] border border-white/20 bg-white/5 hover:bg-white/15 text-xs font-medium text-white transition-colors whitespace-nowrap"
-            >
-              {t3('কার্ট', 'ခြင်းတောင်း', 'Cart')}
-            </a>
-
-            <a
-              href="/rental"
-              onClick={(e) => navigateTo(e, '/rental')}
-              className="hidden sm:inline-flex items-center px-3 py-1.5 rounded-[4px] border border-white/20 bg-white/5 hover:bg-white/15 text-xs font-medium text-white transition-colors whitespace-nowrap"
-            >
-              {t3('রেন্টাল চেকআউট', 'ငှားရမ်းခြင်း', 'Rental Checkout')}
-            </a>
-          </div>
-        </div>
-      </header>
-
-      <main className="flex-1 w-full max-w-[1200px] mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-8">
+      <main
+        id="main-content"
+        className="flex-1 w-full max-w-[1200px] mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-8"
+      >
         {/* Hero / Masthead */}
-        <section className="space-y-4 border-b border-white/10 pb-8">
-          <p className="text-[11px] font-mono uppercase tracking-[0.2em] text-neutral-400">
+        <section className="space-y-4 border-b border-slate-800 pb-8">
+          <p className="text-xs font-mono uppercase tracking-[0.16em] text-cyan-300">
             DEV SPARK SOFT LIMITED · DEVSPARK LINK · DNCC/037306
           </p>
           <h1 className="text-2xl sm:text-4xl font-bold text-white tracking-tight leading-tight">
@@ -217,32 +168,32 @@ export const LegalCenterPage: React.FC<LegalCenterPageProps> = ({
                   key={policy.slug}
                   href={policy.path}
                   onClick={(e) => navigateTo(e, policy.path)}
-                  className="group min-w-0 flex flex-col justify-between rounded-[4px] border border-white/15 bg-[#0b0b0e] hover:bg-[#111116] hover:border-white/35 p-5 transition-colors"
+                  className="group min-w-0 flex flex-col justify-between rounded-xl border border-slate-700/70 bg-[#0b0f17] hover:bg-slate-900 hover:border-cyan-400/60 p-5 transition-colors"
                 >
                   <div className="space-y-3">
                     <div className="flex items-center justify-between gap-2">
-                      <div className="w-10 h-10 rounded-[4px] border border-white/15 bg-white/5 flex items-center justify-center text-white shrink-0">
+                      <div className="w-10 h-10 rounded-lg border border-slate-700 bg-slate-900 flex items-center justify-center text-cyan-300 shrink-0">
                         {renderLegalPolicyIcon(policy.icon, 'w-5 h-5')}
                       </div>
-                      <span className="text-[11px] font-mono text-neutral-500 truncate">
+                      <span className="text-xs font-mono text-slate-300 truncate">
                         {policy.path}
                       </span>
                     </div>
 
-                    <h2 className="text-base font-semibold text-white leading-snug group-hover:text-white">
+                    <h2 className="text-base font-semibold text-white leading-snug group-hover:text-cyan-200 break-words">
                       {highlightPolicyText(getTitle(policy), searchQuery)}
                     </h2>
 
-                    <p className="text-xs sm:text-sm text-neutral-400 leading-relaxed">
+                    <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
                       {highlightPolicyText(getShortDesc(policy), searchQuery)}
                     </p>
                   </div>
 
-                  <div className="pt-4 mt-4 border-t border-white/10 flex items-center justify-between text-xs font-medium text-white">
+                  <div className="pt-4 mt-4 border-t border-slate-800 flex items-center justify-between text-xs sm:text-sm font-medium text-cyan-300">
                     <span>
                       {t3('বিস্তারিত পড়ুন', 'အသေးစိတ်ဖတ်ရန်', 'Read Details')}
                     </span>
-                    <ArrowRight className="w-4 h-4 text-neutral-400 group-hover:text-white group-hover:translate-x-0.5 transition-all shrink-0" />
+                    <ArrowRight className="w-4 h-4 text-cyan-300 group-hover:translate-x-0.5 transition-all shrink-0" aria-hidden="true" />
                   </div>
                 </a>
               ))}
@@ -251,16 +202,16 @@ export const LegalCenterPage: React.FC<LegalCenterPageProps> = ({
         </section>
 
         {/* Independent Policy Notice */}
-        <section className="rounded-[4px] border border-white/15 bg-[#0b0b0e] p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <section className="rounded-xl border border-slate-700/70 bg-[#0b0f17] p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="space-y-1.5 min-w-0">
-            <h2 className="text-sm font-semibold text-white">
+            <h2 className="text-sm sm:text-base font-semibold text-white">
               {t3(
                 'স্বতন্ত্র স্টোর নীতিমালা ঘোষণা',
                 'သီးခြား စတိုးမူဝါဒ အသိပေးချက်',
                 'Independent Store Policy Disclosure'
               )}
             </h2>
-            <p className="text-xs text-neutral-400 leading-relaxed max-w-3xl">
+            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-3xl">
               {t3(
                 'এই পেজের সকল নীতিমালা DEV SPARK SOFT LIMITED (DEVSPARK LINK / DSLINK · devsparksoft.com.bd)-এর নিজস্ব বাণিজ্যিক ও সার্ভিস শর্তাবলি। এগুলো স্পেসএক্স বা স্টারলিংকের অফিসিয়াল কর্পোরেট রুলবুক হিসেবে উপস্থাপিত নয়।',
                 'ဤမူဝါဒများသည် DEV SPARK SOFT LIMITED (DEVSPARK LINK / DSLINK) ၏ ကိုယ်ပိုင်စီးပွားရေးနှင့် ဝန်ဆောင်မှု စည်းကမ်းများသာ ဖြစ်ပြီး SpaceX သို့မဟုတ် Starlink ၏ တရားဝင်မူဝါဒအဖြစ် ဖော်ပြခြင်းမဟုတ်ပါ။',
@@ -271,10 +222,10 @@ export const LegalCenterPage: React.FC<LegalCenterPageProps> = ({
           <a
             href="/rental"
             onClick={(e) => navigateTo(e, '/rental')}
-            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-[4px] bg-white text-black hover:bg-neutral-200 text-xs font-semibold transition-colors shrink-0 whitespace-nowrap"
+            className="min-h-[44px] inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-cyan-400 text-[#04131a] hover:bg-cyan-300 text-xs sm:text-sm font-bold transition-colors shrink-0 whitespace-nowrap"
           >
             <span>{t3('রেন্টাল চেকআউটে ফিরুন', 'ငှားရမ်းခြင်းသို့ ပြန်သွားရန်', 'Back to Rental Checkout')}</span>
-            <ArrowRight className="w-3.5 h-3.5" />
+            <ArrowRight className="w-4 h-4 shrink-0" aria-hidden="true" />
           </a>
         </section>
       </main>

@@ -1,9 +1,9 @@
-import React from 'react';
-import { ShoppingBag } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Menu, ShoppingBag, X } from 'lucide-react';
 import { OFFICIAL_HEADER_LOGO_URL } from '../lib/domainConfig';
 import { useGeoLanguage } from '../lib/geoLanguage';
 import { useCart } from '../lib/cartStore';
-import { buildLocalePath } from '../lib/localeRouting';
+import { buildLocalePath, parseLocalePath } from '../lib/localeRouting';
 
 interface SiteHeaderProps {
   sectionLabel?: string;
@@ -12,8 +12,9 @@ interface SiteHeaderProps {
 }
 
 /**
- * Shared standalone page header.
- * Strictly omits language selector per Part 4.10 (language selector resides exclusively in Footer).
+ * Shared standalone page header with WCAG AA dark + cyan tokens, collision-free desktop nav,
+ * and an accessible mobile menu drawer (switching below lg / 1024px before links collide).
+ * Language selector resides exclusively in the Footer.
  */
 export const SiteHeader: React.FC<SiteHeaderProps> = ({
   sectionLabel,
@@ -22,12 +23,27 @@ export const SiteHeader: React.FC<SiteHeaderProps> = ({
 }) => {
   const { language, t } = useGeoLanguage();
   const { itemCount } = useCart();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const hrefFor = (path: string) => buildLocalePath(path, language);
+  const currentBasePath =
+    typeof window !== 'undefined'
+      ? parseLocalePath(window.location.pathname).basePath.toLowerCase()
+      : '/';
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMobileMenuOpen(false);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [mobileMenuOpen]);
 
   const navigateTo = (e: React.MouseEvent, path: string) => {
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
     e.preventDefault();
+    setMobileMenuOpen(false);
     if (onNavigate) {
       onNavigate(path);
     } else if (path === '/' && onBackToMainSite) {
@@ -39,68 +55,176 @@ export const SiteHeader: React.FC<SiteHeaderProps> = ({
     }
   };
 
+  const navItems = [
+    { path: '/kits', label: t('nav.kits', 'Starlink Kits') },
+    { path: '/rental', label: t('nav.rental', 'Rental') },
+    { path: '/roaming-packages', label: t('nav.roaming', 'Roaming') },
+    { path: '/worldwide-delivery', label: t('nav.delivery', 'Delivery') },
+    { path: '/warranty', label: t('nav.warranty', 'Warranty') },
+    { path: '/resell', label: t('nav.resell', 'Resell') },
+    { path: '/Legal', label: t('nav.legal', 'Legal') },
+  ];
+
+  const isNavActive = (path: string) => {
+    const p = path.toLowerCase();
+    if (p === '/kits') return currentBasePath === '/kits' || currentBasePath.startsWith('/kits/');
+    if (p === '/legal') return currentBasePath === '/legal' || currentBasePath.startsWith('/legal/');
+    if (p === '/resell') return currentBasePath === '/resell' || currentBasePath.startsWith('/resell/');
+    return currentBasePath === p;
+  };
+
   return (
-    <header className="sticky top-0 z-40 border-b border-white/15 bg-black/95 backdrop-blur-md safe-top">
-      <div className="max-w-[1200px] mx-auto px-3 sm:px-6 min-h-14 sm:min-h-16 py-2 flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-          <a
-            href={hrefFor('/')}
-            onClick={(e) => navigateTo(e, '/')}
-            className="flex items-center shrink min-w-0"
+    <>
+      <a href="#main-content" className="ds-skip-link">
+        Skip to main content
+      </a>
+
+      <header className="sticky top-0 z-40 border-b border-slate-700/60 bg-[#04070c]/95 backdrop-blur-md safe-top">
+        <div className="max-w-[1280px] mx-auto px-3 sm:px-6 min-h-[60px] py-2 flex items-center justify-between gap-2 sm:gap-4">
+          {/* Brand Logo */}
+          <div className="flex items-center gap-3 min-w-0 shrink">
+            <a
+              href={hrefFor('/')}
+              onClick={(e) => navigateTo(e, '/')}
+              className="flex items-center min-h-[44px] py-1 shrink min-w-0 rounded focus-visible:outline-cyan-400"
+            >
+              <img
+                src={OFFICIAL_HEADER_LOGO_URL}
+                alt="DEVSPARK LINK — DSLINK | DEV SPARK SOFT LIMITED"
+                width={308}
+                height={74}
+                className="w-[132px] min-[375px]:w-[152px] sm:w-[172px] lg:w-[180px] max-w-full h-auto aspect-[308/74] object-contain object-left block"
+              />
+            </a>
+            {sectionLabel && (
+              <span className="hidden 2xl:inline-block text-xs font-mono uppercase tracking-wider text-slate-300 border-l border-slate-700 pl-3 truncate max-w-[200px]">
+                {sectionLabel}
+              </span>
+            )}
+          </div>
+
+          {/* Desktop Navigation — switches to mobile menu below lg (1024px) to guarantee zero collisions */}
+          <nav
+            aria-label="Primary Navigation"
+            className="hidden lg:flex items-center gap-1 xl:gap-2 text-sm font-medium"
           >
-            <img
-              src={OFFICIAL_HEADER_LOGO_URL}
-              alt="DEVSPARK LINK — DSLINK | DEV SPARK SOFT LIMITED"
-              width={308}
-              height={74}
-              className="w-[136px] min-[375px]:w-[154px] sm:w-[176px] md:w-[190px] max-w-full h-auto aspect-[308/74] object-contain object-left block"
-            />
-          </a>
-          {sectionLabel && (
-            <span className="hidden lg:inline-block text-[11px] font-mono uppercase tracking-widest text-neutral-400 border-l border-white/15 pl-3 truncate">
-              {sectionLabel}
-            </span>
-          )}
+            {navItems.map((item) => {
+              const active = isNavActive(item.path);
+              return (
+                <a
+                  key={item.path}
+                  href={hrefFor(item.path)}
+                  onClick={(e) => navigateTo(e, item.path)}
+                  aria-current={active ? 'page' : undefined}
+                  className={`px-2.5 xl:px-3 py-2 min-h-[40px] inline-flex items-center rounded-md whitespace-nowrap transition-colors ${
+                    active
+                      ? 'text-cyan-300 font-semibold underline decoration-cyan-400 decoration-2 underline-offset-8 bg-cyan-400/10'
+                      : 'text-slate-200 hover:text-cyan-300 hover:bg-slate-800/70'
+                  }`}
+                >
+                  {item.label}
+                </a>
+              );
+            })}
+          </nav>
+
+          {/* Right Controls: Cart + Mobile Menu Toggle (all >= 44x44 CSS px on mobile) */}
+          <div className="flex items-center gap-2 shrink-0">
+            <a
+              href={hrefFor('/cart')}
+              onClick={(e) => navigateTo(e, '/cart')}
+              aria-label={`Shopping Cart (${itemCount} items)`}
+              className="inline-flex items-center justify-center gap-1.5 min-h-[44px] min-w-[44px] px-3 rounded-lg border border-cyan-400/40 bg-cyan-400/10 hover:bg-cyan-400/20 text-sm font-semibold text-white transition-colors whitespace-nowrap tabular-nums"
+            >
+              <ShoppingBag className="w-4 h-4 text-cyan-300 shrink-0" aria-hidden="true" />
+              <span className="hidden sm:inline">{t('nav.cart', 'Cart')}</span>
+              <span className="font-mono font-bold text-cyan-200">{itemCount}</span>
+            </a>
+
+            <button
+              type="button"
+              onClick={() => setMobileMenuOpen((prev) => !prev)}
+              aria-expanded={mobileMenuOpen}
+              aria-controls="ds-mobile-nav"
+              aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+              className="lg:hidden inline-flex items-center justify-center min-w-[44px] min-h-[44px] rounded-lg border border-slate-600 bg-slate-900 hover:bg-slate-800 hover:border-cyan-400/60 text-white transition-colors cursor-pointer"
+            >
+              {mobileMenuOpen ? (
+                <X className="w-5 h-5 text-cyan-300" aria-hidden="true" />
+              ) : (
+                <Menu className="w-5 h-5 text-slate-100" aria-hidden="true" />
+              )}
+            </button>
+          </div>
         </div>
 
-        <nav className="hidden md:flex items-center gap-4 text-xs font-medium text-neutral-300">
-          <a href={hrefFor('/kits')} onClick={(e) => navigateTo(e, '/kits')} className="hover:text-white transition-colors whitespace-nowrap">
-            {t('nav.kits', 'Starlink Kits')}
-          </a>
-          <a href={hrefFor('/rental')} onClick={(e) => navigateTo(e, '/rental')} className="hover:text-white transition-colors whitespace-nowrap">
-            {t('nav.rental', 'Rental')}
-          </a>
-          <a href={hrefFor('/resell')} onClick={(e) => navigateTo(e, '/resell')} className="hover:text-white transition-colors whitespace-nowrap">
-            {t('nav.resell', 'Resell & Partner')}
-          </a>
-          <a href={hrefFor('/roaming-packages')} onClick={(e) => navigateTo(e, '/roaming-packages')} className="hover:text-white transition-colors whitespace-nowrap">
-            {t('nav.roaming', 'Roaming')}
-          </a>
-          <a href={hrefFor('/worldwide-delivery')} onClick={(e) => navigateTo(e, '/worldwide-delivery')} className="hover:text-white transition-colors whitespace-nowrap">
-            {t('nav.delivery', 'Worldwide Delivery')}
-          </a>
-          <a href={hrefFor('/warranty')} onClick={(e) => navigateTo(e, '/warranty')} className="hover:text-white transition-colors whitespace-nowrap">
-            {t('nav.warranty', 'Warranty')}
-          </a>
-          <a href={hrefFor('/Legal')} onClick={(e) => navigateTo(e, '/Legal')} className="hover:text-white transition-colors whitespace-nowrap">
-            {t('nav.legal', 'Legal')}
-          </a>
-        </nav>
-
-        <div className="flex items-center gap-2 shrink-0">
-          <a
-            href={hrefFor('/cart')}
-            onClick={(e) => navigateTo(e, '/cart')}
-            aria-label="Shopping Cart"
-            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-[4px] bg-white/10 hover:bg-white/20 text-xs font-medium text-white transition-colors whitespace-nowrap tabular-nums"
+        {/* Accessible Mobile Navigation Drawer */}
+        {mobileMenuOpen && (
+          <nav
+            id="ds-mobile-nav"
+            aria-label="Mobile Navigation"
+            className="lg:hidden border-t border-slate-700/70 bg-[#070b12] px-4 py-4 shadow-2xl max-h-[calc(100dvh-64px)] overflow-y-auto"
           >
-            <ShoppingBag className="w-3.5 h-3.5 shrink-0" />
-            <span className="hidden sm:inline">{t('nav.cart', 'Cart')}</span>
-            <span className="font-mono font-semibold">{itemCount}</span>
-          </a>
-        </div>
-      </div>
-    </header>
+            <ul className="space-y-1.5">
+              <li>
+                <a
+                  href={hrefFor('/')}
+                  onClick={(e) => navigateTo(e, '/')}
+                  aria-current={currentBasePath === '/' ? 'page' : undefined}
+                  className={`flex items-center justify-between min-h-[44px] px-3.5 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
+                    currentBasePath === '/'
+                      ? 'bg-cyan-400/15 text-cyan-200 border border-cyan-400/40'
+                      : 'text-slate-100 hover:bg-slate-800/80'
+                  }`}
+                >
+                  <span>Home</span>
+                  {currentBasePath === '/' && (
+                    <span className="text-xs font-mono text-cyan-300">Current</span>
+                  )}
+                </a>
+              </li>
+              {navItems.map((item) => {
+                const active = isNavActive(item.path);
+                return (
+                  <li key={item.path}>
+                    <a
+                      href={hrefFor(item.path)}
+                      onClick={(e) => navigateTo(e, item.path)}
+                      aria-current={active ? 'page' : undefined}
+                      className={`flex items-center justify-between min-h-[44px] px-3.5 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
+                        active
+                          ? 'bg-cyan-400/15 text-cyan-200 border border-cyan-400/40'
+                          : 'text-slate-100 hover:bg-slate-800/80'
+                      }`}
+                    >
+                      <span>{item.label}</span>
+                      {active && <span className="text-xs font-mono text-cyan-300">Current</span>}
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+
+            <div className="mt-4 pt-4 border-t border-slate-700/70 grid grid-cols-2 gap-2.5">
+              <a
+                href={hrefFor('/track')}
+                onClick={(e) => navigateTo(e, '/track')}
+                className="flex items-center justify-center min-h-[44px] px-3 py-2.5 rounded-lg border border-slate-600 bg-slate-900 hover:bg-slate-800 text-sm font-semibold text-white text-center"
+              >
+                Track Order
+              </a>
+              <a
+                href={hrefFor('/account')}
+                onClick={(e) => navigateTo(e, '/account')}
+                className="flex items-center justify-center min-h-[44px] px-3 py-2.5 rounded-lg border border-slate-600 bg-slate-900 hover:bg-slate-800 text-sm font-semibold text-white text-center"
+              >
+                Account
+              </a>
+            </div>
+          </nav>
+        )}
+      </header>
+    </>
   );
 };
 

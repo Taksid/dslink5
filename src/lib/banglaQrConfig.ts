@@ -1,15 +1,19 @@
 /**
  * Authoritative Bangla QR & Participating Bangladesh Bank-Approved MFS & Bank Configuration
  *
- * Uses the exact user-supplied Bangla QR image without modification:
- * https://i.ibb.co.com/G4BR1hW6/IMG-2390.jpg
+ * Uses the verified local Bangladesh Bank Merchant Bangla QR image (decoded EMVCo Tag 59:
+ * "DEV SPARK SOFT LIMITED", Merchant ID: 9100820013263702185, Phone: 01326370218)
+ * rendered without cropping, stretching, or overlays.
  *
  * Uses Logo.dev (https://img.logo.dev/<domain>?token=...) with verified institution domains
  * and official SVG brand mark fallback rendering so authentic brand proportions and colors
  * are always preserved without ever substituting generic icons or another company's logo.
  */
 
-export const EXACT_BANGLA_QR_IMAGE_URL = 'https://i.ibb.co.com/G4BR1hW6/IMG-2390.jpg';
+export const EXACT_BANGLA_QR_IMAGE_URL = '/assets/payments/bangla-qr-merchant.jpg';
+export const VERIFIED_BANGLA_QR_MERCHANT_NAME = 'DEV SPARK SOFT LIMITED';
+export const VERIFIED_BANGLA_QR_MERCHANT_ID = '9100820013263702185';
+export const VERIFIED_BANGLA_QR_PHONE = '+880 1326-370218';
 
 export type PaymentInstitutionCategory = 'mfs' | 'bank';
 

@@ -14,8 +14,12 @@ import { CartCheckoutPage } from './pages/CartCheckoutPage';
 import { AdminGlobalHubPage } from './pages/AdminGlobalHub';
 import { ResellPublicHubPage } from './pages/ResellPublicHubPage';
 import { ResellerPortalPage } from './pages/ResellerPortalPage';
+import { KitsCatalogPage } from './pages/KitsCatalogPage';
+import { KitDetailPage } from './pages/KitDetailPage';
 import { OfflineIndicator } from './components/OfflineIndicator';
 import { PWAInstallButton } from './components/PWAInstallButton';
+import { SiteHeader } from './components/SiteHeader';
+import { Footer } from './components/Footer';
 import { useIpGeolocationLanguage } from './hooks/useIpGeolocationLanguage';
 import {
   GSC_VERIFICATION_CODE,
@@ -25,7 +29,7 @@ import {
   resolveDomainFromRequest,
 } from './lib/domainConfig';
 import { getLocalizedRouteSeo } from './lib/multilingualSeo';
-import { buildLocalePath, parseLocalePath } from './lib/localeRouting';
+import { buildLocalePath, isKnownSiteRoute, parseLocalePath } from './lib/localeRouting';
 import { LANGUAGE_LABELS } from './lib/i18n';
 import './lib/pricingConfig';
 import './lib/shippingConfig';
@@ -328,6 +332,12 @@ export default function App() {
   const isMyanmarRoute = normalizedPath === '/starlink-myanmar';
   const isCartRoute = normalizedPath === '/cart' || normalizedPath === '/checkout';
   const isAdminGlobalRoute = normalizedPath === '/admin/global';
+  const isKitsCatalogRoute = normalizedPath === '/kits' || normalizedPath === '/products';
+  const kitDetailProductId = normalizedPath.startsWith('/kits/')
+    ? normalizedPath.slice('/kits/'.length)
+    : normalizedPath.startsWith('/products/')
+    ? normalizedPath.slice('/products/'.length)
+    : null;
 
   // Public Resell Hub Routes (/resell, /resell/authorized-retailer, /resell/business-partnership)
   const isResellPublicHubRoute =
@@ -353,12 +363,65 @@ export default function App() {
     normalizedPath === '/reseller' ||
     normalizedPath.startsWith('/reseller/');
 
+  const isKnownCurrentRoute = isRetailerSubdomainRoot || isKnownSiteRoute(currentPath);
+  const hideFloatingPwaButton =
+    isCartRoute ||
+    isPromoRoute ||
+    isRentalRoute ||
+    isResellerPortalRoute ||
+    isAdminGlobalRoute ||
+    normalizedPath === '/admin' ||
+    normalizedPath.startsWith('/admin/') ||
+    normalizedPath.startsWith('/checkout');
+
   return (
     <>
       <BrandingFixer />
       <OfflineIndicator />
-      <PWAInstallButton variant="floating" />
-      {isResellPublicHubRoute ? (
+      {!hideFloatingPwaButton && <PWAInstallButton variant="floating" />}
+      {!isKnownCurrentRoute ? (
+        <div className="min-h-screen bg-[#04070c] text-slate-100 flex flex-col">
+          <SiteHeader onNavigate={navigateTo} />
+          <main
+            id="main-content"
+            className="flex-1 max-w-3xl mx-auto w-full px-4 sm:px-6 py-16 sm:py-24 flex flex-col justify-center space-y-6"
+          >
+            <span className="inline-flex w-fit items-center px-3 py-1 rounded-full bg-cyan-500/15 border border-cyan-400/40 text-cyan-200 text-xs font-mono font-bold uppercase tracking-wider">
+              HTTP 404 · Not Found
+            </span>
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+              Page Not Found (404)
+            </h1>
+            <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-xl">
+              The page you requested could not be found on DevSpark Link (DSLink). Explore our Starlink kits, rental offer, or return to the homepage.
+            </p>
+            <div className="flex flex-wrap gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => navigateTo('/')}
+                className="min-h-[44px] px-5 py-2.5 rounded-lg bg-cyan-400 hover:bg-cyan-300 text-[#04131a] font-bold text-sm transition-colors cursor-pointer"
+              >
+                Back to Homepage
+              </button>
+              <button
+                type="button"
+                onClick={() => navigateTo('/kits')}
+                className="min-h-[44px] px-5 py-2.5 rounded-lg bg-[#0b0f17] hover:bg-slate-800 border border-slate-600 text-white font-semibold text-sm transition-colors cursor-pointer"
+              >
+                Browse Starlink Kits
+              </button>
+              <button
+                type="button"
+                onClick={() => navigateTo('/rental')}
+                className="min-h-[44px] px-5 py-2.5 rounded-lg bg-[#0b0f17] hover:bg-slate-800 border border-slate-600 text-slate-200 font-semibold text-sm transition-colors cursor-pointer"
+              >
+                Starlink Rental Kit
+              </button>
+            </div>
+          </main>
+          <Footer />
+        </div>
+      ) : isResellPublicHubRoute ? (
         <ResellPublicHubPage
           variant={resellPageVariant}
           onNavigate={navigateTo}
@@ -390,6 +453,17 @@ export default function App() {
         <WorldwideDeliveryPage regionMode="myanmar" onNavigate={navigateTo} />
       ) : isCartRoute ? (
         <CartCheckoutPage onNavigate={navigateTo} />
+      ) : isKitsCatalogRoute ? (
+        <KitsCatalogPage
+          onNavigate={navigateTo}
+          onBackToMainSite={() => navigateTo('/')}
+        />
+      ) : kitDetailProductId ? (
+        <KitDetailPage
+          productId={kitDetailProductId}
+          onNavigate={navigateTo}
+          onBackToMainSite={() => navigateTo('/')}
+        />
       ) : isAdminGlobalRoute ? (
         <AdminGlobalHubPage onNavigate={navigateTo} />
       ) : isRentalPolicyRoute ? (

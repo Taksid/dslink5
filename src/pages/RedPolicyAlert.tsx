@@ -139,52 +139,9 @@ export const RedPolicyAlertPage: React.FC<RedPolicyAlertPageProps> = ({
   useEffect(() => {
     window.scrollTo(0, 0);
 
-    const pageTitle =
-      'RED POLICY ALERT: Starlink কেনার আগে সতর্ক হোন! | DEVSPARK LINK — DEV SPARK SOFT LIMITED';
     const pageDesc =
       'বাংলাদেশে ১৭,০০০–২০,০০০ টাকার Restricted Starlink Kit ও Account Ban থেকে সাবধান! কেন DEVSPARK LINK (DNCC/037306, USA Alaska Entity #10237739) Standard 4X (৳৪১,৫০০) ও Mini (৳২১,৫০০) কিটে ৩০ দিনের রিফান্ড অঙ্গীকার, ২৪ মাসের রিপ্লেসমেন্ট সাপোর্ট ও অফিশিয়াল ইনভয়েস দেয় — বিস্তারিত জানুন।';
-    const canonicalUrl = `${siteOrigin}/red-policy-alert`;
-
-    document.title = pageTitle;
-
-    const upsertMeta = (attr: 'name' | 'property', key: string, content: string) => {
-      let el = document.querySelector(`meta[${attr}="${key}"]`) as HTMLMetaElement | null;
-      if (!el) {
-        el = document.createElement('meta');
-        el.setAttribute(attr, key);
-        document.head.appendChild(el);
-      }
-      el.content = content;
-    };
-
-    upsertMeta('name', 'description', pageDesc);
-    upsertMeta(
-      'name',
-      'keywords',
-      'RED POLICY ALERT, Starlink কেনার আগে সতর্কতা, Starlink Restricted Kit Bangladesh, Starlink Account Ban Warning BD, DEVSPARK LINK, DEV SPARK SOFT LIMITED, DNCC/037306, Alaska Entity 10237739, Starlink 41500 Price Bangladesh, DSLINK Policy'
-    );
-    upsertMeta(
-      'name',
-      'robots',
-      'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'
-    );
-    upsertMeta('property', 'og:type', 'article');
-    upsertMeta('property', 'og:title', pageTitle);
-    upsertMeta('property', 'og:description', pageDesc);
-    upsertMeta('property', 'og:url', canonicalUrl);
-    upsertMeta('property', 'og:image', OFFICIAL_FAVICON_LOGO_URL);
-    upsertMeta('name', 'twitter:title', pageTitle);
-    upsertMeta('name', 'twitter:description', pageDesc);
-    upsertMeta('name', 'twitter:url', canonicalUrl);
-    upsertMeta('name', 'twitter:image', OFFICIAL_FAVICON_LOGO_URL);
-
-    let canonicalEl = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
-    if (!canonicalEl) {
-      canonicalEl = document.createElement('link');
-      canonicalEl.rel = 'canonical';
-      document.head.appendChild(canonicalEl);
-    }
-    canonicalEl.href = canonicalUrl;
+    const canonicalUrl = `${siteOrigin}${typeof window !== 'undefined' ? window.location.pathname : '/red-policy-alert'}`;
 
     document
       .querySelectorAll('script[data-page-seo="red-policy-alert"]')

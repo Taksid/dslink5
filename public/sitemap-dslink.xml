@@ -1,92 +1,1631 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://dslink.cyou/</loc>
-    <lastmod>2026-11-17</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/" />
+    <lastmod>2026-11-27</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
+    <loc>https://dslink.cyou/bn</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/my</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/zh-hans</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/resell</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/resell" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/resell" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/resell" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/resell" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/resell" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/bn/resell</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/resell" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/resell" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/resell" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/resell" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/resell" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/my/resell</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/resell" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/resell" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/resell" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/resell" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/resell" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/zh-hans/resell</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/resell" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/resell" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/resell" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/resell" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/resell" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/resell/authorized-retailer</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/resell/authorized-retailer" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/resell/authorized-retailer" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/resell/authorized-retailer" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/resell/authorized-retailer" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/resell/authorized-retailer" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/bn/resell/authorized-retailer</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/resell/authorized-retailer" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/resell/authorized-retailer" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/resell/authorized-retailer" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/resell/authorized-retailer" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/resell/authorized-retailer" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/my/resell/authorized-retailer</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/resell/authorized-retailer" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/resell/authorized-retailer" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/resell/authorized-retailer" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/resell/authorized-retailer" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/resell/authorized-retailer" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/zh-hans/resell/authorized-retailer</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/resell/authorized-retailer" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/resell/authorized-retailer" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/resell/authorized-retailer" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/resell/authorized-retailer" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/resell/authorized-retailer" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/resell/business-partnership</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/resell/business-partnership" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/resell/business-partnership" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/resell/business-partnership" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/resell/business-partnership" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/resell/business-partnership" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/bn/resell/business-partnership</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/resell/business-partnership" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/resell/business-partnership" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/resell/business-partnership" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/resell/business-partnership" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/resell/business-partnership" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/my/resell/business-partnership</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/resell/business-partnership" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/resell/business-partnership" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/resell/business-partnership" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/resell/business-partnership" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/resell/business-partnership" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://devsparksoft.com.bd/zh-hans/resell/business-partnership</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://devsparksoft.com.bd/resell/business-partnership" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://devsparksoft.com.bd/bn/resell/business-partnership" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://devsparksoft.com.bd/my/resell/business-partnership" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://devsparksoft.com.bd/zh-hans/resell/business-partnership" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://devsparksoft.com.bd/resell/business-partnership" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
     <loc>https://dslink.cyou/kits</loc>
-    <lastmod>2026-11-17</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/kits" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/kits" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/kits" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/kits" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/kits" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/bn/kits</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/kits" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/kits" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/kits" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/kits" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/kits" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/my/kits</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/kits" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/kits" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/kits" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/kits" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/kits" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/zh-hans/kits</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/kits" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/kits" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/kits" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/kits" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/kits" />
+    <lastmod>2026-11-27</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.95</priority>
   </url>
   <url>
     <loc>https://dslink.cyou/kits/starlink-standard-4x</loc>
-    <lastmod>2026-11-17</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/kits/starlink-standard-4x" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/kits/starlink-standard-4x" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/kits/starlink-standard-4x" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/kits/starlink-standard-4x" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/kits/starlink-standard-4x" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/bn/kits/starlink-standard-4x</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/kits/starlink-standard-4x" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/kits/starlink-standard-4x" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/kits/starlink-standard-4x" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/kits/starlink-standard-4x" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/kits/starlink-standard-4x" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/my/kits/starlink-standard-4x</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/kits/starlink-standard-4x" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/kits/starlink-standard-4x" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/kits/starlink-standard-4x" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/kits/starlink-standard-4x" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/kits/starlink-standard-4x" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/zh-hans/kits/starlink-standard-4x</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/kits/starlink-standard-4x" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/kits/starlink-standard-4x" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/kits/starlink-standard-4x" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/kits/starlink-standard-4x" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/kits/starlink-standard-4x" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/kits/starlink-mini-kit</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/kits/starlink-mini-kit" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/kits/starlink-mini-kit" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/kits/starlink-mini-kit" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/kits/starlink-mini-kit" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/kits/starlink-mini-kit" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/bn/kits/starlink-mini-kit</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/kits/starlink-mini-kit" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/kits/starlink-mini-kit" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/kits/starlink-mini-kit" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/kits/starlink-mini-kit" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/kits/starlink-mini-kit" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/my/kits/starlink-mini-kit</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/kits/starlink-mini-kit" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/kits/starlink-mini-kit" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/kits/starlink-mini-kit" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/kits/starlink-mini-kit" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/kits/starlink-mini-kit" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/zh-hans/kits/starlink-mini-kit</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/kits/starlink-mini-kit" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/kits/starlink-mini-kit" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/kits/starlink-mini-kit" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/kits/starlink-mini-kit" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/kits/starlink-mini-kit" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/packages</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/packages" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/packages" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/packages" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/packages" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/packages" />
+    <lastmod>2026-11-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://dslink.cyou/packages</loc>
-    <lastmod>2026-11-17</lastmod>
+    <loc>https://dslink.cyou/bn/packages</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/packages" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/packages" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/packages" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/packages" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/packages" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/my/packages</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/packages" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/packages" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/packages" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/packages" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/packages" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/zh-hans/packages</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/packages" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/packages" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/packages" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/packages" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/packages" />
+    <lastmod>2026-11-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://dslink.cyou/rental</loc>
-    <lastmod>2026-11-17</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/rental" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/rental" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/rental" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/rental" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/rental" />
+    <lastmod>2026-11-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/bn/rental</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/rental" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/rental" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/rental" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/rental" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/rental" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/my/rental</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/rental" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/rental" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/rental" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/rental" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/rental" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/zh-hans/rental</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/rental" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/rental" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/rental" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/rental" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/rental" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/starlink-bangladesh</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/starlink-bangladesh" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/starlink-bangladesh" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/starlink-bangladesh" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/starlink-bangladesh" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/starlink-bangladesh" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/bn/starlink-bangladesh</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/starlink-bangladesh" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/starlink-bangladesh" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/starlink-bangladesh" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/starlink-bangladesh" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/starlink-bangladesh" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/my/starlink-bangladesh</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/starlink-bangladesh" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/starlink-bangladesh" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/starlink-bangladesh" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/starlink-bangladesh" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/starlink-bangladesh" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/zh-hans/starlink-bangladesh</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/starlink-bangladesh" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/starlink-bangladesh" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/starlink-bangladesh" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/starlink-bangladesh" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/starlink-bangladesh" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/starlink-myanmar</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/starlink-myanmar" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/starlink-myanmar" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/starlink-myanmar" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/starlink-myanmar" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/starlink-myanmar" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/bn/starlink-myanmar</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/starlink-myanmar" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/starlink-myanmar" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/starlink-myanmar" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/starlink-myanmar" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/starlink-myanmar" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/my/starlink-myanmar</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/starlink-myanmar" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/starlink-myanmar" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/starlink-myanmar" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/starlink-myanmar" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/starlink-myanmar" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/zh-hans/starlink-myanmar</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/starlink-myanmar" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/starlink-myanmar" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/starlink-myanmar" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/starlink-myanmar" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/starlink-myanmar" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/worldwide-delivery</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/worldwide-delivery" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/worldwide-delivery" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/worldwide-delivery" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/worldwide-delivery" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/worldwide-delivery" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/bn/worldwide-delivery</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/worldwide-delivery" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/worldwide-delivery" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/worldwide-delivery" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/worldwide-delivery" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/worldwide-delivery" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/my/worldwide-delivery</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/worldwide-delivery" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/worldwide-delivery" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/worldwide-delivery" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/worldwide-delivery" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/worldwide-delivery" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/zh-hans/worldwide-delivery</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/worldwide-delivery" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/worldwide-delivery" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/worldwide-delivery" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/worldwide-delivery" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/worldwide-delivery" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/roaming-packages</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/roaming-packages" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/roaming-packages" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/roaming-packages" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/roaming-packages" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/roaming-packages" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/bn/roaming-packages</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/roaming-packages" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/roaming-packages" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/roaming-packages" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/roaming-packages" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/roaming-packages" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/my/roaming-packages</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/roaming-packages" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/roaming-packages" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/roaming-packages" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/roaming-packages" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/roaming-packages" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/zh-hans/roaming-packages</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/roaming-packages" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/roaming-packages" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/roaming-packages" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/roaming-packages" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/roaming-packages" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/warranty</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/warranty" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/warranty" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/warranty" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/warranty" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/warranty" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/bn/warranty</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/warranty" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/warranty" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/warranty" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/warranty" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/warranty" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/my/warranty</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/warranty" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/warranty" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/warranty" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/warranty" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/warranty" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/zh-hans/warranty</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/warranty" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/warranty" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/warranty" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/warranty" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/warranty" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/money-back</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/money-back" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/money-back" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/money-back" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/money-back" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/money-back" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/bn/money-back</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/money-back" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/money-back" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/money-back" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/money-back" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/money-back" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/my/money-back</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/money-back" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/money-back" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/money-back" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/money-back" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/money-back" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/zh-hans/money-back</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/money-back" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/money-back" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/money-back" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/money-back" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/money-back" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/Legal</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/Legal" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/Legal" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/Legal" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/Legal" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/Legal" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/bn/Legal</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/Legal" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/Legal" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/Legal" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/Legal" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/Legal" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/my/Legal</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/Legal" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/Legal" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/Legal" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/Legal" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/Legal" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/zh-hans/Legal</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/Legal" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/Legal" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/Legal" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/Legal" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/Legal" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/Legal/rental-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/Legal/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/Legal/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/Legal/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/Legal/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/Legal/rental-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/bn/Legal/rental-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/Legal/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/Legal/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/Legal/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/Legal/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/Legal/rental-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/my/Legal/rental-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/Legal/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/Legal/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/Legal/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/Legal/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/Legal/rental-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/zh-hans/Legal/rental-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/Legal/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/Legal/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/Legal/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/Legal/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/Legal/rental-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/Legal/shipping-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/Legal/shipping-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/Legal/shipping-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/Legal/shipping-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/Legal/shipping-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/Legal/shipping-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/bn/Legal/shipping-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/Legal/shipping-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/Legal/shipping-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/Legal/shipping-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/Legal/shipping-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/Legal/shipping-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/my/Legal/shipping-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/Legal/shipping-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/Legal/shipping-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/Legal/shipping-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/Legal/shipping-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/Legal/shipping-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/zh-hans/Legal/shipping-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/Legal/shipping-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/Legal/shipping-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/Legal/shipping-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/Legal/shipping-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/Legal/shipping-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/Legal/payment-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/Legal/payment-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/Legal/payment-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/Legal/payment-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/Legal/payment-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/Legal/payment-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/bn/Legal/payment-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/Legal/payment-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/Legal/payment-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/Legal/payment-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/Legal/payment-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/Legal/payment-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/my/Legal/payment-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/Legal/payment-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/Legal/payment-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/Legal/payment-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/Legal/payment-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/Legal/payment-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/zh-hans/Legal/payment-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/Legal/payment-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/Legal/payment-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/Legal/payment-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/Legal/payment-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/Legal/payment-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/Legal/subscription-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/Legal/subscription-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/Legal/subscription-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/Legal/subscription-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/Legal/subscription-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/Legal/subscription-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/bn/Legal/subscription-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/Legal/subscription-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/Legal/subscription-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/Legal/subscription-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/Legal/subscription-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/Legal/subscription-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/my/Legal/subscription-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/Legal/subscription-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/Legal/subscription-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/Legal/subscription-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/Legal/subscription-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/Legal/subscription-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/zh-hans/Legal/subscription-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/Legal/subscription-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/Legal/subscription-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/Legal/subscription-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/Legal/subscription-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/Legal/subscription-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/Legal/location-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/Legal/location-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/Legal/location-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/Legal/location-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/Legal/location-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/Legal/location-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/bn/Legal/location-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/Legal/location-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/Legal/location-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/Legal/location-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/Legal/location-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/Legal/location-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/my/Legal/location-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/Legal/location-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/Legal/location-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/Legal/location-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/Legal/location-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/Legal/location-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/zh-hans/Legal/location-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/Legal/location-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/Legal/location-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/Legal/location-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/Legal/location-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/Legal/location-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/Legal/fair-usage-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/Legal/fair-usage-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/Legal/fair-usage-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/Legal/fair-usage-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/Legal/fair-usage-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/Legal/fair-usage-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/bn/Legal/fair-usage-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/Legal/fair-usage-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/Legal/fair-usage-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/Legal/fair-usage-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/Legal/fair-usage-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/Legal/fair-usage-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/my/Legal/fair-usage-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/Legal/fair-usage-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/Legal/fair-usage-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/Legal/fair-usage-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/Legal/fair-usage-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/Legal/fair-usage-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/zh-hans/Legal/fair-usage-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/Legal/fair-usage-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/Legal/fair-usage-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/Legal/fair-usage-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/Legal/fair-usage-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/Legal/fair-usage-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/Legal/restriction-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/Legal/restriction-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/Legal/restriction-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/Legal/restriction-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/Legal/restriction-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/Legal/restriction-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/bn/Legal/restriction-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/Legal/restriction-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/Legal/restriction-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/Legal/restriction-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/Legal/restriction-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/Legal/restriction-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/my/Legal/restriction-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/Legal/restriction-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/Legal/restriction-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/Legal/restriction-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/Legal/restriction-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/Legal/restriction-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/zh-hans/Legal/restriction-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/Legal/restriction-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/Legal/restriction-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/Legal/restriction-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/Legal/restriction-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/Legal/restriction-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/Legal/return-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/Legal/return-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/Legal/return-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/Legal/return-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/Legal/return-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/Legal/return-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/bn/Legal/return-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/Legal/return-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/Legal/return-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/Legal/return-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/Legal/return-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/Legal/return-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/my/Legal/return-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/Legal/return-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/Legal/return-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/Legal/return-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/Legal/return-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/Legal/return-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/zh-hans/Legal/return-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/Legal/return-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/Legal/return-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/Legal/return-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/Legal/return-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/Legal/return-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/Legal/cancellation-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/Legal/cancellation-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/Legal/cancellation-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/Legal/cancellation-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/Legal/cancellation-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/Legal/cancellation-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/bn/Legal/cancellation-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/Legal/cancellation-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/Legal/cancellation-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/Legal/cancellation-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/Legal/cancellation-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/Legal/cancellation-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/my/Legal/cancellation-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/Legal/cancellation-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/Legal/cancellation-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/Legal/cancellation-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/Legal/cancellation-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/Legal/cancellation-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/zh-hans/Legal/cancellation-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/Legal/cancellation-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/Legal/cancellation-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/Legal/cancellation-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/Legal/cancellation-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/Legal/cancellation-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/Legal/privacy-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/Legal/privacy-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/Legal/privacy-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/Legal/privacy-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/Legal/privacy-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/Legal/privacy-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/bn/Legal/privacy-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/Legal/privacy-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/Legal/privacy-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/Legal/privacy-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/Legal/privacy-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/Legal/privacy-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/my/Legal/privacy-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/Legal/privacy-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/Legal/privacy-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/Legal/privacy-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/Legal/privacy-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/Legal/privacy-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/zh-hans/Legal/privacy-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/Legal/privacy-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/Legal/privacy-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/Legal/privacy-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/Legal/privacy-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/Legal/privacy-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/Legal/terms</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/Legal/terms" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/Legal/terms" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/Legal/terms" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/Legal/terms" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/Legal/terms" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/bn/Legal/terms</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/Legal/terms" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/Legal/terms" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/Legal/terms" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/Legal/terms" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/Legal/terms" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/my/Legal/terms</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/Legal/terms" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/Legal/terms" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/Legal/terms" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/Legal/terms" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/Legal/terms" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/zh-hans/Legal/terms</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/Legal/terms" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/Legal/terms" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/Legal/terms" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/Legal/terms" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/Legal/terms" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
   </url>
   <url>
     <loc>https://dslink.cyou/rental-policy</loc>
-    <lastmod>2026-11-17</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/rental-policy" />
+    <lastmod>2026-11-27</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.95</priority>
+    <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://dslink.cyou/promos</loc>
-    <lastmod>2026-11-17</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.95</priority>
+    <loc>https://dslink.cyou/bn/rental-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/rental-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/my/rental-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/rental-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/zh-hans/rental-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/rental-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/rental-policy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
   </url>
   <url>
     <loc>https://dslink.cyou/red-policy-alert</loc>
-    <lastmod>2026-11-17</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/red-policy-alert" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/red-policy-alert" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/red-policy-alert" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/red-policy-alert" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/red-policy-alert" />
+    <lastmod>2026-11-27</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.95</priority>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/bn/red-policy-alert</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/red-policy-alert" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/red-policy-alert" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/red-policy-alert" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/red-policy-alert" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/red-policy-alert" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/my/red-policy-alert</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/red-policy-alert" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/red-policy-alert" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/red-policy-alert" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/red-policy-alert" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/red-policy-alert" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/zh-hans/red-policy-alert</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/red-policy-alert" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/red-policy-alert" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/red-policy-alert" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/red-policy-alert" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/red-policy-alert" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
   </url>
   <url>
     <loc>https://dslink.cyou/price-syndicate-alert</loc>
-    <lastmod>2026-11-17</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/price-syndicate-alert" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/price-syndicate-alert" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/price-syndicate-alert" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/price-syndicate-alert" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/price-syndicate-alert" />
+    <lastmod>2026-11-27</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.95</priority>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/bn/price-syndicate-alert</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/price-syndicate-alert" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/price-syndicate-alert" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/price-syndicate-alert" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/price-syndicate-alert" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/price-syndicate-alert" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/my/price-syndicate-alert</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/price-syndicate-alert" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/price-syndicate-alert" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/price-syndicate-alert" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/price-syndicate-alert" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/price-syndicate-alert" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/zh-hans/price-syndicate-alert</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/price-syndicate-alert" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/price-syndicate-alert" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/price-syndicate-alert" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/price-syndicate-alert" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/price-syndicate-alert" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/offers</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/offers" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/offers" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/offers" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/offers" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/offers" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/bn/offers</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/offers" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/offers" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/offers" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/offers" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/offers" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/my/offers</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/offers" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/offers" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/offers" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/offers" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/offers" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/zh-hans/offers</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/offers" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/offers" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/offers" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/offers" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/offers" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/image-gallery</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/image-gallery" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/image-gallery" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/image-gallery" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/image-gallery" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/image-gallery" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/bn/image-gallery</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/image-gallery" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/image-gallery" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/image-gallery" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/image-gallery" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/image-gallery" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/my/image-gallery</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/image-gallery" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/image-gallery" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/image-gallery" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/image-gallery" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/image-gallery" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/zh-hans/image-gallery</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/image-gallery" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/image-gallery" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/image-gallery" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/image-gallery" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/image-gallery" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/blog</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/blog" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/blog" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/blog" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/blog" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/blog" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/bn/blog</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/blog" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/blog" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/blog" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/blog" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/blog" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/my/blog</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/blog" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/blog" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/blog" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/blog" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/blog" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/zh-hans/blog</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/blog" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/blog" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/blog" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/blog" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/blog" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/partnerships</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/partnerships" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/partnerships" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/partnerships" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/partnerships" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/partnerships" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/bn/partnerships</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/partnerships" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/partnerships" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/partnerships" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/partnerships" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/partnerships" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/my/partnerships</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/partnerships" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/partnerships" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/partnerships" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/partnerships" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/partnerships" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/zh-hans/partnerships</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/partnerships" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/partnerships" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/partnerships" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/partnerships" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/partnerships" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
   </url>
   <url>
     <loc>https://dslink.cyou/support</loc>
-    <lastmod>2026-11-17</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/support" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/support" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/support" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/support" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/support" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/bn/support</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/support" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/support" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/support" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/support" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/support" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/my/support</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/support" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/support" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/support" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/support" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/support" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/zh-hans/support</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/support" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/support" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/support" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/support" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/support" />
+    <lastmod>2026-11-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://dslink.cyou/faq</loc>
-    <lastmod>2026-11-17</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/faq" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/faq" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/faq" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/faq" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/faq" />
+    <lastmod>2026-11-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://dslink.cyou/track</loc>
-    <lastmod>2026-11-17</lastmod>
+    <loc>https://dslink.cyou/bn/faq</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/faq" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/faq" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/faq" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/faq" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/faq" />
+    <lastmod>2026-11-27</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.75</priority>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://dslink.cyou/warranty</loc>
-    <lastmod>2026-11-17</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.65</priority>
+    <loc>https://dslink.cyou/my/faq</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/faq" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/faq" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/faq" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/faq" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/faq" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://dslink.cyou/money-back</loc>
-    <lastmod>2026-11-17</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.65</priority>
+    <loc>https://dslink.cyou/zh-hans/faq</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/faq" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/faq" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/faq" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/faq" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/faq" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://dslink.cyou/privacy</loc>
-    <lastmod>2026-11-17</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/privacy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/privacy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/privacy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/privacy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/privacy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/bn/privacy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/privacy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/privacy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/privacy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/privacy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/privacy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/my/privacy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/privacy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/privacy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/privacy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/privacy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/privacy" />
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://dslink.cyou/zh-hans/privacy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://dslink.cyou/privacy" />
+    <xhtml:link rel="alternate" hreflang="bn" href="https://dslink.cyou/bn/privacy" />
+    <xhtml:link rel="alternate" hreflang="my" href="https://dslink.cyou/my/privacy" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://dslink.cyou/zh-hans/privacy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dslink.cyou/privacy" />
+    <lastmod>2026-11-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>

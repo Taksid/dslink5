@@ -2503,45 +2503,47 @@ export const ResellerPortalPage: React.FC<{ onNavigate?: (path: string) => void 
                 </div>
               </div>
 
-              <table className="w-full text-left border-collapse text-xs">
-                <thead>
-                  <tr className="border-b border-slate-300 text-slate-600 uppercase">
-                    <th className="py-2.5">Item Description</th>
-                    <th className="py-2.5">SKU</th>
-                    <th className="py-2.5 text-center">Qty</th>
-                    {printDocType === 'invoice' && (
-                      <>
-                        <th className="py-2.5 text-right">Unit Price (BDT)</th>
-                        <th className="py-2.5 text-right">Line Total (BDT)</th>
-                      </>
-                    )}
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-200">
-                  {printOrder.items.map((it, idx) => (
-                    <tr key={idx}>
-                      <td className="py-3 font-bold text-slate-900">{it.name}</td>
-                      <td className="py-3 font-mono text-slate-600">{it.sku}</td>
-                      <td className="py-3 text-center font-bold">{it.quantity}</td>
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse text-xs">
+                  <thead>
+                    <tr className="border-b border-slate-300 text-slate-700 uppercase">
+                      <th className="py-2.5 pr-3">Item Description</th>
+                      <th className="py-2.5 pr-3">SKU</th>
+                      <th className="py-2.5 px-2 text-center">Qty</th>
                       {printDocType === 'invoice' && (
                         <>
-                          <td className="py-3 text-right">
-                            BDT {it.customerUnitSellingPriceBdt.toLocaleString()}
-                          </td>
-                          <td className="py-3 text-right font-bold">
-                            BDT {it.lineCustomerTotalBdt.toLocaleString()}
-                          </td>
+                          <th className="py-2.5 px-2 text-right">Unit Price (BDT)</th>
+                          <th className="py-2.5 pl-2 text-right">Line Total (BDT)</th>
                         </>
                       )}
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="divide-y divide-slate-200">
+                    {printOrder.items.map((it, idx) => (
+                      <tr key={idx}>
+                        <td className="py-3 pr-3 font-bold text-slate-900">{it.name}</td>
+                        <td className="py-3 pr-3 font-mono text-slate-700">{it.sku}</td>
+                        <td className="py-3 px-2 text-center font-bold">{it.quantity}</td>
+                        {printDocType === 'invoice' && (
+                          <>
+                            <td className="py-3 px-2 text-right whitespace-nowrap">
+                              BDT {it.customerUnitSellingPriceBdt.toLocaleString()}
+                            </td>
+                            <td className="py-3 pl-2 text-right font-bold whitespace-nowrap">
+                              BDT {it.lineCustomerTotalBdt.toLocaleString()}
+                            </td>
+                          </>
+                        )}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
 
               {printDocType === 'invoice' && (
                 <div className="flex justify-end border-t border-slate-300 pt-4">
                   <div className="text-right">
-                    <div className="text-xs text-slate-500">Customer Invoice Total</div>
+                    <div className="text-xs text-slate-600">Customer Invoice Total</div>
                     <div className="text-xl font-extrabold text-slate-900">
                       BDT {printOrder.totalCustomerSellingBdt.toLocaleString()}
                     </div>

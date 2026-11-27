@@ -10,9 +10,17 @@ import {
   PUBLISHED_SEO_LOCALES,
   PublishedSeoLanguage,
   buildLocalePath,
+  isKnownSiteRoute,
   parseLocalePath,
 } from './localeRouting';
 import { getHeroGeoCopy, normalizeValidIsoCountry } from './heroGeoCopy';
+import {
+  CORE_FEATURED_VARIANT_IDS,
+  DEFAULT_CENTRAL_PRODUCTS,
+  GLOBAL_DELIVERY_COPY,
+  RENTAL_TERMS_SUMMARY,
+  formatBdt,
+} from './pricingConfig';
 
 function escapeHtmlAttr(value: string): string {
   return value
@@ -61,14 +69,14 @@ export const DOMAIN_SEO_CONFIGS: Record<SupportedDomain, DomainSeoConfig> = {
     legalName: 'DEV SPARK SOFT LIMITED',
     title: 'DEV SPARK SOFT LIMITED | DEVSPARK LINK & DSLINK — Starlink Kits, Enterprise Software & Telecom Bangladesh',
     description:
-      'DEV SPARK SOFT LIMITED (devsparksoft.com.bd · Trade License DNCC/037306 · USA Alaska Entity #10237739) — Official operator of DEVSPARK LINK & DSLINK. Starlink Standard Kit 4X (৳41,500), Starlink Mini Kit (৳21,500), Starlink Rental Kit (৳3,000 One-Time Charge), Global Delivery Available, enterprise software & telecom engineering.',
+      'DEV SPARK SOFT LIMITED (devsparksoft.com.bd · Trade License DNCC/037306 · USA Alaska Entity #10237739) — Official operator of DEVSPARK LINK & DSLINK. Starlink Standard 4X BD Residential (BDT 12,500), Starlink Standard 4X USA Kit + Roam Unlimited Internet (BDT 41,500), Starlink Mini (BDT 9,500 / BDT 21,500), and Standard 4X Rental (BDT 3,000 one-time fee; monthly plan separate).',
     keywords:
-      'DEV SPARK SOFT LIMITED, DSLINK, DEVSPARK LINK, devsparksoft.com.bd, dslink.cyou, Starlink Bangladesh, Starlink Standard 4X Kit Price BD, Starlink Mini Bangladesh, Starlink Rental Kit Bangladesh, Global Starlink Delivery, Enterprise Software Development Dhaka, RED POLICY ALERT Starlink, DNCC/037306, Alaska Entity 10237739',
+      'DEV SPARK SOFT LIMITED, DSLINK, DEVSPARK LINK, devsparksoft.com.bd, dslink.cyou, Starlink Bangladesh, Starlink Standard 4X USA Kit Roam Unlimited, Starlink Mini Bangladesh, Starlink Rental Kit Bangladesh, Global Starlink Delivery, Enterprise Software Development Dhaka, RED POLICY ALERT Starlink, DNCC/037306, Alaska Entity 10237739',
     h1En: 'DEV SPARK SOFT LIMITED — Enterprise Software, Starlink Hardware & Telecom Infrastructure',
     h1Bn: 'ডেভ স্পার্ক সফট লিমিটেড (DEV SPARK SOFT LIMITED) — স্টারলিংক কিট, সফটওয়্যার ও টেলিকম সলিউশন',
     ogTitle: 'DEV SPARK SOFT LIMITED | DEVSPARK LINK & DSLINK Bangladesh',
     ogDescription:
-      'Starlink Standard Kit 4X (৳41,500), Starlink Mini Kit (৳21,500), Starlink Rental Kit (৳3,000 One-Time Charge), Global Delivery Available, enterprise software, and telecom infrastructure by DEV SPARK SOFT LIMITED.',
+      'Starlink Standard 4X BD Residential (BDT 12,500), Starlink Standard 4X USA Kit + Roam Unlimited Internet (BDT 41,500), Starlink Mini (BDT 9,500 / BDT 21,500), and Standard 4X Rental (BDT 3,000 one-time fee) by DEV SPARK SOFT LIMITED.',
     ogImage: '/assets/marketing/dhaka-rooftop-hero-og.jpg',
     ogSiteName: 'DEV SPARK SOFT LIMITED — DEVSPARK LINK',
     locale: 'en_US',
@@ -165,14 +173,14 @@ export const DOMAIN_SEO_CONFIGS: Record<SupportedDomain, DomainSeoConfig> = {
     legalName: 'DEV SPARK SOFT LIMITED (DSLINK)',
     title: 'DSLINK (DEVSPARK LINK) — DEV SPARK SOFT LIMITED | Official Starlink Kit Sales & Satellite Internet BD',
     description:
-      'Global Delivery Available — Worldwide Starlink Kit Shipping from DSLINK (DEV SPARK SOFT LIMITED). Starlink Standard Kit 4X (৳41,500), Starlink Mini Kit (৳21,500), and Starlink Rental Kit (৳3,000 One-Time Charge). Monthly Starlink subscription fees are separate.',
+      'Global Delivery Available — Worldwide Starlink Kit Shipping from DSLINK (DEV SPARK SOFT LIMITED). Starlink Standard 4X BD Residential (BDT 12,500), Starlink Standard 4X USA Kit + Roam Unlimited Internet (BDT 41,500), Starlink Mini (BDT 9,500 / BDT 21,500), and Standard 4X Rental (BDT 3,000 one-time fee). Monthly Starlink subscription fees are separate.',
     keywords:
-      'DSLINK, DEVSPARK LINK, DEV SPARK SOFT LIMITED, dslink.cyou, devsparksoft.com.bd, Starlink Bangladesh, Starlink Standard 4X Kit Price in BD, Starlink Mini Bangladesh, Starlink Rental Kit Bangladesh, Global Starlink Delivery, Satellite Internet Bangladesh, Buy Starlink Kit Dhaka',
+      'DSLINK, DEVSPARK LINK, DEV SPARK SOFT LIMITED, dslink.cyou, devsparksoft.com.bd, Starlink Bangladesh, Starlink Standard 4X USA Kit Roam Unlimited, Starlink Mini Bangladesh, Starlink Rental Kit Bangladesh, Global Starlink Delivery, Satellite Internet Bangladesh, Buy Starlink Kit Dhaka',
     h1En: 'SpaceX Starlink Satellite Kits, Pricing & Global Delivery — DSLink',
     h1Bn: 'বাংলাদেশসহ বিশ্বব্যাপী Starlink Kit ডেলিভারি, সাশ্রয়ী প্রাইসিং ও টেকনিক্যাল সাপোর্ট',
     ogTitle: 'DSLINK (DEVSPARK LINK) — DEV SPARK SOFT LIMITED | Official Starlink Standard 4X & Mini Kit',
     ogDescription:
-      'Order Starlink Standard Kit 4X (৳41,500), Starlink Mini Kit (৳21,500), or Starlink Rental Kit (৳3,000 One-Time Charge) with Global Delivery Available from DSLINK / DEVSPARK LINK (DEV SPARK SOFT LIMITED).',
+      'Order Starlink Standard 4X BD Residential (BDT 12,500), Starlink Standard 4X USA Kit + Roam Unlimited Internet (BDT 41,500), Starlink Mini (BDT 9,500 / BDT 21,500), or Standard 4X Rental (BDT 3,000 one-time fee) from DSLINK / DEVSPARK LINK.',
     ogImage: '/assets/marketing/dhaka-rooftop-hero-og.jpg',
     ogSiteName: 'DSLINK — DEVSPARK LINK (DEV SPARK SOFT LIMITED)',
     locale: 'en_US',
@@ -213,74 +221,167 @@ export const DOMAIN_SEO_CONFIGS: Record<SupportedDomain, DomainSeoConfig> = {
         publisher: {
           '@id': 'https://dslink.cyou/#organization',
         },
-        inLanguage: ['bn-BD', 'my-MM', 'en-US'],
-      },
-      {
-        '@context': 'https://schema.org',
-        '@type': 'Product',
-        '@id': 'https://dslink.cyou/#starlink-standard-4x',
-        name: 'Starlink Standard 4X Satellite Internet Kit (Gen 3)',
-        image: [
-          'https://dslink.cyou/assets/marketing/dhaka-rooftop-hero-og.jpg',
-          'https://dslink.cyou/assets/aistudio/image_1a66081b.png',
-        ],
-        description:
-          'Complete SpaceX Starlink Standard 4X phased-array satellite dish terminal, Gen 3 Wi-Fi 6 Tri-Band router, kickstand mount, 15m cable, and AC power supply with 24-month replacement warranty in Bangladesh.',
-        sku: 'DSL-SL-STD4X',
-        mpn: 'STARLINK-GEN3-4X-BD',
-        brand: {
-          '@type': 'Brand',
-          name: 'Starlink',
-        },
-        offers: {
-          '@type': 'Offer',
-          url: 'https://dslink.cyou/',
-          priceCurrency: 'BDT',
-          price: '41500',
-          priceValidUntil: '2027-12-31',
-          itemCondition: 'https://schema.org/NewCondition',
-          availability: 'https://schema.org/InStock',
-          seller: {
-            '@type': 'Organization',
-            name: 'DSLink Bangladesh',
-          },
-        },
-        aggregateRating: {
-          '@type': 'AggregateRating',
-          ratingValue: '4.9',
-          reviewCount: '486',
-        },
-      },
-      {
-        '@context': 'https://schema.org',
-        '@type': 'Product',
-        '@id': 'https://dslink.cyou/#starlink-mini-kit',
-        name: 'Starlink Mini Portable Satellite Kit',
-        image: ['https://dslink.cyou/assets/aistudio/image_a8056f6d.png'],
-        description:
-          'Ultra-compact backpack-sized SpaceX Starlink Mini satellite terminal with integrated Wi-Fi router and DC power input for field teams, remote work, and travel across Bangladesh.',
-        sku: 'DSL-SL-MINI',
-        brand: {
-          '@type': 'Brand',
-          name: 'Starlink',
-        },
-        offers: {
-          '@type': 'Offer',
-          url: 'https://dslink.cyou/',
-          priceCurrency: 'BDT',
-          price: '21500',
-          priceValidUntil: '2027-12-31',
-          itemCondition: 'https://schema.org/NewCondition',
-          availability: 'https://schema.org/InStock',
-          seller: {
-            '@type': 'Organization',
-            name: 'DSLink Bangladesh',
-          },
-        },
+        inLanguage: ['en', 'bn', 'my', 'zh-Hans'],
       },
     ],
   },
 };
+
+function absoluteAssetUrl(origin: string, pathOrUrl: string): string {
+  if (!pathOrUrl) return `${origin}/assets/marketing/dhaka-rooftop-hero-og.jpg`;
+  if (pathOrUrl.startsWith('http://') || pathOrUrl.startsWith('https://')) return pathOrUrl;
+  return `${origin}${pathOrUrl.startsWith('/') ? '' : '/'}${pathOrUrl}`;
+}
+
+function buildOfferSchema(
+  origin: string,
+  productId: string,
+  offerUrlPath: string,
+  sellerName: string
+): Record<string, any> | null {
+  const prod = DEFAULT_CENTRAL_PRODUCTS[productId];
+  if (!prod) return null;
+  const availability =
+    prod.active && prod.stock > 0
+      ? 'https://schema.org/InStock'
+      : 'https://schema.org/OutOfStock';
+  return {
+    '@type': 'Offer',
+    name: prod.name,
+    url: `${origin}${offerUrlPath}`,
+    priceCurrency: 'BDT',
+    price: String(prod.price),
+    itemCondition: 'https://schema.org/NewCondition',
+    availability,
+    seller: {
+      '@type': 'Organization',
+      name: sellerName,
+    },
+  };
+}
+
+/**
+ * Generates accurate Product / Offer and Rental Service structured data directly
+ * from the server catalog (DEFAULT_CENTRAL_PRODUCTS).
+ * - Never includes unverified aggregateRating or review counts
+ * - Never publishes crossed-out reference prices as Offer price
+ * - Keeps Starlink Standard 4X Rental modeled as a Service (distinct from hardware purchase Product)
+ */
+export function buildCatalogSchemasForRoute(
+  domain: SupportedDomain,
+  normalizedBasePath: string,
+  locale: PublishedSeoLanguage
+): Record<string, any>[] {
+  const config = DOMAIN_SEO_CONFIGS[domain];
+  const origin = config.origin;
+  const sellerName = config.legalName;
+
+  const stdBd = DEFAULT_CENTRAL_PRODUCTS['starlink-standard-4x-bd-residential'];
+  const stdGlobal = DEFAULT_CENTRAL_PRODUCTS['starlink-standard-4x'];
+  const miniBd = DEFAULT_CENTRAL_PRODUCTS['starlink-mini-bd-residential'];
+  const miniGlobal = DEFAULT_CENTRAL_PRODUCTS['starlink-mini-kit'];
+  const rental = DEFAULT_CENTRAL_PRODUCTS['starlink-rental-kit'];
+
+  const stdPath = buildLocalePath('/kits/starlink-standard-4x', locale);
+  const miniPath = buildLocalePath('/kits/starlink-mini-kit', locale);
+  const rentalPath = buildLocalePath('/rental', locale);
+
+  const buildStandard4xProduct = () => ({
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    '@id': `${origin}/kits/starlink-standard-4x#product`,
+    name: stdGlobal.name,
+    category: stdGlobal.variantLabel || 'ROAM UNLIMITED',
+    image: [
+      absoluteAssetUrl(origin, stdGlobal.image),
+      absoluteAssetUrl(origin, stdBd.image),
+    ],
+    description: `${stdGlobal.description} Bangladesh Residential Purchase variant is also available at BDT ${stdBd.price.toLocaleString('en-US')}.`,
+    sku: 'DSL-SL-STD4X',
+    brand: { '@type': 'Brand', name: 'Starlink' },
+    offers: [
+      buildOfferSchema(origin, 'starlink-standard-4x', stdPath, sellerName),
+      buildOfferSchema(origin, 'starlink-standard-4x-bd-residential', `${stdPath}?variant=bd-residential`, sellerName),
+    ].filter(Boolean),
+  });
+
+  const buildMiniProduct = () => ({
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    '@id': `${origin}/kits/starlink-mini-kit#product`,
+    name: 'Starlink Mini Portable Satellite Internet Kit',
+    image: [
+      absoluteAssetUrl(origin, miniBd.image),
+      absoluteAssetUrl(origin, miniGlobal.image),
+    ],
+    description:
+      'Compact Starlink Mini hardware purchase with integrated Wi-Fi router available in Bangladesh Residential Purchase (BDT 9,500) and Global Roam Purchase (BDT 21,500). Monthly Starlink subscription is separate.',
+    sku: 'DSL-SL-MINI',
+    brand: { '@type': 'Brand', name: 'Starlink' },
+    offers: [
+      buildOfferSchema(origin, 'starlink-mini-bd-residential', `${miniPath}?variant=bd-residential`, sellerName),
+      buildOfferSchema(origin, 'starlink-mini-kit', miniPath, sellerName),
+    ].filter(Boolean),
+  });
+
+  const buildRentalService = () => ({
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    '@id': `${origin}/rental#service`,
+    name: rental.name,
+    serviceType: 'Starlink Hardware Equipment Rental',
+    image: absoluteAssetUrl(origin, rental.image),
+    description: rental.description,
+    areaServed: { '@type': 'Country', name: 'Bangladesh' },
+    provider: {
+      '@type': 'Organization',
+      name: sellerName,
+      url: `${origin}/`,
+    },
+    offers: {
+      '@type': 'Offer',
+      name: 'Starlink Standard 4X — Rental (One-Time Rental Kit Fee; Monthly Subscription Separate)',
+      url: `${origin}${rentalPath}`,
+      priceCurrency: 'BDT',
+      price: String(rental.price),
+      availability:
+        rental.active && rental.stock > 0
+          ? 'https://schema.org/InStock'
+          : 'https://schema.org/OutOfStock',
+      description: RENTAL_TERMS_SUMMARY.en.join(' · '),
+    },
+  });
+
+  if (
+    normalizedBasePath === '/kits/starlink-standard-4x' ||
+    normalizedBasePath === '/products/starlink-standard-4x' ||
+    normalizedBasePath === '/kits/starlink-standard-4x-bd-residential'
+  ) {
+    return [buildStandard4xProduct()];
+  }
+  if (
+    normalizedBasePath === '/kits/starlink-mini-kit' ||
+    normalizedBasePath === '/products/starlink-mini-kit' ||
+    normalizedBasePath === '/kits/starlink-mini-bd-residential'
+  ) {
+    return [buildMiniProduct()];
+  }
+  if (
+    normalizedBasePath === '/rental' ||
+    normalizedBasePath === '/rental-plan' ||
+    normalizedBasePath === '/rent'
+  ) {
+    return [buildRentalService()];
+  }
+  if (
+    normalizedBasePath === '/' ||
+    normalizedBasePath === '/kits' ||
+    normalizedBasePath === '/products'
+  ) {
+    return [buildStandard4xProduct(), buildMiniProduct(), buildRentalService()];
+  }
+  return [];
+}
 
 /**
  * Resolves which domain should be served based on hostname, optional query override, and pathname.
@@ -348,6 +449,8 @@ export function generateRobotsTxt(domain: SupportedDomain): string {
   const origin =
     domain === 'devsparksoft.com.bd' ? 'https://devsparksoft.com.bd' : 'https://dslink.cyou';
 
+  // Public transactional routes (/cart, /checkout, /promos, /track) are intentionally NOT Disallowed
+  // so crawlers can fetch and obey their <meta name="robots" content="noindex, nofollow"> and X-Robots-Tag headers.
   return [
     'User-agent: *',
     'Allow: /',
@@ -366,18 +469,10 @@ export function generateRobotsTxt(domain: SupportedDomain): string {
     'Disallow: /reseller',
     'Disallow: /reseller/',
     'Disallow: /resell/confirmation',
-    'Disallow: /cart',
-    'Disallow: /checkout',
-    'Disallow: /single-checkout',
-    'Disallow: /promos',
-    'Disallow: /promo',
-    'Disallow: /track',
-    'Disallow: /bn/cart',
-    'Disallow: /bn/checkout',
-    'Disallow: /my/cart',
-    'Disallow: /my/checkout',
-    'Disallow: /zh-hans/cart',
-    'Disallow: /zh-hans/checkout',
+    'Disallow: /invoice',
+    'Disallow: /invoice/',
+    'Disallow: /invoices',
+    'Disallow: /invoices/',
     '',
     'User-agent: Googlebot',
     'Allow: /',
@@ -401,6 +496,10 @@ export function getIndexableSitemapBasePages(domain: SupportedDomain): SitemapBa
   if (domain === 'devsparksoft.com.bd') {
     return [
       { path: '/', priority: '1.0', changefreq: 'daily' },
+      { path: '/kits', priority: '0.95', changefreq: 'daily' },
+      { path: '/kits/starlink-standard-4x', priority: '0.95', changefreq: 'weekly' },
+      { path: '/kits/starlink-mini-kit', priority: '0.95', changefreq: 'weekly' },
+      { path: '/rental', priority: '0.95', changefreq: 'weekly' },
       { path: '/resell', priority: '0.95', changefreq: 'weekly' },
       { path: '/resell/authorized-retailer', priority: '0.9', changefreq: 'weekly' },
       { path: '/resell/business-partnership', priority: '0.9', changefreq: 'weekly' },
@@ -410,7 +509,6 @@ export function getIndexableSitemapBasePages(domain: SupportedDomain): SitemapBa
       { path: '/roaming-packages', priority: '0.85', changefreq: 'weekly' },
       { path: '/warranty', priority: '0.85', changefreq: 'weekly' },
       { path: '/money-back', priority: '0.85', changefreq: 'weekly' },
-      { path: '/rental', priority: '0.9', changefreq: 'weekly' },
       { path: '/Legal', priority: '0.85', changefreq: 'weekly' },
       ...LEGAL_POLICIES.map((p) => ({ path: p.path, priority: '0.75', changefreq: 'monthly' })),
       { path: '/rental-policy', priority: '0.85', changefreq: 'weekly' },
@@ -427,8 +525,8 @@ export function getIndexableSitemapBasePages(domain: SupportedDomain): SitemapBa
     { path: '/resell/authorized-retailer', priority: '0.9', changefreq: 'weekly' },
     { path: '/resell/business-partnership', priority: '0.9', changefreq: 'weekly' },
     { path: '/kits', priority: '0.95', changefreq: 'daily' },
-    { path: '/kits/starlink-standard-4x', priority: '0.9', changefreq: 'weekly' },
-    { path: '/kits/starlink-mini-kit', priority: '0.9', changefreq: 'weekly' },
+    { path: '/kits/starlink-standard-4x', priority: '0.95', changefreq: 'weekly' },
+    { path: '/kits/starlink-mini-kit', priority: '0.95', changefreq: 'weekly' },
     { path: '/packages', priority: '0.9', changefreq: 'weekly' },
     { path: '/rental', priority: '0.95', changefreq: 'weekly' },
     { path: '/starlink-bangladesh', priority: '0.9', changefreq: 'weekly' },
@@ -453,7 +551,7 @@ export function getIndexableSitemapBasePages(domain: SupportedDomain): SitemapBa
 }
 
 export function generateSitemapXml(domain: SupportedDomain): string {
-  const lastmod = '2026-11-23';
+  const lastmod = '2026-11-27';
   const defaultOrigin =
     domain === 'devsparksoft.com.bd' ? 'https://devsparksoft.com.bd' : 'https://dslink.cyou';
   const basePages = getIndexableSitemapBasePages(domain);
@@ -502,7 +600,8 @@ export function generateServerRenderedBodyHtml(
   domain: SupportedDomain,
   pathname: string = '/',
   localeOverride?: PublishedSeoLanguage,
-  visitorCountryCode?: string | null
+  visitorCountryCode?: string | null,
+  isNotFound?: boolean
 ): string {
   const parsed = parseLocalePath(pathname);
   const locale: PublishedSeoLanguage = localeOverride || parsed.locale;
@@ -511,16 +610,33 @@ export function generateServerRenderedBodyHtml(
   const heroCopy = getHeroGeoCopy(locale, visitorCountryCode);
   const locLink = (p: string) => escapeHtmlAttr(buildLocalePath(p, locale));
 
-  const languageNavLinks = PUBLISHED_SEO_LOCALES.map((loc) => {
-    const href = escapeHtmlAttr(buildLocalePath(parsed.basePath, loc.code));
-    return `<a href="${href}" hreflang="${loc.hreflang}" class="underline underline-offset-4">${escapeHtmlAttr(loc.label)}</a>`;
-  }).join(' · ');
+  const languageNavLinks = seo.noindex
+    ? ''
+    : PUBLISHED_SEO_LOCALES.map((loc) => {
+        const href = escapeHtmlAttr(buildLocalePath(parsed.basePath, loc.code));
+        return `<a href="${href}" hreflang="${loc.hreflang}" class="underline underline-offset-4">${escapeHtmlAttr(loc.label)}</a>`;
+      }).join(' · ');
 
-  const socialFooterHtml = `<footer class="pt-6 border-t border-white/10 text-xs text-neutral-400 flex flex-wrap gap-4">
+  const socialFooterHtml = `<footer class="pt-6 border-t border-white/10 text-xs text-slate-300 flex flex-wrap gap-4">
     <a href="https://www.facebook.com/share/1AM85YcqNL/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer">Facebook</a>
     <a href="https://www.instagram.com/dslinkbd?evlk=MXRiYzMzdndqeHNzNg%3D%3D&amp;utm_source=qr" target="_blank" rel="noopener noreferrer">Instagram</a>
     <a href="https://t.me/profwht" target="_blank" rel="noopener noreferrer">Telegram (@profwht)</a>
   </footer>`;
+
+  if (isNotFound || !isKnownSiteRoute(pathname)) {
+    return `
+      <main id="main-content" class="min-h-screen bg-[#04070c] text-slate-100 px-6 py-16 max-w-3xl mx-auto space-y-6">
+        <p class="text-xs font-mono uppercase tracking-wider text-cyan-300">DEVSPARK LINK (DSLINK) · HTTP 404</p>
+        <h1 class="text-3xl font-bold text-white">Page Not Found (404)</h1>
+        <p class="text-slate-300">${escapeHtmlAttr(seo.description)}</p>
+        <nav aria-label="Recovery links" class="flex flex-wrap gap-3">
+          <a href="${locLink('/')}" class="inline-flex items-center px-5 py-3 rounded-lg bg-cyan-400 text-[#04131a] font-bold">Back to Homepage</a>
+          <a href="${locLink('/kits')}" class="inline-flex items-center px-5 py-3 rounded-lg border border-slate-600 text-white font-semibold">Browse Starlink Kits</a>
+        </nav>
+        ${socialFooterHtml}
+      </main>
+    `.trim();
+  }
 
   if (
     normalizedPath === '/resell' ||
@@ -671,6 +787,122 @@ export function generateServerRenderedBodyHtml(
     `.trim();
   }
 
+  if (normalizedPath === '/kits' || normalizedPath === '/products') {
+    const cardsHtml = CORE_FEATURED_VARIANT_IDS.map((id) => {
+      const p = DEFAULT_CENTRAL_PRODUCTS[id];
+      const href = locLink(p.detailUrl || `/kits/${p.id}`);
+      return `<article class="p-4 border border-white/15 rounded-lg space-y-2">
+        <img src="${escapeHtmlAttr(p.image)}" alt="${escapeHtmlAttr(p.imageAlt || p.name)}" width="400" height="300" />
+        <h2><a href="${href}">${escapeHtmlAttr(p.name)}</a></h2>
+        <p>${formatBdt(p.price)} BDT${p.referencePrice ? ` (Reference price: ${formatBdt(p.referencePrice)})` : ''}</p>
+        <p>${escapeHtmlAttr(p.description)}</p>
+      </article>`;
+    }).join('\n');
+    return `
+      <div class="min-h-screen bg-black text-neutral-100 px-6 py-12 max-w-5xl mx-auto space-y-6">
+        <p class="text-xs font-mono text-neutral-400">DEVSPARK LINK (DSLINK) · STARLINK KITS IN BANGLADESH</p>
+        <h1 class="text-3xl font-bold text-white">Starlink Kits in Bangladesh — Standard 4X, Starlink Mini &amp; Rental</h1>
+        <p>${escapeHtmlAttr(seo.description)}</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">${cardsHtml}</div>
+        <p class="text-xs text-neutral-400">${escapeHtmlAttr(GLOBAL_DELIVERY_COPY.disclaimerEn)}</p>
+        <nav aria-label="Language switcher">${languageNavLinks}</nav>
+        ${socialFooterHtml}
+      </div>
+    `.trim();
+  }
+
+  if (
+    normalizedPath === '/kits/starlink-standard-4x' ||
+    normalizedPath === '/products/starlink-standard-4x' ||
+    normalizedPath === '/kits/starlink-standard-4x-bd-residential'
+  ) {
+    const bd = DEFAULT_CENTRAL_PRODUCTS['starlink-standard-4x-bd-residential'];
+    const gl = DEFAULT_CENTRAL_PRODUCTS['starlink-standard-4x'];
+    return `
+      <div class="min-h-screen bg-black text-neutral-100 px-6 py-12 max-w-4xl mx-auto space-y-6">
+        <p class="text-xs font-mono text-neutral-400">DEVSPARK LINK (DSLINK) · ROAM UNLIMITED &amp; BANGLADESH RESIDENTIAL</p>
+        <h1 class="text-3xl font-bold text-white">Starlink Standard 4X USA Kit + Roam Unlimited Internet (BDT 41,500) &amp; BD Residential</h1>
+        <p>${escapeHtmlAttr(seo.description)}</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <article class="p-4 border border-white/15 rounded-lg space-y-2">
+            <img src="${escapeHtmlAttr(gl.image)}" alt="${escapeHtmlAttr(gl.imageAlt || gl.name)}" width="800" height="800" />
+            <p class="text-xs font-mono uppercase">${escapeHtmlAttr(gl.variantLabel || 'ROAM UNLIMITED')}</p>
+            <h2>${escapeHtmlAttr(gl.name)}</h2>
+            <p>${formatBdt(gl.price)} BDT (Reference price: ${formatBdt(gl.referencePrice || 48000)})</p>
+            <p>${escapeHtmlAttr(gl.description)}</p>
+          </article>
+          <article class="p-4 border border-white/15 rounded-lg space-y-2">
+            <img src="${escapeHtmlAttr(bd.image)}" alt="${escapeHtmlAttr(bd.imageAlt || bd.name)}" width="800" height="800" />
+            <p class="text-xs font-mono uppercase">${escapeHtmlAttr(bd.variantLabel || 'Bangladesh Residential Purchase')}</p>
+            <h2>${escapeHtmlAttr(bd.name)}</h2>
+            <p>${formatBdt(bd.price)} BDT (Reference price: ${formatBdt(bd.referencePrice || 48000)})</p>
+            <p>${escapeHtmlAttr(bd.description)}</p>
+          </article>
+        </div>
+        <p><a href="${locLink('/rental')}">Looking for Starlink Standard 4X Rental (BDT 3,000 one-time fee)? View Rental Offer</a></p>
+        <p class="text-xs text-slate-300">${escapeHtmlAttr(GLOBAL_DELIVERY_COPY.disclaimerEn)}</p>
+        <nav aria-label="Language switcher">${languageNavLinks}</nav>
+        ${socialFooterHtml}
+      </div>
+    `.trim();
+  }
+
+  if (
+    normalizedPath === '/kits/starlink-mini-kit' ||
+    normalizedPath === '/products/starlink-mini-kit' ||
+    normalizedPath === '/kits/starlink-mini-bd-residential'
+  ) {
+    const bd = DEFAULT_CENTRAL_PRODUCTS['starlink-mini-bd-residential'];
+    const gl = DEFAULT_CENTRAL_PRODUCTS['starlink-mini-kit'];
+    return `
+      <div class="min-h-screen bg-[#04070c] text-slate-100 px-6 py-12 max-w-4xl mx-auto space-y-6">
+        <p class="text-xs font-mono text-cyan-300">DEVSPARK LINK (DSLINK) · STARLINK MINI</p>
+        <h1 class="text-3xl font-bold text-white">Starlink Mini Price in Bangladesh — Residential &amp; Global Roam Purchase</h1>
+        <p>${escapeHtmlAttr(seo.description)}</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <article class="p-4 border border-white/15 rounded-lg space-y-2">
+            <img src="${escapeHtmlAttr(bd.image)}" alt="${escapeHtmlAttr(bd.imageAlt || bd.name)}" width="800" height="800" />
+            <h2>${escapeHtmlAttr(bd.name)}</h2>
+            <p>${formatBdt(bd.price)} BDT (Reference price: ${formatBdt(bd.referencePrice || 26500)})</p>
+            <p>${escapeHtmlAttr(bd.description)}</p>
+          </article>
+          <article class="p-4 border border-white/15 rounded-lg space-y-2">
+            <img src="${escapeHtmlAttr(gl.image)}" alt="${escapeHtmlAttr(gl.imageAlt || gl.name)}" width="800" height="800" />
+            <h2>${escapeHtmlAttr(gl.name)}</h2>
+            <p>${formatBdt(gl.price)} BDT (Reference price: ${formatBdt(gl.referencePrice || 26500)})</p>
+            <p>${escapeHtmlAttr(gl.description)}</p>
+          </article>
+        </div>
+        <p class="text-xs text-slate-300">${escapeHtmlAttr(GLOBAL_DELIVERY_COPY.disclaimerEn)}</p>
+        <nav aria-label="Language switcher">${languageNavLinks}</nav>
+        ${socialFooterHtml}
+      </div>
+    `.trim();
+  }
+
+  if (
+    normalizedPath === '/rental' ||
+    normalizedPath === '/rental-plan' ||
+    normalizedPath === '/rent'
+  ) {
+    const rental = DEFAULT_CENTRAL_PRODUCTS['starlink-rental-kit'];
+    const termsHtml = RENTAL_TERMS_SUMMARY.en
+      .map((term) => `<li>${escapeHtmlAttr(term)}</li>`)
+      .join('');
+    return `
+      <div class="min-h-screen bg-[#04070c] text-slate-100 px-6 py-12 max-w-4xl mx-auto space-y-6">
+        <p class="text-xs font-mono text-cyan-300">DEVSPARK LINK (DSLINK) · STARLINK RENTAL IN BANGLADESH</p>
+        <h1 class="text-3xl font-bold text-white">Starlink Standard 4X Rental in Bangladesh — BDT 3,000 One-Time Fee</h1>
+        <img src="${escapeHtmlAttr(rental.image)}" alt="${escapeHtmlAttr(rental.imageAlt || rental.name)}" width="800" height="800" />
+        <p>${escapeHtmlAttr(rental.description)}</p>
+        <ul>${termsHtml}</ul>
+        <p><a href="${locLink('/kits')}">Compare Starlink Standard 4X &amp; Starlink Mini Purchase Kits</a></p>
+        <nav aria-label="Language switcher">${languageNavLinks}</nav>
+        ${socialFooterHtml}
+      </div>
+    `.trim();
+  }
+
   if (normalizedPath !== '/' && normalizedPath !== '/devsparksoft' && normalizedPath !== '/dslink') {
     return `
       <div class="min-h-screen bg-black text-neutral-100 px-6 py-12 max-w-4xl mx-auto space-y-6">
@@ -694,7 +926,18 @@ export function generateServerRenderedBodyHtml(
     `.trim();
   }
 
-  // Homepage semantic initial HTML (uses localized country-aware hero copy)
+  // Homepage semantic initial HTML (uses localized country-aware hero copy + all 5 catalog offers)
+  const homeOfferCardsHtml = CORE_FEATURED_VARIANT_IDS.map((id) => {
+    const p = DEFAULT_CENTRAL_PRODUCTS[id];
+    const href = locLink(p.detailUrl || `/kits/${p.id}`);
+    return `<a href="${href}" class="p-4 border border-white/20 rounded-lg block">
+      <img src="${escapeHtmlAttr(p.image)}" alt="${escapeHtmlAttr(p.imageAlt || p.name)}" width="320" height="240" />
+      <h2>${escapeHtmlAttr(p.name)}</h2>
+      <p>${formatBdt(p.price)} BDT${p.category === 'rental' ? ' One-Time Fee' : ''}</p>
+      <p>${escapeHtmlAttr(p.variantLabel || '')}</p>
+    </a>`;
+  }).join('\n');
+
   return `
     <div class="min-h-screen bg-black text-neutral-100">
       <header class="flex items-center justify-between gap-8 px-6 py-4 border-b border-white/15 max-w-[1280px] mx-auto">
@@ -714,21 +957,7 @@ export function generateServerRenderedBodyHtml(
           <p data-ssr-hero-description="true" class="text-base text-slate-200 max-w-3xl">${escapeHtmlAttr(heroCopy.description)}</p>
           <p class="text-sm text-neutral-200 max-w-3xl">${escapeHtmlAttr(heroCopy.serviceLine)}</p>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <a href="${locLink('/rental')}" class="p-4 border border-white/20 rounded-lg">
-              <h2>${escapeHtmlAttr(heroCopy.rentalCardTitle)}</h2>
-              <p>৳3,000</p>
-              <p>${escapeHtmlAttr(heroCopy.rentalCardSub)}</p>
-            </a>
-            <a href="${locLink('/kits/starlink-standard-4x')}" class="p-4 border border-white/20 rounded-lg">
-              <h2>${escapeHtmlAttr(heroCopy.standardCardTitle)}</h2>
-              <p>৳41,500</p>
-              <p>${escapeHtmlAttr(heroCopy.purchaseCardSub)}</p>
-            </a>
-            <a href="${locLink('/kits/starlink-mini-kit')}" class="p-4 border border-white/20 rounded-lg">
-              <h2>${escapeHtmlAttr(heroCopy.miniCardTitle)}</h2>
-              <p>৳21,500</p>
-              <p>${escapeHtmlAttr(heroCopy.purchaseCardSub)}</p>
-            </a>
+            ${homeOfferCardsHtml}
           </div>
           <p class="text-xs text-neutral-300 max-w-3xl">${escapeHtmlAttr(heroCopy.worldwideNote)} <a href="${locLink('/Legal')}">${escapeHtmlAttr(heroCopy.legalLabel)}</a> · <a href="${locLink('/support')}">${escapeHtmlAttr(heroCopy.supportLabel)}</a></p>
         </section>
@@ -753,11 +982,13 @@ export function buildDomainHtmlDocument(
   baseHtml: string,
   domain: SupportedDomain,
   pathname: string = '/',
-  visitorCountry?: ServerVisitorCountry
+  visitorCountry?: ServerVisitorCountry,
+  options?: { isNotFound?: boolean }
 ): string {
   const config = DOMAIN_SEO_CONFIGS[domain];
   const parsed = parseLocalePath(pathname);
   const normalizedBasePath = parsed.basePath.toLowerCase();
+  const isNotFound = Boolean(options?.isNotFound) || !isKnownSiteRoute(pathname);
 
   // SEO metadata is derived strictly from the locale URL (never from visitor IP)
   const localizedSeo = getLocalizedRouteSeo(domain, pathname);
@@ -773,7 +1004,8 @@ export function buildDomainHtmlDocument(
     domain,
     pathname,
     localizedSeo.language,
-    safeVisitorCountry.countryCode
+    safeVisitorCountry.countryCode,
+    isNotFound
   );
 
   const pageTitle = localizedSeo.title;
@@ -802,51 +1034,64 @@ export function buildDomainHtmlDocument(
   const isFaqPage = normalizedBasePath === '/faq';
 
   const isArticleRoute =
-    localizedSeo.isArticle ||
-    isRedPolicy ||
-    isPriceSyndicate ||
-    isRentalPolicy ||
-    isLegalCenter ||
-    Boolean(legalSubPolicy);
+    !isNotFound &&
+    (localizedSeo.isArticle ||
+      isRedPolicy ||
+      isPriceSyndicate ||
+      isRentalPolicy ||
+      isLegalCenter ||
+      Boolean(legalSubPolicy));
 
-  const pageSchemas = isFaqPage
-    ? [
-        ...config.jsonLd,
-        buildFaqPageJsonLd(
-          getLocalizedFaqEntries(
-            [...GENERAL_FAQ_ITEMS, ...RENTAL_FAQ_ITEMS],
-            localizedSeo.language
+  const catalogSchemas =
+    isNotFound || localizedSeo.noindex
+      ? []
+      : buildCatalogSchemasForRoute(domain, normalizedBasePath, localizedSeo.language);
+
+  const pageSchemas =
+    isNotFound || localizedSeo.noindex
+      ? []
+      : isFaqPage
+      ? [
+          ...config.jsonLd,
+          buildFaqPageJsonLd(
+            getLocalizedFaqEntries(
+              [...GENERAL_FAQ_ITEMS, ...RENTAL_FAQ_ITEMS],
+              localizedSeo.language
+            ),
+            { inLanguage: localizedSeo.inLanguage, pageUrl: canonicalUrl }
           ),
-          { inLanguage: localizedSeo.inLanguage, pageUrl: canonicalUrl }
-        ),
-      ]
-    : isRental || isRentalPolicy
-    ? [
-        ...config.jsonLd,
-        buildFaqPageJsonLd(
-          getLocalizedFaqEntries(RENTAL_FAQ_ITEMS, localizedSeo.language),
-          { inLanguage: localizedSeo.inLanguage, pageUrl: canonicalUrl }
-        ),
-      ]
-    : normalizedBasePath === '/'
-    ? [
-        ...config.jsonLd,
-        buildFaqPageJsonLd(
-          getLocalizedFaqEntries(RENTAL_FAQ_ITEMS, localizedSeo.language),
-          { inLanguage: localizedSeo.inLanguage, pageUrl: canonicalUrl }
-        ),
-      ]
-    : config.jsonLd;
+        ]
+      : isRental || isRentalPolicy
+      ? [
+          ...config.jsonLd,
+          ...catalogSchemas,
+          buildFaqPageJsonLd(
+            getLocalizedFaqEntries(RENTAL_FAQ_ITEMS, localizedSeo.language),
+            { inLanguage: localizedSeo.inLanguage, pageUrl: canonicalUrl }
+          ),
+        ]
+      : normalizedBasePath === '/'
+      ? [
+          ...config.jsonLd,
+          ...catalogSchemas,
+          buildFaqPageJsonLd(
+            getLocalizedFaqEntries(RENTAL_FAQ_ITEMS, localizedSeo.language),
+            { inLanguage: localizedSeo.inLanguage, pageUrl: canonicalUrl }
+          ),
+        ]
+      : [...config.jsonLd, ...catalogSchemas];
 
   const isResellSubpage =
     normalizedBasePath === '/resell/authorized-retailer' ||
     normalizedBasePath === '/resell/business-partnership';
   const isResellRoot = normalizedBasePath === '/resell';
+  const isKitDetailSubpage =
+    normalizedBasePath.startsWith('/kits/') || normalizedBasePath.startsWith('/products/');
   const breadcrumbOrigin =
     isResellRoot || isResellSubpage ? 'https://devsparksoft.com.bd' : config.origin;
 
   const breadcrumbSchema =
-    normalizedBasePath !== '/'
+    !isNotFound && !localizedSeo.noindex && normalizedBasePath !== '/'
       ? [
           {
             '@context': 'https://schema.org',
@@ -864,6 +1109,48 @@ export function buildDomainHtmlDocument(
                     position: 2,
                     name: 'Resell',
                     item: `${breadcrumbOrigin}${buildLocalePath('/resell', localizedSeo.language)}`,
+                  },
+                  {
+                    '@type': 'ListItem',
+                    position: 3,
+                    name: pageTitle.split('|')[0].trim(),
+                    item: canonicalUrl,
+                  },
+                ]
+              : isKitDetailSubpage
+              ? [
+                  {
+                    '@type': 'ListItem',
+                    position: 1,
+                    name: 'Home',
+                    item: `${breadcrumbOrigin}${buildLocalePath('/', localizedSeo.language)}`,
+                  },
+                  {
+                    '@type': 'ListItem',
+                    position: 2,
+                    name: 'Starlink Kits',
+                    item: `${breadcrumbOrigin}${buildLocalePath('/kits', localizedSeo.language)}`,
+                  },
+                  {
+                    '@type': 'ListItem',
+                    position: 3,
+                    name: pageTitle.split('|')[0].trim(),
+                    item: canonicalUrl,
+                  },
+                ]
+              : legalSubPolicy
+              ? [
+                  {
+                    '@type': 'ListItem',
+                    position: 1,
+                    name: 'Home',
+                    item: `${breadcrumbOrigin}${buildLocalePath('/', localizedSeo.language)}`,
+                  },
+                  {
+                    '@type': 'ListItem',
+                    position: 2,
+                    name: 'Legal & Policies',
+                    item: `${breadcrumbOrigin}${buildLocalePath('/Legal', localizedSeo.language)}`,
                   },
                   {
                     '@type': 'ListItem',
@@ -897,12 +1184,15 @@ export function buildDomainHtmlDocument(
     )
     .join('\n    ');
 
-  const hreflangTags = localizedSeo.hreflangLinks
-    .map(
-      (link) =>
-        `<link rel="alternate" hreflang="${escapeHtmlAttr(link.hreflang)}" href="${escapeHtmlAttr(link.href)}" />`
-    )
-    .join('\n    ');
+  const hreflangTags =
+    isNotFound || localizedSeo.noindex
+      ? ''
+      : localizedSeo.hreflangLinks
+          .map(
+            (link) =>
+              `<link rel="alternate" hreflang="${escapeHtmlAttr(link.hreflang)}" href="${escapeHtmlAttr(link.href)}" />`
+          )
+          .join('\n    ');
 
   const ogLocaleAlternateTags = localizedSeo.ogLocaleAlternates
     .map((loc) => `<meta property="og:locale:alternate" content="${escapeHtmlAttr(loc)}" />`)
@@ -912,12 +1202,41 @@ export function buildDomainHtmlDocument(
   const safeDescription = escapeHtmlAttr(pageDescription);
   const safeKeywords = escapeHtmlAttr(pageKeywords);
   const safeCanonical = escapeHtmlAttr(canonicalUrl);
-  const robotsValue = localizedSeo.noindex
-    ? 'noindex, nofollow'
-    : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';
-  const ogImageUrl = config.ogImage.startsWith('http')
-    ? config.ogImage
-    : `${config.origin}${config.ogImage}`;
+  const robotsValue =
+    isNotFound || localizedSeo.noindex
+      ? 'noindex, nofollow'
+      : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';
+
+  const isSquareProductOg =
+    normalizedBasePath === '/kits/starlink-standard-4x' ||
+    normalizedBasePath === '/products/starlink-standard-4x' ||
+    normalizedBasePath === '/kits/starlink-standard-4x-bd-residential' ||
+    normalizedBasePath === '/kits/starlink-mini-kit' ||
+    normalizedBasePath === '/products/starlink-mini-kit' ||
+    normalizedBasePath === '/kits/starlink-mini-bd-residential' ||
+    isRental;
+
+  const routeOgImage =
+    normalizedBasePath === '/kits/starlink-standard-4x' ||
+    normalizedBasePath === '/products/starlink-standard-4x'
+      ? '/assets/products/starlink-standard-4x-roam-unlimited.jpg'
+      : normalizedBasePath === '/kits/starlink-standard-4x-bd-residential'
+      ? '/assets/products/starlink-standard-4x-bd-residential.jpg'
+      : normalizedBasePath === '/kits/starlink-mini-kit' ||
+        normalizedBasePath === '/products/starlink-mini-kit'
+      ? '/assets/products/starlink-mini-global-roam.jpg'
+      : normalizedBasePath === '/kits/starlink-mini-bd-residential'
+      ? '/assets/products/starlink-mini-bd-residential.jpg'
+      : isRental
+      ? '/assets/products/starlink-standard-4x-rental.jpg'
+      : config.ogImage;
+
+  const ogImageWidth = isSquareProductOg ? '1024' : '1280';
+  const ogImageHeight = isSquareProductOg ? '1024' : '720';
+
+  const ogImageUrl = routeOgImage.startsWith('http')
+    ? routeOgImage
+    : `${config.origin}${routeOgImage}`;
 
   const seoHeadBlock = `<!-- Primary Multilingual SEO Meta Tags (${config.domain} · ${localizedSeo.htmlLang}) -->
     <title>${safeTitle}</title>
@@ -931,7 +1250,7 @@ export function buildDomainHtmlDocument(
     <meta name="theme-color" content="${config.themeColor}" />
     <meta name="application-name" content="${escapeHtmlAttr(config.brandName)}" />
     <meta name="apple-mobile-web-app-title" content="${escapeHtmlAttr(config.brandName)}" />
-    <link rel="canonical" href="${safeCanonical}" />
+    ${isNotFound ? '' : `<link rel="canonical" href="${safeCanonical}" />`}
     ${hreflangTags}
 
     <!-- Favicon & App Icons -->
@@ -952,8 +1271,8 @@ export function buildDomainHtmlDocument(
     <meta property="og:image" content="${escapeHtmlAttr(ogImageUrl)}" />
     <meta property="og:image:secure_url" content="${escapeHtmlAttr(ogImageUrl)}" />
     <meta property="og:image:type" content="image/jpeg" />
-    <meta property="og:image:width" content="1280" />
-    <meta property="og:image:height" content="720" />
+    <meta property="og:image:width" content="${ogImageWidth}" />
+    <meta property="og:image:height" content="${ogImageHeight}" />
     <meta property="og:image:alt" content="${safeTitle}" />
     <meta property="og:locale" content="${escapeHtmlAttr(localizedSeo.ogLocale)}" />
     ${ogLocaleAlternateTags}

@@ -76,21 +76,20 @@ export const BanglaQrPaymentSection: React.FC<BanglaQrPaymentSectionProps> = ({
   const handleDownloadQr = async () => {
     setDownloading(true);
     try {
-      const response = await fetch(EXACT_BANGLA_QR_IMAGE_URL, { mode: 'cors' });
+      const response = await fetch(EXACT_BANGLA_QR_IMAGE_URL);
       const blob = await response.blob();
       const blobUrl = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = blobUrl;
-      link.download = `DSLink-Bangla-QR-${resolvedOrderId || 'IMG-2390'}.jpg`;
+      link.download = `DSLink-Bangla-QR-${resolvedOrderId || 'DEVSPARK-SOFT-LIMITED'}.jpg`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
       URL.revokeObjectURL(blobUrl);
     } catch {
-      // Fallback direct download anchor if CORS blocks blob fetch
       const link = document.createElement('a');
       link.href = EXACT_BANGLA_QR_IMAGE_URL;
-      link.download = `DSLink-Bangla-QR-${resolvedOrderId || 'IMG-2390'}.jpg`;
+      link.download = `DSLink-Bangla-QR-${resolvedOrderId || 'DEVSPARK-SOFT-LIMITED'}.jpg`;
       link.target = '_blank';
       link.rel = 'noopener noreferrer';
       document.body.appendChild(link);
@@ -144,10 +143,10 @@ export const BanglaQrPaymentSection: React.FC<BanglaQrPaymentSectionProps> = ({
           />
         </div>
         <div className="mt-1.5 w-full">
-          <div className="text-[11px] font-semibold text-slate-900 leading-tight truncate">
+          <div className="text-xs font-semibold text-slate-900 leading-tight truncate">
             {inst.shortName}
           </div>
-          <div className="text-[9px] font-mono text-slate-500 leading-tight mt-0.5 truncate">
+          <div className="text-[11px] font-mono text-slate-700 leading-tight mt-0.5 truncate">
             {inst.banglaQrSupported ? 'Bangla QR' : ''}
             {inst.banglaQrSupported && inst.npsbSupported ? ' · ' : ''}
             {inst.npsbSupported ? 'NPSB' : ''}
@@ -209,29 +208,29 @@ export const BanglaQrPaymentSection: React.FC<BanglaQrPaymentSectionProps> = ({
       <div
         className={`rounded-xl border ${compact ? 'p-3' : 'p-3.5 sm:p-4'} grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs ${
           isLight
-            ? 'bg-slate-50 border-slate-200 text-slate-700'
-            : 'bg-black/60 border-white/10 text-slate-300'
+            ? 'bg-slate-50 border-slate-300 text-slate-800'
+            : 'bg-black/60 border-slate-700 text-slate-200'
         }`}
       >
-        <div>
-          <span className="text-[11px] text-slate-500 block">
+        <div className="min-w-0">
+          <span className={`text-xs block ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
             {t3('অর্ডার আইডি (Order ID)', 'Order ID', 'Order ID')}
           </span>
           <span
             data-testid="bangla-qr-order-id"
-            className={`font-mono font-bold text-sm tabular-nums ${
+            className={`font-mono font-bold text-sm tabular-nums break-all ${
               isLight ? 'text-slate-900' : 'text-white'
             }`}
           >
             #{resolvedOrderId}
           </span>
         </div>
-        <div>
-          <span className="text-[11px] text-slate-500 block">
+        <div className="min-w-0">
+          <span className={`text-xs block ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
             {t3('পণ্যের বিবরণ (Product Summary)', 'Product Summary', 'Product Summary')}
           </span>
           <span
-            className={`font-semibold block truncate ${
+            className={`font-semibold block break-words ${
               isLight ? 'text-slate-900' : 'text-white'
             }`}
             title={productSummary}
@@ -241,12 +240,14 @@ export const BanglaQrPaymentSection: React.FC<BanglaQrPaymentSectionProps> = ({
         </div>
         <div className="flex items-center justify-between sm:justify-end gap-2">
           <div className="sm:text-right">
-            <span className="text-[11px] text-slate-500 block">
+            <span className={`text-xs block ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
               {t3('মোট পরিশোধযোগ্য (Total in BDT)', 'Total Amount (BDT)', 'Total Amount in BDT')}
             </span>
             <span
               data-testid="bangla-qr-total-bdt"
-              className="font-mono font-bold text-base text-emerald-700 tabular-nums"
+              className={`font-mono font-bold text-base tabular-nums ${
+                isLight ? 'text-emerald-800' : 'text-emerald-300'
+              }`}
             >
               {formatBdt(resolvedAmountBdt)} BDT
             </span>
@@ -255,9 +256,9 @@ export const BanglaQrPaymentSection: React.FC<BanglaQrPaymentSectionProps> = ({
             type="button"
             onClick={handleCopyAmount}
             aria-label="Copy BDT Amount"
-            className="px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 text-[11px] font-medium inline-flex items-center gap-1 cursor-pointer shrink-0"
+            className="min-h-[44px] px-3 py-2 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-slate-800 text-xs font-semibold inline-flex items-center gap-1.5 cursor-pointer shrink-0"
           >
-            {copiedAmount ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+            {copiedAmount ? <Check className="w-4 h-4 text-emerald-700" aria-hidden="true" /> : <Copy className="w-4 h-4" aria-hidden="true" />}
             <span>{copiedAmount ? t3('কপি হয়েছে', 'Copied', 'Copied') : t3('কপি', 'Copy', 'Copy')}</span>
           </button>
         </div>
@@ -274,7 +275,7 @@ export const BanglaQrPaymentSection: React.FC<BanglaQrPaymentSectionProps> = ({
           >
             Scan &amp; Pay – All Supported Banks &amp; MFS
           </h4>
-          <p className="text-xs text-slate-500 max-w-md mx-auto">
+          <p className={`text-xs sm:text-sm max-w-md mx-auto leading-relaxed ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
             {t3(
               'আপনার ব্যাংক বা মোবাইল ব্যাংকিং (bKash, Nagad, Rocket, Citytouch, Astha, NexusPay, CellFin) অ্যাপ থেকে নিচের অফিসিয়াল Bangla QR কোডটি স্ক্যান করুন।',
               'Scan the official DSLink Bangla QR code below using your participating Bank or MFS app.',
@@ -284,14 +285,17 @@ export const BanglaQrPaymentSection: React.FC<BanglaQrPaymentSectionProps> = ({
         </div>
 
         {/* Original QR Image Container: Mobile 220-280px, Desktop 300-350px, zero cropping/modification */}
-        <div className="p-3 sm:p-4 rounded-2xl bg-white border-2 border-slate-200 shadow-sm inline-flex flex-col items-center max-w-full">
+        <div className="p-3 sm:p-4 rounded-2xl bg-white border-2 border-slate-300 shadow-sm inline-flex flex-col items-center max-w-full">
           <img
             data-testid="bangla-qr-original-image"
             src={EXACT_BANGLA_QR_IMAGE_URL}
-            alt="DSLink Official Bangla QR Scan & Pay Code"
+            alt="DSLink Official Bangla QR Scan & Pay Code for Dev Spark Soft Limited"
+            width={1122}
+            height={1402}
+            decoding="async"
             className="w-[248px] sm:w-[270px] md:w-[325px] max-w-full h-auto object-contain rounded-lg select-none block"
           />
-          <div className="mt-2.5 flex flex-wrap items-center justify-center gap-2 text-[11px] font-mono text-slate-600">
+          <div className="mt-2.5 flex flex-wrap items-center justify-center gap-2 text-xs font-mono text-slate-700">
             <span>MERCHANT: DEV SPARK SOFT LIMITED (DSLINK)</span>
             <span aria-hidden="true">·</span>
             <span>BANGLA QR &amp; NPSB</span>
@@ -305,9 +309,9 @@ export const BanglaQrPaymentSection: React.FC<BanglaQrPaymentSectionProps> = ({
             onClick={handleDownloadQr}
             disabled={downloading}
             data-testid="bangla-qr-download-button"
-            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs transition-colors shadow-xs cursor-pointer"
+            className="min-h-[44px] inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-semibold text-xs sm:text-sm transition-colors shadow-xs cursor-pointer disabled:opacity-60"
           >
-            <Download className="w-4 h-4 shrink-0" />
+            <Download className="w-4 h-4 shrink-0" aria-hidden="true" />
             <span>
               {downloading
                 ? t3('ডাউনলোড হচ্ছে...', 'Downloading...', 'Downloading...')
@@ -329,7 +333,7 @@ export const BanglaQrPaymentSection: React.FC<BanglaQrPaymentSectionProps> = ({
             >
               Supported Banks &amp; Mobile Financial Services
             </h4>
-            <p className="text-xs text-slate-500">
+            <p className={`text-xs ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
               {t3(
                 'পেমেন্ট করার জন্য ব্যবহৃত ব্যাংক বা এমএফএস প্রতিষ্ঠানটি নির্বাচন করুন (Bangla QR ও NPSB আলাদাভাবে যাচাইকৃত)',
                 'Select the Bank or MFS institution you used to pay (Bangla QR and NPSB compatibility evaluated separately).',
@@ -337,14 +341,14 @@ export const BanglaQrPaymentSection: React.FC<BanglaQrPaymentSectionProps> = ({
               )}
             </p>
           </div>
-          <span className="text-[11px] font-mono text-emerald-700 font-semibold">
+          <span className={`text-xs font-mono font-semibold ${isLight ? 'text-emerald-800' : 'text-emerald-300'}`}>
             Selected: {activeProvider.name}
           </span>
         </div>
 
         {/* Group 1: Mobile Financial Services (MFS) */}
         <div className="space-y-2">
-          <div className="flex items-center justify-between text-xs font-semibold text-slate-600">
+          <div className={`flex flex-wrap items-center justify-between gap-2 text-xs font-semibold ${isLight ? 'text-slate-800' : 'text-slate-200'}`}>
             <span>
               {t3(
                 'মোবাইল ফিন্যান্সিয়াল সার্ভিস (Mobile Financial Services — MFS)',
@@ -352,11 +356,11 @@ export const BanglaQrPaymentSection: React.FC<BanglaQrPaymentSectionProps> = ({
                 'Mobile Financial Services (MFS)'
               )}
             </span>
-            <span className="text-[11px] font-mono text-slate-500">Bangla QR Scan &amp; Pay</span>
+            <span className={`text-xs font-mono ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>Bangla QR Scan &amp; Pay</span>
           </div>
           <div
             data-testid="mfs-logo-grid"
-            className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-2.5"
+            className="grid grid-cols-2 min-[380px]:grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-2.5"
           >
             {VERIFIED_MFS_PROVIDERS.map(renderInstitutionLogoCard)}
           </div>
@@ -364,7 +368,7 @@ export const BanglaQrPaymentSection: React.FC<BanglaQrPaymentSectionProps> = ({
 
         {/* Group 2: Participating Bangladesh Bank-Approved Banks (Bangla QR & NPSB) */}
         <div className="space-y-2 pt-1">
-          <div className="flex items-center justify-between text-xs font-semibold text-slate-600">
+          <div className={`flex flex-wrap items-center justify-between gap-2 text-xs font-semibold ${isLight ? 'text-slate-800' : 'text-slate-200'}`}>
             <span>
               {t3(
                 'অংশগ্রহণকারী অনুমোদিত ব্যাংকসমূহ (Participating Banks · Bangla QR & NPSB)',
@@ -372,13 +376,13 @@ export const BanglaQrPaymentSection: React.FC<BanglaQrPaymentSectionProps> = ({
                 'Participating Banks (Bangla QR & NPSB)'
               )}
             </span>
-            <span className="text-[11px] font-mono text-slate-500">
+            <span className={`text-xs font-mono ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
               Bangla QR · NPSB Instant Switch
             </span>
           </div>
           <div
             data-testid="bank-logo-grid"
-            className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-2.5"
+            className="grid grid-cols-2 min-[380px]:grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-2.5"
           >
             {VERIFIED_BANK_PROVIDERS.map(renderInstitutionLogoCard)}
           </div>
@@ -386,13 +390,13 @@ export const BanglaQrPaymentSection: React.FC<BanglaQrPaymentSectionProps> = ({
 
         {/* Active Institution Step-by-Step Instruction Box */}
         <div
-          className={`rounded-xl border p-3.5 text-xs space-y-1.5 ${
+          className={`rounded-xl border p-3.5 text-xs sm:text-sm space-y-1.5 ${
             isLight
-              ? 'bg-emerald-50/70 border-emerald-200 text-slate-800'
-              : 'bg-emerald-950/20 border-emerald-500/30 text-slate-200'
+              ? 'bg-emerald-50 border-emerald-300 text-slate-900'
+              : 'bg-emerald-950/25 border-emerald-500/40 text-slate-100'
           }`}
         >
-          <div className="font-semibold text-emerald-800 dark:text-emerald-300 flex items-center justify-between gap-2">
+          <div className={`font-semibold flex flex-wrap items-center justify-between gap-2 ${isLight ? 'text-emerald-900' : 'text-emerald-200'}`}>
             <span>
               {t3(
                 `${activeProvider.nameBn} দিয়ে পেমেন্ট নির্দেশনা`,
@@ -400,7 +404,7 @@ export const BanglaQrPaymentSection: React.FC<BanglaQrPaymentSectionProps> = ({
                 `How to Pay with ${activeProvider.name}`
               )}
             </span>
-            <span className="text-[11px] font-mono">
+            <span className="text-xs font-mono">
               {activeProvider.banglaQrSupported ? 'Bangla QR: Verified' : ''} ·{' '}
               {activeProvider.npsbSupported ? 'NPSB: Verified' : ''}
             </span>
@@ -421,8 +425,8 @@ export const BanglaQrPaymentSection: React.FC<BanglaQrPaymentSectionProps> = ({
           <div>
             <label
               htmlFor="bangla-qr-trx-input"
-              className={`block text-xs font-semibold mb-1 ${
-                isLight ? 'text-slate-700' : 'text-slate-300'
+              className={`block text-xs font-semibold mb-1.5 ${
+                isLight ? 'text-slate-800' : 'text-slate-200'
               }`}
             >
               {t3(
@@ -444,10 +448,10 @@ export const BanglaQrPaymentSection: React.FC<BanglaQrPaymentSectionProps> = ({
                 'e.g. BGH7890KLM or NPSB Ref',
                 'e.g. BGH7890KLM or NPSB Reference'
               )}
-              className={`w-full rounded-xl border px-3.5 py-2.5 text-xs font-mono outline-none transition-colors ${
+              className={`w-full min-h-[44px] rounded-xl border px-3.5 py-2.5 text-sm font-mono outline-none transition-colors ${
                 isLight
-                  ? 'bg-white border-slate-300 focus:border-emerald-600 text-slate-900'
-                  : 'bg-black border-white/25 focus:border-emerald-400 text-white'
+                  ? 'bg-white border-slate-400 focus:border-emerald-700 text-slate-900 placeholder:text-slate-500'
+                  : 'bg-[#04070c] border-slate-600 focus:border-cyan-400 text-white placeholder:text-slate-400'
               }`}
             />
           </div>
@@ -456,8 +460,8 @@ export const BanglaQrPaymentSection: React.FC<BanglaQrPaymentSectionProps> = ({
             <div>
               <label
                 htmlFor="bangla-qr-sender-input"
-                className={`block text-xs font-semibold mb-1 ${
-                  isLight ? 'text-slate-700' : 'text-slate-300'
+                className={`block text-xs font-semibold mb-1.5 ${
+                  isLight ? 'text-slate-800' : 'text-slate-200'
                 }`}
               >
                 {t3(
@@ -472,18 +476,18 @@ export const BanglaQrPaymentSection: React.FC<BanglaQrPaymentSectionProps> = ({
                 value={senderPhoneOrAccount}
                 onChange={(e) => onChangeSenderPhoneOrAccount(e.target.value)}
                 placeholder={t3('যেমন: 017XXXXXXXX বা 4821', 'e.g. 017XXXXXXXX', 'e.g. 017XXXXXXXX or last 4 digits')}
-                className={`w-full rounded-xl border px-3.5 py-2.5 text-xs font-mono outline-none transition-colors ${
+                className={`w-full min-h-[44px] rounded-xl border px-3.5 py-2.5 text-sm font-mono outline-none transition-colors ${
                   isLight
-                    ? 'bg-white border-slate-300 focus:border-emerald-600 text-slate-900'
-                    : 'bg-black border-white/25 focus:border-emerald-400 text-white'
+                    ? 'bg-white border-slate-400 focus:border-emerald-700 text-slate-900 placeholder:text-slate-500'
+                    : 'bg-[#04070c] border-slate-600 focus:border-cyan-400 text-white placeholder:text-slate-400'
                 }`}
               />
             </div>
           )}
         </div>
 
-        <div className="flex items-start gap-2 text-[11px] text-slate-500 leading-relaxed">
-          <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+        <div className={`flex items-start gap-2 text-xs leading-relaxed ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
+          <ShieldCheck className="w-4 h-4 text-emerald-700 shrink-0 mt-0.5" aria-hidden="true" />
           <span>
             {t3(
               'স্বাধীন ব্যাংক/এমএফএস যাচাই অথবা অ্যাডমিন রিকনসিলিয়েশন ছাড়া পেমেন্ট স্বয়ংক্রিয়ভাবে সফল হিসেবে চিহ্নিত হয় না। অর্ডার সাবমিট করার পর স্ট্যাটাস "Awaiting Payment" থাকবে এবং যাচাই সম্পন্ন হলে আপডেট হবে।',

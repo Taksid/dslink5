@@ -16,7 +16,13 @@ interface HeroGeoContentProps {
 export const HeroGeoContent: React.FC<HeroGeoContentProps> = ({ language: propLanguage }) => {
   const { language: liveLanguage } = useGeoLanguage();
   const { countryCode } = useVisitorCountry();
-  const { rentalKitPrice, standard4xPrice, miniKitPrice } = useCentralPricing();
+  const {
+    rentalKitPrice,
+    standard4xPrice,
+    miniKitPrice,
+    standard4xBdResidentialPrice,
+    miniBdResidentialPrice,
+  } = useCentralPricing();
 
   const activeLanguage: AppLanguage = liveLanguage || propLanguage || 'en';
   const copy = getHeroGeoCopy(activeLanguage, countryCode);
@@ -78,20 +84,6 @@ export const HeroGeoContent: React.FC<HeroGeoContentProps> = ({ language: propLa
         {/* Visible liquid-glass pricing cards (translucent backdrop showing hero background clearly) */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 max-w-3xl mx-auto text-left">
           <a
-            href={rentalHref}
-            onClick={(e) => handleLinkClick(e, rentalHref)}
-            className="rounded-xl border border-white/25 bg-white/15 hover:bg-white/25 backdrop-blur-md hover:border-white/50 px-3.5 py-3 transition-all duration-200 flex flex-col justify-between shadow-[0_8px_32px_rgba(0,0,0,0.22)]"
-          >
-            <div className="text-[11px] font-mono uppercase tracking-wider text-white/80">
-              {copy.rentalCardTitle}
-            </div>
-            <div className="text-base font-bold text-white mt-1 font-mono tabular-nums drop-shadow-sm">
-              {fmt(rentalKitPrice)}
-            </div>
-            <div className="text-[11px] text-white/80 mt-0.5">{copy.rentalCardSub}</div>
-          </a>
-
-          <a
             href={stdHref}
             onClick={(e) => handleLinkClick(e, stdHref)}
             className="rounded-xl border border-white/25 bg-white/15 hover:bg-white/25 backdrop-blur-md hover:border-white/50 px-3.5 py-3 transition-all duration-200 flex flex-col justify-between shadow-[0_8px_32px_rgba(0,0,0,0.22)]"
@@ -99,10 +91,12 @@ export const HeroGeoContent: React.FC<HeroGeoContentProps> = ({ language: propLa
             <div className="text-[11px] font-mono uppercase tracking-wider text-white/80">
               {copy.standardCardTitle}
             </div>
-            <div className="text-base font-bold text-white mt-1 font-mono tabular-nums drop-shadow-sm">
-              {fmt(standard4xPrice)}
+            <div className="text-sm sm:text-base font-bold text-white mt-1 font-mono tabular-nums drop-shadow-sm">
+              {fmt(standard4xBdResidentialPrice)} · {fmt(standard4xPrice)}
             </div>
-            <div className="text-[11px] text-white/80 mt-0.5">{copy.purchaseCardSub}</div>
+            <div className="text-[11px] text-white/80 mt-0.5">
+              BD Residential · Roam Unlimited
+            </div>
           </a>
 
           <a
@@ -113,10 +107,28 @@ export const HeroGeoContent: React.FC<HeroGeoContentProps> = ({ language: propLa
             <div className="text-[11px] font-mono uppercase tracking-wider text-white/80">
               {copy.miniCardTitle}
             </div>
-            <div className="text-base font-bold text-white mt-1 font-mono tabular-nums drop-shadow-sm">
-              {fmt(miniKitPrice)}
+            <div className="text-sm sm:text-base font-bold text-white mt-1 font-mono tabular-nums drop-shadow-sm">
+              {fmt(miniBdResidentialPrice)} · {fmt(miniKitPrice)}
             </div>
-            <div className="text-[11px] text-white/80 mt-0.5">{copy.purchaseCardSub}</div>
+            <div className="text-[11px] text-white/80 mt-0.5">
+              BD Residential · Global Roam
+            </div>
+          </a>
+
+          <a
+            href={rentalHref}
+            onClick={(e) => handleLinkClick(e, rentalHref)}
+            className="rounded-xl border border-white/25 bg-white/15 hover:bg-white/25 backdrop-blur-md hover:border-white/50 px-3.5 py-3 transition-all duration-200 flex flex-col justify-between shadow-[0_8px_32px_rgba(0,0,0,0.22)]"
+          >
+            <div className="text-[11px] font-mono uppercase tracking-wider text-white/80">
+              Standard 4X Rental
+            </div>
+            <div className="text-sm sm:text-base font-bold text-white mt-1 font-mono tabular-nums drop-shadow-sm">
+              {fmt(rentalKitPrice)} One-Time
+            </div>
+            <div className="text-[11px] text-white/80 mt-0.5">
+              Fixed BD Residential · Monthly Separate
+            </div>
           </a>
         </div>
       </div>

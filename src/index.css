@@ -6,7 +6,38 @@
   --font-display: "Plus Jakarta Sans", "Manrope", "Hind Siliguri", "Noto Sans Bengali", sans-serif;
 }
 
+/*
+ * DSLink Shared Design Tokens (Dark Theme + Cyan Brand Accent · WCAG AA Compliant)
+ * Contrast reference on --ds-surface (#0b0f17):
+ * - --ds-text-primary (#f8fafc): ~18.4:1
+ * - --ds-text-secondary (#cbd5e1): ~12.6:1
+ * - --ds-text-muted (#94a3b8): ~6.8:1 (>= 4.5:1 AA normal text)
+ * - --ds-accent (#22d3ee): ~11.1:1 on #0b0f17; --ds-accent-ink (#04131a) on #22d3ee: ~11.0:1
+ */
 :root {
+  --ds-bg: #04070c;
+  --ds-surface: #0b0f17;
+  --ds-surface-elevated: #111827;
+  --ds-surface-subtle: #0f1623;
+  --ds-border: rgba(148, 163, 184, 0.24);
+  --ds-border-strong: rgba(56, 189, 248, 0.45);
+  --ds-text-primary: #f8fafc;
+  --ds-text-secondary: #cbd5e1;
+  --ds-text-muted: #94a3b8;
+  --ds-accent: #22d3ee;
+  --ds-accent-hover: #67e8f9;
+  --ds-accent-soft: rgba(34, 211, 238, 0.14);
+  --ds-accent-ink: #04131a;
+  --ds-focus-ring: #22d3ee;
+  --ds-success: #34d399;
+  --ds-success-bg: rgba(16, 185, 129, 0.14);
+  --ds-warning: #fbbf24;
+  --ds-warning-bg: rgba(245, 158, 11, 0.14);
+  --ds-error: #f87171;
+  --ds-error-bg: rgba(239, 68, 68, 0.16);
+  --ds-info: #38bdf8;
+  --ds-info-bg: rgba(56, 189, 248, 0.14);
+
   --font-bangla: "Hind Siliguri", "Noto Sans Bengali", "Plus Jakarta Sans", system-ui, sans-serif;
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-right: env(safe-area-inset-right, 0px);
@@ -29,6 +60,7 @@
     text-size-adjust: 100%;
     touch-action: pan-y pinch-zoom;
     scroll-behavior: smooth;
+    color-scheme: dark;
   }
 
   body {
@@ -40,8 +72,8 @@
     height: auto;
     position: relative;
     font-family: var(--font-sans);
-    color: #ffffff;
-    background-color: #000000;
+    color: var(--ds-text-primary);
+    background-color: var(--ds-bg);
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -67,9 +99,87 @@
     font-family: inherit;
   }
 
-  p, h1, h2, h3, td {
-    overflow-wrap: anywhere;
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--ds-text-muted);
+    opacity: 1;
   }
+
+  /* Global WCAG AA keyboard focus indicator across customer & admin screens */
+  :is(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+    outline: 2px solid var(--ds-focus-ring);
+    outline-offset: 2px;
+  }
+
+  p, h1, h2, h3, h4, dt, dd, td, th, li {
+    overflow-wrap: break-word;
+  }
+}
+
+/* Skip to content link for keyboard navigation */
+.ds-skip-link {
+  position: fixed;
+  top: -120px;
+  left: 12px;
+  z-index: 100;
+  padding: 10px 16px;
+  border-radius: 6px;
+  background-color: var(--ds-accent);
+  color: var(--ds-accent-ink);
+  font-weight: 700;
+  font-size: 0.875rem;
+  text-decoration: none;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
+  transition: top 0.15s ease;
+}
+
+.ds-skip-link:focus {
+  top: 12px;
+}
+
+/* Shared semantic DSLink surface & control helpers */
+.ds-surface {
+  background-color: var(--ds-surface);
+  border: 1px solid var(--ds-border);
+}
+
+.ds-btn-primary {
+  background-color: var(--ds-accent);
+  color: var(--ds-accent-ink);
+  font-weight: 700;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.ds-btn-primary:hover:not(:disabled) {
+  background-color: var(--ds-accent-hover);
+}
+
+.ds-btn-primary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.ds-table-scroll {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/*
+ * Contrast safety net for legacy compiled views (OriginalApp / Admin / Account / Track):
+ * Upgrades sub-AA neutral-500/600 on dark backgrounds to AA-compliant muted slate (#94a3b8, >=6.8:1)
+ * while preserving readable dark ink inside light-surface containers (.bg-white, .bg-slate-50).
+ */
+.text-neutral-500 {
+  color: #a1a1aa;
+}
+
+.bg-white .text-neutral-500,
+.bg-slate-50 .text-neutral-500,
+.bg-white .text-slate-500,
+.bg-slate-50 .text-slate-500 {
+  color: #475569;
 }
 
 #root {
@@ -141,8 +251,8 @@ h1, h2, h3, h4, .font-display {
 .glass-panel {
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
-  background: #0a0a0a;
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: var(--ds-surface);
+  border: 1px solid var(--ds-border);
 }
 
 .glass-panel-hover {
@@ -150,16 +260,16 @@ h1, h2, h3, h4, .font-display {
 }
 
 .glass-panel-hover:hover {
-  background: #111113;
-  border-color: rgba(255, 255, 255, 0.32);
+  background: var(--ds-surface-elevated);
+  border-color: var(--ds-border-strong);
   transform: translateY(-2px);
 }
 
 .glass-pill {
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(148, 163, 184, 0.1);
+  border: 1px solid var(--ds-border);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -179,16 +289,16 @@ h1, h2, h3, h4, .font-display {
 }
 
 ::-webkit-scrollbar-track {
-  background: #000000;
+  background: var(--ds-bg);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #262626;
+  background: #334155;
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #404040;
+  background: #475569;
 }
 
 .no-scrollbar::-webkit-scrollbar {

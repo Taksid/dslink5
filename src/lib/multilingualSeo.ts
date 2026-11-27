@@ -5,9 +5,11 @@ import {
   PublishedSeoLanguage,
   buildLocalePath,
   getPublishedLocaleConfig,
+  isKnownSiteRoute,
   isPrivateOrNonIndexablePath,
   parseLocalePath,
 } from './localeRouting';
+import { DEFAULT_CENTRAL_PRODUCTS, formatBdt } from './pricingConfig';
 
 export interface LocaleSeoMeta {
   code: AppLanguage;
@@ -115,102 +117,102 @@ interface MultilingualSeoEntry {
 const ROUTE_SEO_CATALOG: Record<string, MultilingualSeoEntry> = {
   home_dslink: {
     title: {
-      en: 'DSLink — Starlink Standard Kit 4X, Mini Kit, Rentals & Worldwide Shipping',
-      bn: 'DSLink — Starlink Standard Kit 4X, Mini Kit, রেন্টাল ও বিশ্বব্যাপী শিপিং',
-      my: 'DSLink — Starlink Standard Kit 4X၊ Mini Kit၊ ငှားရမ်းခြင်းနှင့် ကမ္ဘာတစ်ဝှမ်း ပို့ဆောင်ရေး',
-      'zh-CN': 'DSLink — Starlink Standard Kit 4X、Mini Kit、套件租赁与全球配送',
+      en: 'DSLink — Starlink Kits in Bangladesh: Standard 4X, Starlink Mini & Rental',
+      bn: 'DSLink — বাংলাদেশে Starlink কিট: Standard 4X, Starlink Mini ও রেন্টাল',
+      my: 'DSLink — ဘင်္ဂလားဒေ့ရှ် Starlink Kit များ: Standard 4X၊ Starlink Mini နှင့် ငှားရမ်းခြင်း',
+      'zh-CN': 'DSLink — 孟加拉国 Starlink 套件：Standard 4X、Starlink Mini 与租赁',
     },
     description: {
-      en: 'Order Starlink Standard Kit 4X and Starlink Mini Kit from DSLink with kit shipping for Bangladesh, the USA, and worldwide, plus Starlink rentals, setup guidance, and monthly bill payment support.',
-      bn: 'DSLink থেকে Starlink Standard Kit 4X ও Starlink Mini Kit অর্ডার করুন। বাংলাদেশ, যুক্তরাষ্ট্রসহ বিশ্বব্যাপী কিট শিপিং, স্টারলিংক রেন্টাল, সেটআপ সহায়তা ও মাসিক বিল পেমেন্ট সাপোর্ট পাওয়া যায়।',
-      my: 'DSLink မှ Starlink Standard Kit 4X နှင့် Starlink Mini Kit များကို မှာယူနိုင်ပါသည်။ ဘင်္ဂလားဒေ့ရှ်၊ အမေရိကန်နှင့် ကမ္ဘာတစ်ဝှမ်း ပို့ဆောင်ရေး၊ Starlink ငှားရမ်းခြင်းနှင့် လစဉ်ဘေလ်ပေးချေမှု အကူအညီများ ရရှိနိုင်ပါသည်။',
-      'zh-CN': '通过 DSLink 订购 Starlink Standard Kit 4X 和 Starlink Mini Kit，提供面向孟加拉国、美国及全球的硬件套件配送、Starlink 设备租赁、安装指导和月度账单代付支持。',
+      en: 'Shop Starlink kits in Bangladesh from DSLink: Standard 4X BD Residential (BDT 12,500), Starlink Standard 4X USA Kit + Roam Unlimited Internet (BDT 41,500), Starlink Mini (BDT 9,500 BD Residential / BDT 21,500 Global Roam), and Standard 4X Rental (BDT 3,000 one-time fee; monthly plan separate).',
+      bn: 'DSLink থেকে বাংলাদেশে Starlink কিট অর্ডার করুন: Standard 4X (৳১২,৫০০ BD রেসিডেন্সিয়াল / ৳৪১,৫০০ USA Kit + Roam Unlimited), Starlink Mini (৳৯,৫০০ BD রেসিডেন্সিয়াল / ৳২১,৫০০ গ্লোবাল রোম) ও Standard 4X রেন্টাল (৳৩,০০০ এককালীন ফি; মাসিক প্ল্যান আলাদা)।',
+      my: 'DSLink မှ Starlink Standard 4X (BDT 12,500 BD Residential / BDT 41,500 USA Kit + Roam Unlimited)၊ Starlink Mini (BDT 9,500 BD Residential / BDT 21,500 Global Roam) နှင့် Standard 4X Rental (BDT 3,000 တစ်ကြိမ်ကြေး၊ လစဉ်ကြေးသီးခြား) များကို မှာယူနိုင်ပါသည်။',
+      'zh-CN': '在 DSLink 订购孟加拉国 Starlink 套件：Standard 4X（孟加拉住宅版 BDT 12,500 / 美国版 Roam Unlimited BDT 41,500）、Starlink Mini（孟加拉住宅版 BDT 9,500 / 全球漫游版 BDT 21,500）及 Standard 4X 租赁（BDT 3,000 一次性费用，月费另计）。',
     },
     keywords: {
-      en: 'DSLink, DEVSPARK LINK, Starlink Standard Kit 4X, Starlink Mini Kit, Starlink kit shipping, Starlink rental, Starlink monthly bill payment support, Bangladesh, USA, Worldwide',
-      bn: 'DSLink, DEVSPARK LINK, Starlink Standard Kit 4X, Starlink Mini Kit, স্টারলিংক বাংলাদেশ, Starlink রেন্টাল, মাসিক বিল পেমেন্ট সাপোর্ট, বিশ্বব্যাপী শিপিং',
-      my: 'DSLink, Starlink Standard Kit 4X, Starlink Mini Kit, Starlink ငှားရမ်းခြင်း, လစဉ်ဘေလ်ပေးချေမှု, ကမ္ဘာတစ်ဝှမ်း ပို့ဆောင်ရေး',
-      'zh-CN': 'DSLink, Starlink Standard Kit 4X, Starlink Mini Kit, Starlink 套件配送, Starlink 租赁, 月度账单代付支持, 全球直邮',
+      en: 'Starlink kits in Bangladesh, Starlink Standard 4X USA Kit Roam Unlimited, Starlink Standard 4X price, Starlink Mini price in Bangladesh, Starlink rental in Bangladesh, DSLink, DEVSPARK LINK, Dev Spark Soft Limited',
+      bn: 'বাংলাদেশে Starlink কিট, Starlink Standard 4X USA Kit Roam Unlimited, Starlink Standard 4X দাম, Starlink Mini দাম বাংলাদেশ, Starlink রেন্টাল বাংলাদেশ, DSLink, DEVSPARK LINK',
+      my: 'Starlink kits in Bangladesh, Starlink Standard 4X USA Kit Roam Unlimited, Starlink Standard 4X price, Starlink Mini price, Starlink rental, DSLink',
+      'zh-CN': '孟加拉国 Starlink 套件, Starlink Standard 4X USA Kit Roam Unlimited, Starlink Standard 4X 价格, Starlink Mini 价格, Starlink 租赁, DSLink',
     },
   },
   home_devsparksoft: {
     title: {
-      en: 'Dev Spark Soft Limited | DSLink Starlink Kits, Shipping & Enterprise Software',
-      bn: 'Dev Spark Soft Limited | DSLink স্টারলিংক কিট, শিপিং ও এন্টারপ্রাইজ সফটওয়্যার',
-      my: 'Dev Spark Soft Limited | DSLink Starlink Kit များ၊ ပို့ဆောင်ရေးနှင့် Enterprise Software',
-      'zh-CN': 'Dev Spark Soft Limited | DSLink Starlink 套件、全球配送与企业软件',
+      en: 'DevSpark Link (DSLink) — Starlink Kits in Bangladesh, Mini, Standard 4X & Rental | Dev Spark Soft Limited',
+      bn: 'DevSpark Link (DSLink) — বাংলাদেশে Starlink কিট, Mini, Standard 4X ও রেন্টাল | Dev Spark Soft Limited',
+      my: 'DevSpark Link (DSLink) — Starlink Standard 4X၊ Starlink Mini နှင့် ငှားရမ်းခြင်း | Dev Spark Soft Limited',
+      'zh-CN': 'DevSpark Link (DSLink) — 孟加拉国 Starlink 套件、Standard 4X、Mini 与租赁 | Dev Spark Soft Limited',
     },
     description: {
-      en: 'Dev Spark Soft Limited operates DSLink, providing Starlink Standard Kit 4X, Starlink Mini Kit, worldwide kit shipping, Starlink rentals, monthly bill payment support, and enterprise software engineering.',
-      bn: 'Dev Spark Soft Limited পরিচালিত DSLink থেকে Starlink Standard Kit 4X, Starlink Mini Kit, বিশ্বব্যাপী কিট শিপিং, রেন্টাল, মাসিক বিল পেমেন্ট সাপোর্ট এবং এন্টারপ্রাইজ সফটওয়্যার সেবা পান।',
-      my: 'Dev Spark Soft Limited မှ လည်ပတ်သော DSLink တွင် Starlink Standard Kit 4X၊ Starlink Mini Kit၊ ကမ္ဘာတစ်ဝှမ်း ပို့ဆောင်ရေး၊ ငှားရမ်းခြင်းနှင့် Enterprise Software ဝန်ဆောင်မှုများ ရရှိနိုင်ပါသည်။',
-      'zh-CN': 'Dev Spark Soft Limited 运营 DSLink，提供 Starlink Standard Kit 4X、Starlink Mini Kit、全球硬件套件配送、设备租赁、月度账单支持及企业软件工程服务。',
+      en: 'Dev Spark Soft Limited (devsparksoft.com.bd) operates DevSpark Link (DSLink): Standard 4X BD Residential (BDT 12,500), Starlink Standard 4X USA Kit + Roam Unlimited Internet (BDT 41,500), Starlink Mini (BDT 9,500 / BDT 21,500), and Standard 4X Rental (BDT 3,000 one-time fee; monthly subscription separate).',
+      bn: 'Dev Spark Soft Limited (devsparksoft.com.bd) পরিচালিত DSLink-এ পাচ্ছেন Starlink Standard 4X (৳১২,৫০০ BD রেসিডেন্সিয়াল / ৳৪১,৫০০ USA Kit + Roam Unlimited), Starlink Mini (৳৯,৫০০ BD রেসিডেন্সিয়াল / ৳২১,৫০০ গ্লোবাল রোম) এবং Standard 4X রেন্টাল (৳৩,০০০ এককালীন ফি; মাসিক সাবস্ক্রিপশন আলাদা)।',
+      my: 'Dev Spark Soft Limited (devsparksoft.com.bd) ၏ DSLink တွင် Starlink Standard 4X USA Kit + Roam Unlimited (BDT 41,500)၊ Starlink Mini နှင့် Standard 4X Rental (BDT 3,000 တစ်ကြိမ်ကြေး၊ လစဉ်ကြေးသီးခြား) များကို မှာယူနိုင်ပါသည်။',
+      'zh-CN': 'Dev Spark Soft Limited（devsparksoft.com.bd）运营 DSLink，提供孟加拉国住宅版 Standard 4X（BDT 12,500）、Starlink Standard 4X USA Kit + Roam Unlimited（BDT 41,500）、Starlink Mini 硬件及 Standard 4X 租赁（BDT 3,000 一次性费用，月费另计）。',
     },
     keywords: {
-      en: 'Dev Spark Soft Limited, DSLink, DEVSPARK LINK, Starlink Standard Kit 4X, Starlink Mini Kit, worldwide kit shipping, enterprise software, DNCC/037306',
-      bn: 'Dev Spark Soft Limited, DSLink, DEVSPARK LINK, স্টারলিংক কিট, এন্টারপ্রাইজ সফটওয়্যার, DNCC/037306',
-      my: 'Dev Spark Soft Limited, DSLink, Starlink Kit, Enterprise Software, DNCC/037306',
-      'zh-CN': 'Dev Spark Soft Limited, DSLink, Starlink 套件, 全球配送, 企业软件开发, DNCC/037306',
+      en: 'Starlink kits in Bangladesh, Starlink Standard 4X USA Kit Roam Unlimited, Dev Spark Soft Limited, devsparksoft.com.bd, DSLink, Starlink Standard 4X price, Starlink Mini price in Bangladesh, Starlink rental in Bangladesh, DNCC/037306',
+      bn: 'বাংলাদেশে Starlink কিট, Starlink Standard 4X USA Kit Roam Unlimited, Dev Spark Soft Limited, DSLink, Starlink Standard 4X দাম, Starlink Mini দাম, Starlink রেন্টাল, DNCC/037306',
+      my: 'Dev Spark Soft Limited, DSLink, Starlink kits in Bangladesh, Starlink Standard 4X USA Kit Roam Unlimited, Starlink Mini, DNCC/037306',
+      'zh-CN': 'Dev Spark Soft Limited, DSLink, 孟加拉国 Starlink 套件, Starlink Standard 4X USA Kit Roam Unlimited, Starlink Mini, DNCC/037306',
     },
   },
   kits: {
     title: {
-      en: 'Starlink Kits Shop — Standard Kit 4X & Starlink Mini Kit | DSLink',
-      bn: 'স্টারলিংক কিটস শপ — Standard Kit 4X ও Starlink Mini Kit | DSLink',
-      my: 'Starlink Kit ဆိုင် — Standard Kit 4X နှင့် Starlink Mini Kit | DSLink',
-      'zh-CN': 'Starlink 套件商城 — Standard Kit 4X 与 Starlink Mini Kit | DSLink',
+      en: 'Starlink Kits in Bangladesh — Standard 4X, Starlink Mini & Rental Prices | DSLink',
+      bn: 'বাংলাদেশে Starlink কিট — Standard 4X, Starlink Mini ও রেন্টাল দাম | DSLink',
+      my: 'Starlink Kits in Bangladesh — Standard 4X၊ Starlink Mini နှင့် ငှားရမ်းခ | DSLink',
+      'zh-CN': '孟加拉国 Starlink 套件目录 — Standard 4X、Starlink Mini 与租赁价格 | DSLink',
     },
     description: {
-      en: 'Compare and order genuine Starlink Standard Kit 4X and Starlink Mini Kit from DSLink with Bangladesh COD, worldwide DHL/FedEx kit shipping, setup guidance, and 24-month DSLink replacement warranty.',
-      bn: 'DSLink থেকে আসল Starlink Standard Kit 4X ও Starlink Mini Kit অর্ডার করুন। বাংলাদেশে ফ্রি ডেলিভারি ও COD, বিশ্বব্যাপী DHL/FedEx শিপিং এবং ২৪ মাসের DSLink রিপ্লেসমেন্ট ওয়ারেন্টি।',
-      my: 'DSLink မှ စစ်မှန်သော Starlink Standard Kit 4X နှင့် Starlink Mini Kit များကို ကမ္ဘာတစ်ဝှမ်း DHL/FedEx ပို့ဆောင်ရေးနှင့် ၂၄ လ အစားထိုးအာမခံဖြင့် ဝယ်ယူနိုင်ပါသည်။',
-      'zh-CN': '在 DSLink 选购正品 Starlink Standard Kit 4X 与 Starlink Mini Kit，支持孟加拉国免费配送与货到付款、DHL/FedEx 全球套件配送及 24 个月 DSLink 更换保修。',
+      en: 'Compare Starlink kits in Bangladesh at DSLink: Standard 4X BD Residential (BDT 12,500), Starlink Standard 4X USA Kit + Roam Unlimited Internet (BDT 41,500), Starlink Mini BD Residential (BDT 9,500) & Global Roam (BDT 21,500), and Standard 4X Rental (BDT 3,000 one-time fee; monthly plan separate).',
+      bn: 'DSLink-এ বাংলাদেশে Starlink কিটের দাম তুলনা করুন: Standard 4X BD রেসিডেন্সিয়াল (৳১২,৫০০), Standard 4X USA Kit + Roam Unlimited (৳৪১,৫০০), Starlink Mini BD রেসিডেন্সিয়াল (৳৯,৫০০) ও গ্লোবাল রোম (৳২১,৫০০), এবং Standard 4X রেন্টাল (৳৩,০০০ এককালীন ফি; মাসিক প্ল্যান আলাদা)।',
+      my: 'DSLink တွင် Starlink Standard 4X BD Residential (BDT 12,500)၊ Starlink Standard 4X USA Kit + Roam Unlimited (BDT 41,500)၊ Starlink Mini (BDT 9,500 / 21,500) နှင့် Standard 4X Rental (BDT 3,000 တစ်ကြိမ်ကြေး) ဈေးနှုန်းများကို နှိုင်းယှဉ်ဝယ်ယူပါ။',
+      'zh-CN': '在 DSLink 对比孟加拉国 Starlink 套件：Standard 4X 住宅版 BDT 12,500 / USA Kit + Roam Unlimited BDT 41,500；Starlink Mini 住宅版 BDT 9,500 / 全球漫游版 BDT 21,500；Standard 4X 租赁 BDT 3,000 一次性费用（月费另计）。',
     },
     keywords: {
-      en: 'Starlink Standard Kit 4X, Starlink Mini Kit, buy Starlink kit, DSLink shop, worldwide Starlink shipping',
-      bn: 'Starlink Standard Kit 4X, Starlink Mini Kit, স্টারলিংক শপ, DSLink',
-      my: 'Starlink Standard Kit 4X, Starlink Mini Kit, Starlink ဝယ်ယူရန်, DSLink',
-      'zh-CN': 'Starlink Standard Kit 4X, Starlink Mini Kit, 购买 Starlink, DSLink 商城',
+      en: 'Starlink kits in Bangladesh, Starlink Standard 4X USA Kit Roam Unlimited, Starlink Standard 4X price, Starlink Mini price in Bangladesh, Starlink rental in Bangladesh, buy Starlink Bangladesh, DSLink',
+      bn: 'বাংলাদেশে Starlink কিট, Starlink Standard 4X USA Kit Roam Unlimited, Starlink Standard 4X দাম, Starlink Mini দাম বাংলাদেশ, Starlink রেন্টাল, DSLink',
+      my: 'Starlink kits in Bangladesh, Starlink Standard 4X USA Kit Roam Unlimited, Starlink Standard 4X price, Starlink Mini price, DSLink',
+      'zh-CN': '孟加拉国 Starlink 套件, Starlink Standard 4X USA Kit Roam Unlimited, Starlink Standard 4X 价格, Starlink Mini 价格, DSLink',
     },
   },
   kit_standard_4x: {
     title: {
-      en: 'Starlink Standard Kit 4X — Specs, Pricing & Worldwide Shipping | DSLink',
-      bn: 'Starlink Standard Kit 4X — বিবরণ, মূল্য ও বিশ্বব্যাপী শিপিং | DSLink',
-      my: 'Starlink Standard Kit 4X — အချက်အလက်၊ ဈေးနှုန်းနှင့် ပို့ဆောင်ရေး | DSLink',
-      'zh-CN': 'Starlink Standard Kit 4X — 规格、价格与全球配送 | DSLink',
+      en: 'Starlink Standard 4X USA Kit + Roam Unlimited Internet (BDT 41,500) & BD Residential (BDT 12,500) | DSLink',
+      bn: 'Starlink Standard 4X USA Kit + Roam Unlimited Internet (৳৪১,৫০০) ও BD রেসিডেন্সিয়াল (৳১২,৫০০) | DSLink',
+      my: 'Starlink Standard 4X USA Kit + Roam Unlimited Internet (BDT 41,500) နှင့် BD Residential (BDT 12,500) | DSLink',
+      'zh-CN': 'Starlink Standard 4X USA Kit + Roam Unlimited Internet（BDT 41,500）与孟加拉住宅版（BDT 12,500）| DSLink',
     },
     description: {
-      en: 'Buy Starlink Standard Kit 4X (Gen 3) from DSLink with phased-array terminal and Wi-Fi 6 router, Bangladesh delivery, worldwide DHL/FedEx kit shipping, and monthly bill payment support.',
-      bn: 'DSLink থেকে Starlink Standard Kit 4X (Gen 3) কিনুন। বাংলাদেশে ফ্রি ডেলিভারি ও COD, বিশ্বব্যাপী DHL/FedEx কিট শিপিং, ২৪ মাসের ওয়ারেন্টি এবং মাসিক বিল পেমেন্ট সাপোর্ট।',
-      my: 'DSLink မှ Starlink Standard Kit 4X (Gen 3) ကို Wi-Fi 6 Router၊ ကမ္ဘာတစ်ဝှမ်း ပို့ဆောင်ရေးနှင့် လစဉ်ဘေလ်ပေးချေမှု အကူအညီဖြင့် မှာယူနိုင်ပါသည်။',
-      'zh-CN': '在 DSLink 购买 Starlink Standard Kit 4X（Gen 3），含相控阵天线与 Wi-Fi 6 路由器，支持全球 DHL/FedEx 套件配送与月度账单代付支持。',
+      en: 'Order the Starlink Standard 4X USA Kit + Roam Unlimited Internet at BDT 41,500 (active Roam Unlimited subscription required and billed separately; travel coverage subject to local authorization and Starlink roaming terms) or Bangladesh Residential Purchase at BDT 12,500 from DSLink.',
+      bn: 'DSLink-এ Starlink Standard 4X USA Kit + Roam Unlimited Internet অর্ডার করুন ৳৪১,৫০০ (সক্রিয় Roam Unlimited সাবস্ক্রিপশন আলাদাভাবে বিল করা হয়; ভ্রমণ কভারেজ স্থানীয় অনুমোদন ও Starlink শর্তাবলি সাপেক্ষ) অথবা বাংলাদেশ রেসিডেন্সিয়াল ৳১২,৫০০।',
+      my: 'DSLink တွင် Starlink Standard 4X USA Kit + Roam Unlimited Internet (BDT 41,500 — Roam Unlimited လစဉ်ကြေး သီးခြားပေးဆောင်ရမည်) သို့မဟုတ် BD Residential (BDT 12,500) ဖြင့် ဝယ်ယူနိုင်ပါသည်။',
+      'zh-CN': '在 DSLink 订购 Starlink Standard 4X USA Kit + Roam Unlimited Internet（BDT 41,500，需另行付费订阅 Roam Unlimited 套餐，旅行使用受当地授权与漫游条款约束）或孟加拉国住宅购买版（BDT 12,500）。',
     },
     keywords: {
-      en: 'Starlink Standard Kit 4X, Starlink Gen 3, DSLink, Starlink kit shipping',
-      bn: 'Starlink Standard Kit 4X, Starlink Gen 3, স্টারলিংক দাম, DSLink',
-      my: 'Starlink Standard Kit 4X, Starlink Gen 3, DSLink',
-      'zh-CN': 'Starlink Standard Kit 4X, Starlink 第三代, DSLink',
+      en: 'Starlink Standard 4X USA Kit + Roam Unlimited Internet, ROAM UNLIMITED, Starlink Standard 4X price, Starlink Standard 4X Bangladesh Residential, Starlink Gen 3 Bangladesh, DSLink',
+      bn: 'Starlink Standard 4X USA Kit + Roam Unlimited Internet, ROAM UNLIMITED, Starlink Standard 4X দাম, Starlink Standard 4X বাংলাদেশ রেসিডেন্সিয়াল, DSLink',
+      my: 'Starlink Standard 4X USA Kit + Roam Unlimited Internet, ROAM UNLIMITED, Starlink Standard 4X price, Starlink Gen 3, DSLink',
+      'zh-CN': 'Starlink Standard 4X USA Kit + Roam Unlimited Internet, ROAM UNLIMITED, Starlink Standard 4X 价格, Starlink 孟加拉住宅版, DSLink',
     },
   },
   kit_mini: {
     title: {
-      en: 'Starlink Mini Kit — Portable Satellite Kit & Worldwide Shipping | DSLink',
-      bn: 'Starlink Mini Kit — পোর্টেবল স্যাটেলাইট কিট ও বিশ্বব্যাপী শিপিং | DSLink',
-      my: 'Starlink Mini Kit — သယ်ဆောင်ရလွယ်ကူသော Starlink စက်နှင့် ပို့ဆောင်ရေး | DSLink',
-      'zh-CN': 'Starlink Mini Kit — 便携卫星互联网套件与全球配送 | DSLink',
+      en: 'Starlink Mini Price in Bangladesh — BDT 9,500 Residential & BDT 21,500 Global Roam | DSLink',
+      bn: 'বাংলাদেশে Starlink Mini দাম — ৳৯,৫০০ রেসিডেন্সিয়াল ও ৳২১,৫০০ গ্লোবাল রোম | DSLink',
+      my: 'Starlink Mini ဈေးနှုန်း — BDT 9,500 BD Residential နှင့် BDT 21,500 Global Roam | DSLink',
+      'zh-CN': '孟加拉国 Starlink Mini 价格 — 住宅版 BDT 9,500 / 全球漫游版 BDT 21,500 | DSLink',
     },
     description: {
-      en: 'Order the compact Starlink Mini Kit with built-in Wi-Fi router from DSLink. Available with Bangladesh COD, worldwide DHL/FedEx kit shipping, setup guidance, and monthly bill payment support.',
-      bn: 'বিল্ট-ইন Wi-Fi রাউটারসহ কমপ্যাক্ট Starlink Mini Kit অর্ডার করুন DSLink থেকে। বাংলাদেশে COD, বিশ্বব্যাপী DHL/FedEx শিপিং, সেটআপ ও মাসিক বিল পেমেন্ট সাপোর্ট।',
-      my: 'Wi-Fi Router ပါဝင်သော Starlink Mini Kit ကို DSLink မှ ကမ္ဘာတစ်ဝှမ်း ပို့ဆောင်ရေးနှင့် နည်းပညာအကူအညီဖြင့် မှာယူနိုင်ပါသည်။',
-      'zh-CN': '在 DSLink 订购内置 Wi-Fi 路由器的便携 Starlink Mini Kit，提供全球 DHL/FedEx 套件配送、安装指导与月度账单代付支持。',
+      en: 'Order Starlink Mini from DSLink: Bangladesh Residential Purchase at BDT 9,500 (free BD delivery & COD) or Global Roam Purchase at BDT 21,500 (worldwide DHL/FedEx hardware shipping; activation and roaming availability depend on destination and Starlink plan). Monthly plan separate.',
+      bn: 'DSLink থেকে Starlink Mini অর্ডার করুন: বাংলাদেশ রেসিডেন্সিয়াল ৳৯,৫০০ (ফ্রি ডেলিভারি ও COD) অথবা গ্লোবাল রোম পারচেজ ৳২১,৫০০ (বিশ্বব্যাপী DHL/FedEx শিপিং; অ্যাক্টিভেশন ও রোমিং গন্তব্য ও প্ল্যানের ওপর নির্ভরশীল)। মাসিক প্ল্যান আলাদা।',
+      my: 'DSLink မှ Starlink Mini ကို BD Residential (BDT 9,500) သို့မဟုတ် Global Roam Purchase (BDT 21,500) ဖြင့် မှာယူနိုင်ပါသည်။ လစဉ် Starlink ကြေး သီးခြားဖြစ်ပါသည်။',
+      'zh-CN': '在 DSLink 订购 Starlink Mini：孟加拉国住宅购买版 BDT 9,500（免费配送与货到付款），全球漫游购买版 BDT 21,500（支持全球 DHL/FedEx 硬件配送，激活与漫游视目的地和官方套餐而定）。月费另计。',
     },
     keywords: {
-      en: 'Starlink Mini Kit, portable Starlink, DSLink, worldwide Starlink shipping',
-      bn: 'Starlink Mini Kit, স্টারলিংক মিনি বাংলাদেশ, DSLink',
-      my: 'Starlink Mini Kit, Starlink Mini Myanmar, DSLink',
-      'zh-CN': 'Starlink Mini Kit, 便携 Starlink, DSLink',
+      en: 'Starlink Mini price in Bangladesh, Starlink Mini BD Residential, Starlink Mini Global Roam, portable Starlink Bangladesh, DSLink',
+      bn: 'Starlink Mini দাম বাংলাদেশ, Starlink Mini রেসিডেন্সিয়াল, Starlink Mini গ্লোবাল রোম, DSLink',
+      my: 'Starlink Mini price in Bangladesh, Starlink Mini Global Roam, DSLink',
+      'zh-CN': '孟加拉国 Starlink Mini 价格, Starlink Mini 全球漫游, 便携 Starlink, DSLink',
     },
   },
   packages: {
@@ -235,22 +237,22 @@ const ROUTE_SEO_CATALOG: Record<string, MultilingualSeoEntry> = {
   },
   rental: {
     title: {
-      en: 'Starlink Rental Kit — One-Time Charge & Monthly Bill Support | DSLink',
-      bn: 'Starlink Rental Kit — এককালীন চার্জ ও মাসিক বিল পেমেন্ট সাপোর্ট | DSLink',
-      my: 'Starlink Rental Kit — တစ်ကြိမ်ကြေးနှင့် လစဉ်ဘေလ် အကူအညီ | DSLink',
-      'zh-CN': 'Starlink 套件租赁 — 一次性费用与月度账单支持 | DSLink',
+      en: 'Starlink Rental in Bangladesh — Standard 4X BDT 3,000 One-Time Fee | DSLink',
+      bn: 'বাংলাদেশে Starlink রেন্টাল — Standard 4X মাত্র ৳৩,০০০ এককালীন ফি | DSLink',
+      my: 'ဘင်္ဂလားဒေ့ရှ် Starlink ငှားရမ်းခြင်း — Standard 4X BDT 3,000 တစ်ကြိမ်ကြေး | DSLink',
+      'zh-CN': '孟加拉国 Starlink 租赁 — Standard 4X 一次性费用 BDT 3,000 | DSLink',
     },
     description: {
-      en: 'Rent a Starlink Standard Kit 4X or Starlink Mini Kit from DSLink for a ৳3,000 one-time charge via Bangla QR. Monthly Starlink subscriptions are separate with DSLink monthly bill payment support.',
-      bn: 'DSLink থেকে মাত্র ৳৩,০০০ এককালীন চার্জে (Bangla QR) Starlink Standard Kit 4X বা Mini Rental Kit নিন। মাসিক Starlink সাবস্ক্রিপশন আলাদা এবং বিল পেমেন্ট সাপোর্ট রয়েছে।',
-      my: 'DSLink မှ Starlink Standard Kit 4X သို့မဟုတ် Mini Rental Kit ကို တစ်ကြိမ်ကြေး ৳3,000 (Bangla QR) ဖြင့် ငှားရမ်းနိုင်ပြီး လစဉ်ဘေလ်ပေးချေမှု အကူအညီ ရရှိနိုင်ပါသည်။',
-      'zh-CN': '通过 DSLink 以 ৳3,000 一次性费用（Bangla QR）租赁 Starlink Standard Kit 4X 或 Mini 套件。月度 Starlink 订阅费另计，并提供月度账单代付支持。',
+      en: 'Starlink rental in Bangladesh from DSLink: Starlink Standard 4X Rental for a BDT 3,000 one-time fee (ownership not transferred). Monthly Starlink subscription is separate. Fixed location, Residential plan only, up to 5 TB/month, no travel or roaming, and no COD.',
+      bn: 'DSLink-এ বাংলাদেশে Starlink রেন্টাল: Standard 4X রেন্টাল কিটের এককালীন ফি ৳৩,০০০ (মালিকানা হস্তান্তর হয় না)। মাসিক Starlink সাবস্ক্রিপশন আলাদা। শুধুমাত্র ফিক্সড লোকেশন ও Residential প্ল্যান, সর্বোচ্চ ৫ টিবি/মাস, কোনো ট্রাভেল/রোমিং বা COD নেই।',
+      my: 'DSLink မှ Starlink Standard 4X Rental — တစ်ကြိမ်ကြေး BDT 3,000 (စက်ပိုင်ဆိုင်မှု မလွှဲပြောင်းပါ)။ လစဉ် Starlink ကြေး သီးခြားဖြစ်ပြီး Fixed location၊ Residential plan သီးသန့်၊ 5 TB/month အထိဖြစ်ကာ Roaming နှင့် COD မရနိုင်ပါ။',
+      'zh-CN': 'DSLink 孟加拉国 Starlink 租赁：Starlink Standard 4X 套件租赁仅需 BDT 3,000 一次性费用（不转移硬件所有权），月度 Starlink 订阅费另计。仅限孟加拉国固定地址与 Residential 套餐，每月最高 5 TB，不支持旅行漫游，不支持货到付款（COD）。',
     },
     keywords: {
-      en: 'Starlink Rental Kit, Starlink rental Bangladesh, monthly bill payment support, Bangla QR, DSLink',
-      bn: 'Starlink Rental Kit, স্টারলিংক রেন্টাল, মাসিক বিল পেমেন্ট সাপোর্ট, Bangla QR, DSLink',
-      my: 'Starlink Rental Kit, Starlink ငှားရမ်းခြင်း, Bangla QR, DSLink',
-      'zh-CN': 'Starlink 租赁套件, Starlink 设备租赁, 月度账单支持, DSLink',
+      en: 'Starlink rental in Bangladesh, Starlink Standard 4X rental, Starlink rental BDT 3000, fixed location Residential Starlink rental, DSLink',
+      bn: 'বাংলাদেশে Starlink রেন্টাল, Starlink Standard 4X রেন্টাল, ৳৩০০০ রেন্টাল কিট, DSLink',
+      my: 'Starlink rental in Bangladesh, Starlink Standard 4X rental, DSLink',
+      'zh-CN': '孟加拉国 Starlink 租赁, Starlink Standard 4X 租赁, DSLink',
     },
   },
   starlink_bangladesh: {
@@ -639,6 +641,66 @@ const ROUTE_SEO_CATALOG: Record<string, MultilingualSeoEntry> = {
       'zh-CN': 'Starlink business partnership, Starlink 商业合作, 批量硬件采购, DSLink',
     },
   },
+  money_back: {
+    title: {
+      en: '90-Day Roaming Money-Back Guarantee & Refund Policy | DSLink',
+      bn: '৯০ দিনের রোমিং মানি-ব্যাক গ্যারান্টি ও রিফান্ড নীতিমালা | DSLink',
+      my: 'ရက် ၉၀ Roaming ငွေပြန်အမ်း အာမခံနှင့် ပြန်အမ်းငွေ မူဝါဒ | DSLink',
+      'zh-CN': '90 天漫游退款保障与退款政策 | DSLink',
+    },
+    description: {
+      en: 'Review DSLink 90-day roaming money-back guarantee eligibility, return inspection terms, and claim instructions for qualifying purchased Starlink kits.',
+      bn: 'যোগ্য ক্রয়কৃত Starlink কিটের জন্য DSLink-এর ৯০ দিনের রোমিং মানি-ব্যাক গ্যারান্টি শর্তাবলি, রিটার্ন যাচাই ও রিফান্ড আবেদন প্রক্রিয়া জানুন।',
+      my: 'ဝယ်ယူထားသော Starlink Kit များအတွက် DSLink ၏ ရက် ၉၀ Roaming ငွေပြန်အမ်း အာမခံ စည်းကမ်းချက်များနှင့် လျှောက်ထားပုံကို ဖတ်ရှုပါ။',
+      'zh-CN': '查看 DSLink 针对符合条件的买断 Starlink 套件提供的 90 天漫游退款保障资格、退货检查条款及退款申请流程。',
+    },
+    keywords: {
+      en: 'Starlink 90-day money-back guarantee, DSLink refund policy, Starlink kit return Bangladesh',
+      bn: '৯০ দিনের মানি-ব্যাক গ্যারান্টি, DSLink রিফান্ড নীতিমালা, Starlink রিটার্ন',
+      my: 'ရက် ၉၀ ငွေပြန်အမ်း အာမခံ, DSLink Refund Policy',
+      'zh-CN': 'Starlink 90 天退款保障, DSLink 退款政策',
+    },
+  },
+  services: {
+    title: {
+      en: 'Enterprise Software, Telecom & Starlink Integration Services | Dev Spark Soft Limited',
+      bn: 'এন্টারপ্রাইজ সফটওয়্যার, টেলিকম ও Starlink ইন্টিগ্রেশন সার্ভিস | Dev Spark Soft Limited',
+      my: 'Enterprise Software၊ Telecom နှင့် Starlink ဝန်ဆောင်မှုများ | Dev Spark Soft Limited',
+      'zh-CN': '企业软件开发、电信工程与 Starlink 集成服务 | Dev Spark Soft Limited',
+    },
+    description: {
+      en: 'Dev Spark Soft Limited delivers Starlink enterprise deployments, network failover architecture, custom software engineering, and FinTech payment integrations in Bangladesh.',
+      bn: 'Dev Spark Soft Limited বাংলাদেশে Starlink এন্টারপ্রাইজ ডিপ্লয়মেন্ট, নেটওয়ার্ক ব্যাকআপ, কাস্টম সফটওয়্যার ইঞ্জিনিয়ারিং ও ফিনটেক পেমেন্ট ইন্টিগ্রেশন সার্ভিস প্রদান করে।',
+      my: 'Dev Spark Soft Limited သည် Starlink Enterprise တပ်ဆင်ခြင်း၊ ကွန်ရက်ချိတ်ဆက်ခြင်းနှင့် Software Engineering ဝန်ဆောင်မှုများ ပေးအပ်ပါသည်။',
+      'zh-CN': 'Dev Spark Soft Limited 在孟加拉国提供 Starlink 企业级部署、网络容灾架构、定制软件工程及金融科技支付集成服务。',
+    },
+    keywords: {
+      en: 'Dev Spark Soft Limited services, Starlink enterprise deployment Bangladesh, enterprise software Dhaka, telecom integration',
+      bn: 'Dev Spark Soft Limited সার্ভিস, Starlink এন্টারপ্রাইজ ডিপ্লয়মেন্ট, সফটওয়্যার ডেভেলপমেন্ট ঢাকা',
+      my: 'Dev Spark Soft Limited services, Starlink Enterprise Bangladesh',
+      'zh-CN': 'Dev Spark Soft Limited 服务, Starlink 企业部署, 孟加拉软件开发',
+    },
+  },
+  not_found: {
+    title: {
+      en: 'Page Not Found (404) | DevSpark Link (DSLink)',
+      bn: 'পৃষ্ঠা পাওয়া যায়নি (404) | DevSpark Link (DSLink)',
+      my: 'စာမျက်နှာ မတွေ့ပါ (404) | DevSpark Link (DSLink)',
+      'zh-CN': '页面未找到 (404) | DevSpark Link (DSLink)',
+    },
+    description: {
+      en: 'The page you requested could not be found on DevSpark Link (DSLink). Browse our Starlink kits, rental offer, or contact support.',
+      bn: 'আপনার অনুরোধ করা পৃষ্ঠাটি DevSpark Link (DSLink)-এ পাওয়া যায়নি। আমাদের Starlink কিট, রেন্টাল অফার বা সাপোর্ট পেজ দেখুন।',
+      my: 'သင်ရှာဖွေနေသော စာမျက်နှာကို DevSpark Link (DSLink) တွင် မတွေ့ပါ။ Starlink Kit များနှင့် ငှားရမ်းခြင်း စာမျက်နှာသို့ ပြန်သွားပါ။',
+      'zh-CN': '您在 DevSpark Link (DSLink) 上请求的页面不存在。请浏览我们的 Starlink 套件目录、租赁方案或联系支持团队。',
+    },
+    keywords: {
+      en: '404, Page Not Found, DSLink',
+      bn: '404, পৃষ্ঠা পাওয়া যায়নি, DSLink',
+      my: '404, Page Not Found, DSLink',
+      'zh-CN': '404, 页面未找到, DSLink',
+    },
+  },
 };
 
 /**
@@ -672,7 +734,8 @@ export function getLocalizedRouteSeo(
     domain === 'devsparksoft.com.bd' || isResellPublicRoute
       ? 'https://devsparksoft.com.bd'
       : 'https://dslink.cyou';
-  const noindex = isPrivateOrNonIndexablePath(rawBasePath);
+  const isKnownRoute = isKnownSiteRoute(rawBasePath);
+  const noindex = !isKnownRoute || isPrivateOrNonIndexablePath(rawBasePath);
 
   let canonicalBasePath = rawBasePath;
   let title = '';
@@ -680,7 +743,12 @@ export function getLocalizedRouteSeo(
   let keywords = '';
   let isArticle = false;
 
-  if (lowerPath.startsWith('/legal/')) {
+  if (!isKnownRoute) {
+    const entry = ROUTE_SEO_CATALOG.not_found;
+    title = entry.title[language];
+    description = entry.description[language];
+    keywords = entry.keywords[language];
+  } else if (lowerPath.startsWith('/legal/')) {
     const slug = lowerPath.slice('/legal/'.length);
     const policy = resolveLegalPolicyBySlug(slug);
     if (policy) {
@@ -738,15 +806,17 @@ export function getLocalizedRouteSeo(
     } else if (lowerPath === '/worldwide-delivery') {
       canonicalBasePath = '/worldwide-delivery';
       entryKey = 'worldwide_delivery';
+    } else if (lowerPath === '/roaming-packages') {
+      canonicalBasePath = '/roaming-packages';
+      entryKey = 'roaming_packages';
     } else if (
-      lowerPath === '/roaming-packages' ||
       lowerPath === '/money-back' ||
       lowerPath === '/refund-claim' ||
       lowerPath === '/refund-policy' ||
       lowerPath === '/guarantee'
     ) {
-      canonicalBasePath = lowerPath === '/money-back' ? '/money-back' : '/roaming-packages';
-      entryKey = 'roaming_packages';
+      canonicalBasePath = '/money-back';
+      entryKey = 'money_back';
     } else if (
       lowerPath === '/warranty' ||
       lowerPath === '/warranty-claim' ||
@@ -781,17 +851,44 @@ export function getLocalizedRouteSeo(
     ) {
       canonicalBasePath = '/price-syndicate-alert';
       entryKey = 'price_syndicate_alert';
-    } else if (lowerPath === '/kits/starlink-standard-4x' || lowerPath === '/products/starlink-standard-4x') {
+    } else if (
+      lowerPath === '/kits/starlink-standard-4x' ||
+      lowerPath === '/products/starlink-standard-4x' ||
+      lowerPath === '/kits/starlink-standard-4x-bd-residential' ||
+      lowerPath === '/products/starlink-standard-4x-bd-residential'
+    ) {
       canonicalBasePath = '/kits/starlink-standard-4x';
       entryKey = 'kit_standard_4x';
-    } else if (lowerPath === '/kits/starlink-mini-kit' || lowerPath === '/products/starlink-mini-kit') {
+    } else if (
+      lowerPath === '/kits/starlink-mini-kit' ||
+      lowerPath === '/products/starlink-mini-kit' ||
+      lowerPath === '/kits/starlink-mini-bd-residential' ||
+      lowerPath === '/products/starlink-mini-bd-residential'
+    ) {
       canonicalBasePath = '/kits/starlink-mini-kit';
       entryKey = 'kit_mini';
-    } else if (lowerPath === '/kits' || lowerPath === '/products' || lowerPath.startsWith('/kits/')) {
-      canonicalBasePath = lowerPath === '/products' ? '/kits' : rawBasePath;
+    } else if (lowerPath.startsWith('/kits/') || lowerPath.startsWith('/products/')) {
+      const slug = lowerPath.startsWith('/kits/')
+        ? lowerPath.slice('/kits/'.length)
+        : lowerPath.slice('/products/'.length);
+      const matchedProd = DEFAULT_CENTRAL_PRODUCTS[slug];
+      if (matchedProd) {
+        canonicalBasePath = `/kits/${matchedProd.id}`;
+        title = `${matchedProd.name} (${formatBdt(matchedProd.price)}) | DSLink`;
+        description = matchedProd.description.slice(0, 180);
+        keywords = `${matchedProd.name}, Starlink accessories Bangladesh, DSLink`;
+      } else {
+        canonicalBasePath = '/kits';
+        entryKey = 'kits';
+      }
+    } else if (lowerPath === '/kits' || lowerPath === '/products') {
+      canonicalBasePath = '/kits';
       entryKey = 'kits';
-    } else if (lowerPath === '/packages' || lowerPath === '/services') {
-      canonicalBasePath = lowerPath;
+    } else if (lowerPath === '/services') {
+      canonicalBasePath = '/services';
+      entryKey = 'services';
+    } else if (lowerPath === '/packages') {
+      canonicalBasePath = '/packages';
       entryKey = 'packages';
     } else if (lowerPath === '/faq') {
       canonicalBasePath = '/faq';
@@ -821,11 +918,13 @@ export function getLocalizedRouteSeo(
       entryKey = 'partnerships';
     }
 
-    const entry = ROUTE_SEO_CATALOG[entryKey];
-    title = entry.title[language];
-    description = entry.description[language];
-    keywords = entry.keywords[language];
-    isArticle = Boolean(entry.isArticle);
+    if (!title) {
+      const entry = ROUTE_SEO_CATALOG[entryKey];
+      title = entry.title[language];
+      description = entry.description[language];
+      keywords = entry.keywords[language];
+      isArticle = Boolean(entry.isArticle);
+    }
   }
 
   const canonicalPath = noindex ? rawBasePath : buildLocalePath(canonicalBasePath, language);

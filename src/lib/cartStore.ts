@@ -116,8 +116,19 @@ if (typeof window !== 'undefined') {
   };
 }
 
+export function isBangladeshOnlyProduct(productId: string, category?: string): boolean {
+  const key = (productId || '').trim().toLowerCase();
+  return (
+    category === 'rental' ||
+    key.includes('rental') ||
+    key === 'starlink-standard-4x-bd-residential' ||
+    key === 'starlink-mini-bd-residential' ||
+    key.includes('bd-residential')
+  );
+}
+
 export function useCart(shippingCountryCode = 'BD') {
-  const { getPrice } = useCentralPricing();
+  const { getPrice, getProduct } = useCentralPricing();
   const [items, setItems] = useState<CartItem[]>(() => readStoredCart());
 
   useEffect(() => {
@@ -131,12 +142,19 @@ export function useCart(shippingCountryCode = 'BD') {
   }, []);
 
   const enrichedItems = items.map((item) => {
+    const catalogProduct = getProduct(item.productId);
     const unitPriceBdt =
       item.category === 'roaming' && item.unitPriceOverrideBdt !== undefined
         ? item.unitPriceOverrideBdt
         : getPrice(item.productId, item.unitPriceOverrideBdt ?? getCentralProductPrice(item.productId));
     return {
       ...item,
+      name: catalogProduct?.name || item.name,
+      image: catalogProduct?.image || item.image,
+      imageAlt: catalogProduct?.imageAlt || catalogProduct?.name || item.name,
+      variantLabel: catalogProduct?.variantLabel,
+      referencePriceBdt: catalogProduct?.referencePrice,
+      isBangladeshOnly: isBangladeshOnlyProduct(item.productId, item.category),
       unitPriceBdt,
       lineTotalBdt: unitPriceBdt * item.quantity,
     };
@@ -145,6 +163,7 @@ export function useCart(shippingCountryCode = 'BD') {
   const subtotalBdt = enrichedItems.reduce((sum, i) => sum + i.lineTotalBdt, 0);
   const itemCount = enrichedItems.reduce((sum, i) => sum + i.quantity, 0);
   const hasRental = enrichedItems.some((i) => i.category === 'rental');
+  const hasBangladeshOnlyItem = enrichedItems.some((i) => i.isBangladeshOnly);
   const shippingFeeBdt = itemCount > 0 ? calculateShipping(shippingCountryCode) : 0;
   const totalBdt = subtotalBdt + shippingFeeBdt;
   const codAvailable = isCODAvailable(shippingCountryCode, hasRental);
@@ -173,6 +192,7 @@ export function useCart(shippingCountryCode = 'BD') {
     shippingFeeBdt,
     totalBdt,
     hasRental,
+    hasBangladeshOnlyItem,
     codAvailable,
     carrierAvailable,
     addItem,

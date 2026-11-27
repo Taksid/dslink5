@@ -154,7 +154,7 @@ export const LegalPolicySearchBar: React.FC<LegalPolicySearchBarProps> = ({
       <div className="relative flex items-center">
         <Search
           aria-hidden="true"
-          className="w-4 h-4 text-neutral-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
+          className="w-4 h-4 text-slate-300 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
         />
 
         <input
@@ -172,7 +172,7 @@ export const LegalPolicySearchBar: React.FC<LegalPolicySearchBarProps> = ({
             'မူဝါဒ စစ်ထုတ်ရန် (ဥပမာ: 5TB, Bangla QR, ပို့ဆောင်ခ, လိပ်စာ...)',
             'Filter policies live (e.g. 5TB, Bangla QR, shipping, location, return...)'
           )}
-          className="w-full pl-10 pr-24 py-3 rounded-[4px] bg-[#0d0d10] border border-white/15 text-sm text-white placeholder:text-neutral-500 focus:outline-none focus:border-white/55 transition-colors min-h-[46px] [&::-webkit-search-cancel-button]:hidden"
+          className="w-full pl-10 pr-24 py-3 rounded-lg bg-[#0b0f17] border border-slate-600/80 text-sm text-white placeholder:text-slate-400 focus:outline-none focus:border-cyan-400 transition-colors min-h-[46px] [&::-webkit-search-cancel-button]:hidden"
         />
 
         <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1.5">
@@ -180,7 +180,7 @@ export const LegalPolicySearchBar: React.FC<LegalPolicySearchBarProps> = ({
             <>
               <span
                 aria-live="polite"
-                className="text-[11px] font-mono text-neutral-400 tabular-nums px-1.5 select-none"
+                className="text-xs font-mono text-slate-300 tabular-nums px-1.5 select-none"
               >
                 {resultCount}/{totalCount}
               </span>
@@ -188,7 +188,7 @@ export const LegalPolicySearchBar: React.FC<LegalPolicySearchBarProps> = ({
                 type="button"
                 onClick={handleClear}
                 aria-label={t3('সার্চ মুছুন', 'ရှာဖွေမှု ရှင်းရန်', 'Clear policy filter')}
-                className="p-1.5 rounded-[3px] text-neutral-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                className="p-2 min-w-[36px] min-h-[36px] flex items-center justify-center rounded text-slate-300 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -200,7 +200,7 @@ export const LegalPolicySearchBar: React.FC<LegalPolicySearchBarProps> = ({
       {/* Quick Keyword Filters & Live Filter Status */}
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex flex-wrap items-center gap-1.5">
-          <span className="text-[11px] font-mono text-neutral-500 mr-0.5">
+          <span className="text-xs font-mono text-slate-300 mr-0.5">
             {t3('দ্রুত ফিল্টার:', 'အမြန်စစ်ထုတ်ရန်:', 'Quick filter:')}
           </span>
           {LEGAL_QUICK_FILTERS.map((chip) => {
@@ -218,10 +218,10 @@ export const LegalPolicySearchBar: React.FC<LegalPolicySearchBarProps> = ({
                 type="button"
                 onClick={() => onChange(isSelected ? '' : chip.keyword)}
                 aria-pressed={isSelected}
-                className={`px-2 py-1 rounded-[3px] text-[11px] font-medium border transition-colors cursor-pointer whitespace-nowrap ${
+                className={`px-2.5 py-1.5 rounded text-xs font-medium border transition-colors cursor-pointer whitespace-nowrap min-h-[34px] ${
                   isSelected
-                    ? 'bg-white text-black border-white font-semibold'
-                    : 'bg-white/[0.04] text-neutral-300 border-white/15 hover:border-white/35 hover:text-white'
+                    ? 'bg-cyan-400 text-[#04131a] border-cyan-300 font-bold'
+                    : 'bg-white/[0.06] text-slate-200 border-slate-600/80 hover:border-cyan-400/60 hover:text-white'
                 }`}
               >
                 {label}
@@ -230,7 +230,7 @@ export const LegalPolicySearchBar: React.FC<LegalPolicySearchBarProps> = ({
           })}
         </div>
 
-        <div aria-live="polite" className="text-[11px] font-mono text-neutral-400">
+        <div aria-live="polite" className="text-xs font-mono text-slate-300">
           {hasQuery ? (
             resultCount === 0 ? (
               t3('কোনো নীতিমালা মেলেনি', 'ကိုက်ညီသော မူဝါဒ မတွေ့ပါ', 'No matching policies')

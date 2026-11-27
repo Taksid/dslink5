@@ -43,18 +43,41 @@ interface PromosCheckoutProps {
   onBackToMainSite?: () => void;
 }
 
+const PROMO_PURCHASE_IDS = [
+  'starlink-standard-4x-bd-residential',
+  'starlink-mini-bd-residential',
+  'starlink-standard-4x',
+  'starlink-mini-kit',
+] as const;
+
+type PromoPurchaseId = (typeof PROMO_PURCHASE_IDS)[number];
+
 export function PromosCheckoutPage({ onBackToMainSite }: PromosCheckoutProps) {
-  const { standard4xPrice, miniKitPrice, rentalKitPrice } = useCentralPricing();
+  const {
+    pricing,
+    standard4xPrice,
+    miniKitPrice,
+    standard4xBdResidentialPrice,
+    miniBdResidentialPrice,
+    rentalKitPrice,
+  } = useCentralPricing();
   const { countryCode, setCountryCode } = useSelectedShippingCountry();
   const { currency, formatPrice } = useGlobalCurrency();
 
   const initialProductParam =
     typeof window !== 'undefined'
-      ? new URLSearchParams(window.location.search).get('product') || 'starlink-standard-4x'
+      ? (new URLSearchParams(window.location.search).get('product') || '').toLowerCase()
+      : '';
+  const initialSelected: PromoPurchaseId =
+    initialProductParam === 'starlink-standard-4x-bd-residential'
+      ? 'starlink-standard-4x-bd-residential'
+      : initialProductParam === 'starlink-mini-bd-residential'
+      ? 'starlink-mini-bd-residential'
+      : initialProductParam.includes('mini')
+      ? 'starlink-mini-kit'
       : 'starlink-standard-4x';
-  const [selectedProductId, setSelectedProductId] = useState<'starlink-standard-4x' | 'starlink-mini-kit'>(
-    initialProductParam.includes('mini') ? 'starlink-mini-kit' : 'starlink-standard-4x'
-  );
+
+  const [selectedProductId, setSelectedProductId] = useState<PromoPurchaseId>(initialSelected);
   const [quantity, setQuantity] = useState<number>(1);
 
   // Guest vs Signed-In Checkout
@@ -81,16 +104,14 @@ export function PromosCheckoutPage({ onBackToMainSite }: PromosCheckoutProps) {
     []
   );
 
+  const selectedProduct =
+    pricing.products[selectedProductId] || pricing.products['starlink-standard-4x'];
   const selectedProductName =
-    selectedProductId === 'starlink-mini-kit'
-      ? 'Starlink Mini Kit (Purchase)'
-      : 'Starlink Standard Kit 4X (Purchase)';
+    selectedProduct?.name || 'Starlink Standard 4X USA Kit + Roam Unlimited Internet';
   const selectedProductImage =
-    selectedProductId === 'starlink-mini-kit'
-      ? 'https://starlink.com/public-files/Starlink_Hardware_Generic_500x500.png'
-      : 'https://starlink.com/public-files/Starlink_Standard_Hero_500x500.png';
-  const productPrice =
-    selectedProductId === 'starlink-mini-kit' ? miniKitPrice : standard4xPrice;
+    selectedProduct?.image || '/assets/products/starlink-standard-4x-roam-unlimited.jpg';
+  const productPrice = selectedProduct?.price ?? standard4xPrice;
+  const isBdOnlyVariant = selectedProduct?.variantType === 'bd_residential';
   const subtotalAmount = productPrice * quantity;
   const carrierSupported = isCarrierSupported(countryCode);
   const shippingFee = carrierSupported ? calculateShipping(countryCode) : 0;
@@ -102,6 +123,12 @@ export function PromosCheckoutPage({ onBackToMainSite }: PromosCheckoutProps) {
       setPaymentChoice('bangla_qr');
     }
   }, [codEligible]);
+
+  useEffect(() => {
+    if (isBdOnlyVariant && countryCode !== 'BD') {
+      setCountryCode('BD');
+    }
+  }, [isBdOnlyVariant, countryCode, setCountryCode]);
 
   const activePaymentMethod = codEligible && paymentChoice === 'cod' ? 'cod' : 'bangla_qr';
 
@@ -364,9 +391,9 @@ export function PromosCheckoutPage({ onBackToMainSite }: PromosCheckoutProps) {
                     <button
                       type="button"
                       onClick={() => handleCopyOrderSummary(orderSuccess)}
-                      className="bg-white/10 hover:bg-white/20 text-neutral-200 px-2 py-0.5 rounded text-[10px] flex items-center gap-1 cursor-pointer"
+                      className="min-h-[36px] bg-slate-800 hover:bg-slate-700 text-white px-2.5 py-1 rounded text-xs flex items-center gap-1 cursor-pointer"
                     >
-                      {copiedOrderId ? <Check className="w-3 h-3 text-white" /> : <Copy className="w-3 h-3" />}
+                      {copiedOrderId ? <Check className="w-3.5 h-3.5 text-emerald-300" aria-hidden="true" /> : <Copy className="w-3.5 h-3.5" aria-hidden="true" />}
                       <span>{copiedOrderId ? 'কপি হয়েছে' : 'কপি'}</span>
                     </button>
                   </div>
@@ -442,60 +469,64 @@ export function PromosCheckoutPage({ onBackToMainSite }: PromosCheckoutProps) {
 
         {/* Hero Section */}
         <div className="text-center max-w-3xl mx-auto mb-10">
-          <div className="text-[11px] font-mono uppercase tracking-[0.2em] text-neutral-400 mb-3">
+          <div className="text-xs font-mono uppercase tracking-[0.16em] text-cyan-300 mb-3">
             DEVSPARK LINK · DIRECT STARLINK HARDWARE ORDER &amp; BANGLA QR CHECKOUT
           </div>
 
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white tracking-tight leading-tight mb-3">
             Starlink Hardware Purchase &amp; Bangla QR Checkout
-            <span className="block text-neutral-200 mt-1 text-xl sm:text-2xl md:text-3xl font-mono tabular-nums">
-              Standard Kit 4X {formatBdt(standard4xPrice)} · Mini Kit {formatBdt(miniKitPrice)}
+            <span className="block text-slate-200 mt-1 text-base sm:text-xl font-mono tabular-nums">
+              BD Residential: 4X {formatBdt(standard4xBdResidentialPrice)} · Mini {formatBdt(miniBdResidentialPrice)} | Roam Unlimited 4X {formatBdt(standard4xPrice)} · Global Roam Mini {formatBdt(miniKitPrice)}
             </span>
           </h1>
 
-          <p className="text-neutral-300 text-xs sm:text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
-            DSLink থেকে বাংলাদেশসহ বিশ্বব্যাপী Starlink Standard Kit 4X ({formatBdtBn(standard4xPrice)}) ও Starlink Mini Kit ({formatBdtBn(miniKitPrice)}) অর্ডার করুন। প্রযোজ্য এলাকায় Cash on Delivery (COD) অথবা Bangla QR Scan &amp; Pay (সব অনুমোদিত ব্যাংক ও MFS অ্যাপ) দিয়ে পেমেন্ট করার সুবিধা রয়েছে।
+          <p className="text-slate-200 text-xs sm:text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
+            DSLink থেকে বাংলাদেশ রেসিডেন্সিয়াল অথবা রোম আনলিমিটেড / গ্লোবাল রোম Starlink Standard 4X ও Starlink Mini অর্ডার করুন। বাংলাদেশে ফ্রি ডেলিভারি ও Cash on Delivery (COD) অথবা Bangla QR Scan &amp; Pay সুবিধা রয়েছে।
           </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
           {/* Left Column: Product Overview + Bangla QR Scan & Pay Section */}
-          <div className="lg:col-span-7 space-y-6">
-            {/* Kit Selector */}
+          <div className="lg:col-span-7 space-y-6 min-w-0">
+            {/* Kit Variant Selector (All 4 Purchase Variants) */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <button
-                type="button"
-                onClick={() => setSelectedProductId('starlink-standard-4x')}
-                className={`p-4 rounded-xl border text-left transition-colors cursor-pointer ${
-                  selectedProductId === 'starlink-standard-4x'
-                    ? 'bg-[#111113] border-white text-white'
-                    : 'bg-[#0a0a0a] border-white/15 text-neutral-300 hover:border-white/35'
-                }`}
-              >
-                <div className="text-[11px] font-mono uppercase text-neutral-400">Purchase · Gen 3 Wi-Fi 6</div>
-                <div className="text-sm font-bold text-white mt-1">Starlink Standard Kit 4X</div>
-                <div className="text-xl font-mono font-bold tabular-nums text-white mt-1.5">
-                  {formatBdt(standard4xPrice)}
-                </div>
-              </button>
-              <button
-                type="button"
-                onClick={() => setSelectedProductId('starlink-mini-kit')}
-                className={`p-4 rounded-xl border text-left transition-colors cursor-pointer ${
-                  selectedProductId === 'starlink-mini-kit'
-                    ? 'bg-[#111113] border-white text-white'
-                    : 'bg-[#0a0a0a] border-white/15 text-neutral-300 hover:border-white/35'
-                }`}
-              >
-                <div className="text-[11px] font-mono uppercase text-neutral-400">Purchase · Portable</div>
-                <div className="text-sm font-bold text-white mt-1">Starlink Mini Kit</div>
-                <div className="text-xl font-mono font-bold tabular-nums text-white mt-1.5">
-                  {formatBdt(miniKitPrice)}
-                </div>
-              </button>
+              {PROMO_PURCHASE_IDS.map((pid) => {
+                const prod = pricing.products[pid];
+                if (!prod) return null;
+                const active = selectedProductId === pid;
+                return (
+                  <button
+                    key={pid}
+                    type="button"
+                    onClick={() => setSelectedProductId(pid)}
+                    className={`p-4 rounded-xl border text-left transition-colors cursor-pointer ${
+                      active
+                        ? 'bg-[#0f172a] border-cyan-400 text-white'
+                        : 'bg-[#0b0f17] border-slate-700 text-slate-200 hover:border-cyan-400/60'
+                    }`}
+                  >
+                    <div className="text-xs font-mono uppercase text-cyan-300">
+                      {prod.variantLabel}
+                    </div>
+                    <div className="text-sm font-bold text-white mt-1 break-words">
+                      {prod.shortName || prod.name}
+                    </div>
+                    <div className="flex items-baseline gap-2 mt-1.5 flex-wrap">
+                      <span className="text-xl font-mono font-bold tabular-nums text-white">
+                        {formatBdt(prod.price)}
+                      </span>
+                      {prod.referencePrice && prod.referencePrice > prod.price && (
+                        <span className="text-xs font-mono line-through text-slate-300 tabular-nums">
+                          {formatBdt(prod.referencePrice)}
+                        </span>
+                      )}
+                    </div>
+                  </button>
+                );
+              })}
             </div>
 
-            {/* Premium Bangla QR Scan & Pay Section with Exact QR Image & Logo.dev Bank/MFS Logos */}
+            {/* Official Bangla QR Scan & Pay Section */}
             <BanglaQrPaymentSection
               orderId={previewOrderId}
               productSummary={`${selectedProductName} × ${quantity}`}
@@ -506,53 +537,53 @@ export function PromosCheckoutPage({ onBackToMainSite }: PromosCheckoutProps) {
             />
 
             {/* Product Card */}
-            <div className="bg-[#0a0a0a] border border-white/15 rounded-xl p-5 sm:p-6">
+            <div className="bg-[#0b0f17] border border-slate-700 rounded-xl p-5 sm:p-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-center">
-                <div className="rounded-lg overflow-hidden bg-[#111113] border border-white/15 p-3 text-center">
+                <div className="rounded-xl overflow-hidden bg-white border border-slate-700 p-3 text-center">
                   <img
                     src={selectedProductImage}
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = '/assets/aistudio/image_1a66081b.png';
-                    }}
-                    alt={selectedProductName}
-                    className="w-full h-44 object-contain rounded mx-auto"
-                    referrerPolicy="no-referrer"
+                    alt={selectedProduct?.imageAlt || selectedProductName}
+                    width={600}
+                    height={600}
+                    className="w-full aspect-square max-h-56 object-contain rounded mx-auto"
                   />
-                  <div className="mt-2.5 text-[10px] text-neutral-400 font-mono uppercase tracking-wider">
-                    Model: {selectedProductName}
+                  <div className="mt-2 text-xs text-slate-700 font-mono uppercase tracking-wider font-semibold">
+                    {selectedProduct?.variantLabel || 'Starlink Hardware'}
                   </div>
                 </div>
 
-                <div className="space-y-3">
-                  <div className="flex items-center gap-1.5 text-neutral-300 text-xs font-semibold">
-                    <div className="flex gap-0.5">
-                      {[...Array(5)].map((_, i) => (
-                        <Star key={i} className="w-3.5 h-3.5 fill-white text-white" />
-                      ))}
-                    </div>
-                    <span className="text-neutral-300 font-mono">4.9/5 (৪৮০+ রিভিউ)</span>
-                  </div>
-
-                  <h3 className="text-lg sm:text-xl font-bold text-white">
+                <div className="space-y-3 min-w-0">
+                  <h3 className="text-lg sm:text-xl font-bold text-white break-words">
                     {selectedProductName}
                   </h3>
 
                   <div className="space-y-1">
-                    <div className="text-2xl sm:text-3xl font-bold font-mono tabular-nums text-white">
-                      {formatBdt(productPrice)}
+                    <div className="flex items-baseline gap-2.5 flex-wrap">
+                      <span className="text-2xl sm:text-3xl font-bold font-mono tabular-nums text-white">
+                        {formatBdt(productPrice)}
+                      </span>
+                      {selectedProduct?.referencePrice &&
+                        selectedProduct.referencePrice > productPrice && (
+                          <span className="text-xs font-mono text-slate-300">
+                            <span className="line-through tabular-nums">
+                              {formatBdt(selectedProduct.referencePrice)}
+                            </span>{' '}
+                            <span className="text-slate-300">(ref. price)</span>
+                          </span>
+                        )}
                     </div>
-                    <p className="text-xs text-neutral-400">
+                    <p className="text-xs text-slate-300">
                       হার্ডওয়্যার মূল্য · {GLOBAL_DELIVERY_COPY.subscriptionSeparateBn}
                     </p>
                   </div>
 
-                  <div className="bg-[#111113] border border-white/15 rounded-lg p-3.5 text-xs text-neutral-200 space-y-1">
+                  <div className="bg-[#04070c] border border-slate-700 rounded-lg p-3.5 text-xs text-slate-200 space-y-1">
                     <div className="flex items-center gap-2 font-semibold text-white">
-                      <CheckCircle2 className="w-4 h-4 text-white shrink-0" />
-                      <span>২৪ মাস রিপ্লেসমেন্ট সাপোর্ট (লিখিত শর্ত প্রযোজ্য)</span>
+                      <CheckCircle2 className="w-4 h-4 text-emerald-300 shrink-0" aria-hidden="true" />
+                      <span>২৪ মাস DSLink স্টোর রিপ্লেসমেন্ট সাপোর্ট (শর্ত প্রযোজ্য)</span>
                     </div>
-                    <p className="text-[11px] text-neutral-400">
-                      Official Sales Invoice, ৩০ দিনের রিফান্ড অঙ্গীকার এবং প্রযোজ্য এলাকায় COD অথবা Bangla QR পেমেন্ট।
+                    <p className="text-xs text-slate-300">
+                      Official Sales Invoice এবং প্রযোজ্য এলাকায় COD অথবা Bangla QR পেমেন্ট।
                     </p>
                   </div>
                 </div>

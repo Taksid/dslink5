@@ -115,52 +115,9 @@ export const PriceSyndicateAlertPage: React.FC<PriceSyndicateAlertPageProps> = (
   useEffect(() => {
     window.scrollTo(0, 0);
 
-    const pageTitle =
-      'BANGLADESH STARLINK PRICE SYNDICATE ALERT: নতুন Kit-এর নামে Rental Kit বিক্রির সতর্কতা | DSLink — DEV SPARK SOFT LIMITED';
     const pageDesc =
       'সতর্কতা! বাংলাদেশে প্রায় ৭টি কোম্পানির বিরুদ্ধে নতুন Starlink Kit-এর নামে মাসিক ~২,৮০০ টাকা ভাড়ার Rental Kit বিক্রির অভিযোগ। মালিকানা, Roam সীমাবদ্ধতা, ট্রান্সফার নিষেধাজ্ঞা ও করণীয় জানুন — DSLink (DEV SPARK SOFT LIMITED)।';
-    const canonicalUrl = `${siteOrigin}/price-syndicate-alert`;
-
-    document.title = pageTitle;
-
-    const upsertMeta = (attr: 'name' | 'property', key: string, content: string) => {
-      let el = document.querySelector(`meta[${attr}="${key}"]`) as HTMLMetaElement | null;
-      if (!el) {
-        el = document.createElement('meta');
-        el.setAttribute(attr, key);
-        document.head.appendChild(el);
-      }
-      el.content = content;
-    };
-
-    upsertMeta('name', 'description', pageDesc);
-    upsertMeta(
-      'name',
-      'keywords',
-      'BANGLADESH STARLINK PRICE SYNDICATE ALERT, Starlink Rental Kit Bangladesh, Starlink 2800 Monthly Rental Fee, Rental vs Purchased Starlink Kit BD, DSLink, DEVSPARK LINK, DEV SPARK SOFT LIMITED, devsparksoft.com.bd'
-    );
-    upsertMeta(
-      'name',
-      'robots',
-      'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'
-    );
-    upsertMeta('property', 'og:type', 'article');
-    upsertMeta('property', 'og:title', pageTitle);
-    upsertMeta('property', 'og:description', pageDesc);
-    upsertMeta('property', 'og:url', canonicalUrl);
-    upsertMeta('property', 'og:image', OFFICIAL_FAVICON_LOGO_URL);
-    upsertMeta('name', 'twitter:title', pageTitle);
-    upsertMeta('name', 'twitter:description', pageDesc);
-    upsertMeta('name', 'twitter:url', canonicalUrl);
-    upsertMeta('name', 'twitter:image', OFFICIAL_FAVICON_LOGO_URL);
-
-    let canonicalEl = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
-    if (!canonicalEl) {
-      canonicalEl = document.createElement('link');
-      canonicalEl.rel = 'canonical';
-      document.head.appendChild(canonicalEl);
-    }
-    canonicalEl.href = canonicalUrl;
+    const canonicalUrl = `${siteOrigin}${typeof window !== 'undefined' ? window.location.pathname : '/price-syndicate-alert'}`;
 
     document
       .querySelectorAll('script[data-page-seo="price-syndicate-alert"]')
