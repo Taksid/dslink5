@@ -5,6 +5,7 @@ import { GoogleGenAI } from "@google/genai";
 import { Resend } from "resend";
 import fs from "fs";
 import os from "os";
+import crypto from "crypto";
 import { initializeApp } from "firebase/app";
 import {
   getFirestore,
@@ -54,10 +55,44 @@ import {
 } from "./src/lib/localeRouting";
 import {
   createStripeCheckoutSessionForOrder,
+  createStripeCheckoutSessionForPaymentRequest,
   generateOrderAccessToken,
   handleVerifiedStripeWebhook,
+  isStripeConfiguredAndEnabled,
   isStripeEnabled,
 } from "./src/lib/stripeServer";
+import {
+  EXACT_BANGLA_QR_IMAGE_URL,
+  VERIFIED_BANGLA_QR_MERCHANT_ID,
+  VERIFIED_BANGLA_QR_MERCHANT_NAME,
+  VERIFIED_BANGLA_QR_PHONE,
+  buildPaymentRequestShareMessage,
+  buildWhatsAppShareUrl,
+  formatPayAmount,
+  type DSLinkPayBankTransferConfig,
+  type DSLinkPayConfigDiagnostics,
+  type DSLinkPayCurrency,
+  type DSLinkPayDraftSummaryAdmin,
+  type DSLinkPayEmailJob,
+  type DSLinkPayMethod,
+  type DSLinkPayRentalBreakdown,
+  type DSLinkPayRequestAdmin,
+  type DSLinkPayRequestPublic,
+  type DSLinkPayStatus,
+  type DSLinkPayType,
+} from "./src/lib/dslinkPayConfig";
+import {
+  DEFAULT_BDT_TO_USD_RATE,
+  DEFAULT_RENTAL_SHIPPING_FEE_BDT,
+  RENTAL_SUBSCRIPTION_PLANS,
+  computeEligibleMethodsForPaymentRequest,
+  evaluateCheckoutEligibility,
+  roundCurrencyAmount,
+  toMinorUnits,
+  type DSLinkPricingAndShippingRulesConfig,
+  type EvaluatedCartLine,
+  type RentalActivationCollectionRule,
+} from "./src/lib/dslinkPayRules";
 
 // Suppress internal @firebase/firestore gRPC retry chatter in Node.js
 setLogLevel("silent");
@@ -173,6 +208,101 @@ let cachedVoiceoverBase64: string | null = null;
 // In-memory stores (merged with Firestore where available; never deletes existing orders)
 const inMemoryOrders: any[] = [];
 const inMemoryInquiries: any[] = [];
+interface ServerCheckoutDraft {
+  draftId: string;
+  checkoutIdempotencyKey?: string;
+  customerName: string;
+  fullName: string;
+  customerPhone: string;
+  phone: string;
+  customerEmail: string;
+  email: string;
+  address: string;
+  district: string;
+  shippingAddress: Record<string, any>;
+  countryCode: string;
+  countryName: string;
+  carriers: string[];
+  currency: DSLinkPayCurrency;
+  isRentalOrder: boolean;
+  hasBdResidential: boolean;
+  codAvailable: boolean;
+  codAdvanceRequiredAmount: number;
+  codRemainingOnDeliveryAmount: number;
+  rentalBreakdown?: DSLinkPayRentalBreakdown;
+  productId: string;
+  productName: string;
+  kitName: string;
+  items: EvaluatedCartLine[];
+  quantity: number;
+  subtotalBdt: number;
+  shippingFeeBdt: number;
+  orderTotalBdt: number;
+  subtotalAmount: number;
+  shippingFeeAmount: number;
+  orderTotalAmount: number;
+  payableNowAmount: number;
+  remainingDueLaterAmount: number;
+  displayCurrency: string;
+  estimatedConvertedTotal: number;
+  status: "draft" | "converted_to_order" | "cancelled";
+  finalOrderId?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface ServerPaymentRequestRecord {
+  id: string;
+  token: string;
+  requestRef: string;
+  orderId: string;
+  draftId?: string;
+  paymentType: DSLinkPayType;
+  requestedAmountBdt: number;
+  requestedAmount: number;
+  requestedAmountMinor: number;
+  currency: DSLinkPayCurrency;
+  eligibleMethods: DSLinkPayMethod[];
+  status: DSLinkPayStatus;
+  checkoutIdempotencyKey?: string;
+  createdBy: string;
+  expiresAt: string;
+  rentalBreakdown?: DSLinkPayRentalBreakdown;
+  codAdvanceRequiredAmount?: number;
+  codRemainingOnDeliveryAmount?: number;
+  subscriptionPlanId?: string;
+  subscriptionPlanName?: string;
+  subscriptionBillingPeriod?: string;
+  submittedMethod?: DSLinkPayMethod;
+  submittedTrxId?: string;
+  normalizedTrxId?: string;
+  selectedInstitutionId?: string;
+  selectedInstitutionName?: string;
+  senderHint?: string;
+  submittedAt?: string;
+  verifiedAt?: string;
+  verifiedBy?: string;
+  verifiedAmountBdt?: number;
+  verifiedAmount?: number;
+  rejectionReason?: string;
+  cancellationReason?: string;
+  revokedReason?: string;
+  replacedById?: string;
+  note?: string;
+  stripeSessionId?: string;
+  stripeSessionUrl?: string;
+  stripeSessionCreatedAt?: string;
+  stripeSessionAttempt?: number;
+  stripeExpectedAmountMinor?: number;
+  stripeExpectedCurrency?: string;
+  stripePaymentIntentId?: string;
+  stripePaymentStatus?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+const inMemoryCheckoutDrafts: ServerCheckoutDraft[] = [];
+const inMemoryPaymentRequests: ServerPaymentRequestRecord[] = [];
+const inMemoryEmailJobs: DSLinkPayEmailJob[] = [];
 const processedStripeEventIds = new Set<string>();
 const serverAuditLogs: Array<{
   id: string;
@@ -496,6 +626,32 @@ const loadLocalStore = () => {
     if (Array.isArray(parsed?.orders)) {
       inMemoryOrders.push(...parsed.orders);
     }
+    if (Array.isArray(parsed?.checkoutDrafts)) {
+      inMemoryCheckoutDrafts.push(...parsed.checkoutDrafts);
+    }
+    if (Array.isArray(parsed?.paymentRequests)) {
+      for (const rawReq of parsed.paymentRequests) {
+        if (!rawReq || typeof rawReq !== "object") continue;
+        const curr: DSLinkPayCurrency = rawReq.currency === "USD" ? "USD" : "BDT";
+        const reqAmt =
+          typeof rawReq.requestedAmount === "number" && Number.isFinite(rawReq.requestedAmount)
+            ? rawReq.requestedAmount
+            : Number(rawReq.requestedAmountBdt || 0);
+        inMemoryPaymentRequests.push({
+          ...rawReq,
+          requestRef: String(rawReq.requestRef || rawReq.orderId || rawReq.draftId || rawReq.id),
+          currency: curr,
+          requestedAmount: reqAmt,
+          requestedAmountMinor:
+            typeof rawReq.requestedAmountMinor === "number" && rawReq.requestedAmountMinor > 0
+              ? rawReq.requestedAmountMinor
+              : toMinorUnits(reqAmt, curr),
+        });
+      }
+    }
+    if (Array.isArray(parsed?.emailJobs)) {
+      inMemoryEmailJobs.push(...parsed.emailJobs);
+    }
     if (Array.isArray(parsed?.inquiries)) {
       inMemoryInquiries.push(...parsed.inquiries);
     }
@@ -562,6 +718,9 @@ const persistLocalStore = () => {
     const payload = {
       updatedAt: new Date().toISOString(),
       orders: inMemoryOrders.slice(0, 500),
+      checkoutDrafts: inMemoryCheckoutDrafts.slice(0, 500),
+      paymentRequests: inMemoryPaymentRequests.slice(0, 1000),
+      emailJobs: inMemoryEmailJobs.slice(0, 500),
       inquiries: inMemoryInquiries.slice(0, 500),
       warrantyRegistrations: warrantyRegistrations.slice(0, 500),
       warrantyClaims: warrantyClaims.slice(0, 500),
@@ -808,6 +967,14 @@ async function startServer() {
   const app = express();
   const PORT = 3000;
 
+  let onDSLinkPayRequestPaidViaStripe:
+    | ((
+        reqRec: ServerPaymentRequestRecord,
+        order: any,
+        paymentRef: string
+      ) => Promise<any> | any)
+    | null = null;
+
   // Stripe Webhook MUST receive the untouched raw Buffer body BEFORE express.json() parses requests
   app.post(
     "/api/stripe/webhook",
@@ -825,12 +992,30 @@ async function startServer() {
         rawBody,
         signatureHeader,
         processedEventIds: processedStripeEventIds,
+        findPaymentRequest: (paymentRequestId, sessionId) =>
+          inMemoryPaymentRequests.find(
+            (r) =>
+              (paymentRequestId && r.id === paymentRequestId) ||
+              (sessionId && r.stripeSessionId === sessionId)
+          ),
         findOrder: (orderId, sessionId) =>
           inMemoryOrders.find(
             (o) =>
               (orderId && o.orderId === orderId) ||
               (sessionId && o.stripeSessionId === sessionId)
           ),
+        onPaymentRequestPaid: async (paymentReq, order, session) => {
+          const matchedReq = inMemoryPaymentRequests.find((r) => r.id === paymentReq.id);
+          if (!matchedReq) return undefined;
+          const paymentRef =
+            typeof session.payment_intent === "string" && session.payment_intent.trim()
+              ? session.payment_intent.trim()
+              : session.id;
+          if (onDSLinkPayRequestPaidViaStripe) {
+            return await onDSLinkPayRequestPaidViaStripe(matchedReq, order, paymentRef);
+          }
+          return order;
+        },
         onPersist: async (order, eventId, action) => {
           persistLocalStore();
           recordAuditLog(
@@ -1032,12 +1217,48 @@ async function startServer() {
     res.json({ status: "ok" });
   });
 
-  // Public safe payment configuration (never exposes secrets; stripeEnabled defaults to false)
+  // Public safe payment & checkout rules configuration (never exposes secrets; stripeEnabled defaults to false)
   app.get("/api/payments/config", (_req, res) => {
     res.setHeader("Cache-Control", "no-store");
+    const rentalShippingFeeBdt = Math.max(
+      0,
+      Math.round(
+        Number(process.env.DSLINK_RENTAL_SHIPPING_FEE_BDT ?? DEFAULT_RENTAL_SHIPPING_FEE_BDT) ||
+          DEFAULT_RENTAL_SHIPPING_FEE_BDT
+      )
+    );
+    const rentalActivationCollectionRule: RentalActivationCollectionRule =
+      String(process.env.DSLINK_RENTAL_ACTIVATION_RULE || "upfront").trim().toLowerCase() ===
+      "on_activation"
+        ? "on_activation"
+        : "upfront";
+    const codAdvanceBdt = Math.max(0, Math.round(Number(process.env.DSLINK_COD_ADVANCE_BDT || 0) || 0));
+    const parsedUsdRate = Number(process.env.DSLINK_USD_RATE);
+    const bdtToUsdRate =
+      Number.isFinite(parsedUsdRate) && parsedUsdRate > 0 ? parsedUsdRate : DEFAULT_BDT_TO_USD_RATE;
+    const rawIntlUsd = process.env.DSLINK_INTL_SHIPPING_USD;
+    const parsedIntlUsd =
+      rawIntlUsd !== undefined && String(rawIntlUsd).trim() !== "" ? Number(rawIntlUsd) : null;
+    const internationalShippingUsd =
+      typeof parsedIntlUsd === "number" && Number.isFinite(parsedIntlUsd) && parsedIntlUsd >= 0
+        ? roundCurrencyAmount(parsedIntlUsd, "USD")
+        : roundCurrencyAmount(serverShippingConfig.internationalFeeBdt * bdtToUsdRate, "USD");
+
     return res.json({
       success: true,
       stripeEnabled: isStripeEnabled(),
+      stripeConfigured: isStripeConfiguredAndEnabled(),
+      rules: {
+        bangladeshPurchaseShippingBdt: serverShippingConfig.bangladeshFeeBdt,
+        bangladeshRentalShippingBdt: rentalShippingFeeBdt,
+        internationalShippingBdt: serverShippingConfig.internationalFeeBdt,
+        internationalShippingUsd,
+        bdtToUsdRate,
+        rentalActivationCollectionRule,
+        codAdvanceBdt,
+        blockedCountries: serverShippingConfig.blockedCountries,
+      },
+      rentalPlans: RENTAL_SUBSCRIPTION_PLANS,
     });
   });
 
@@ -2266,12 +2487,1286 @@ async function startServer() {
     });
   });
 
-  // Public Order Endpoint for DSLink, Cart, Rental & Global Checkout (Zero Automatic Outbound Emails per Section 7)
+  // ============================================================================
+  // DSLINK PAY — SERVER HELPERS (RULES, DRAFTS, ATOMIC ORDERS, EMAIL OUTBOX)
+  // ============================================================================
+  const CANONICAL_PAY_ORIGIN = "https://devsparksoft.com.bd";
+  const PAY_TOKEN_REGEX = /^[A-Za-z0-9_-]{32,128}$/;
+  const TRX_ID_REGEX = /^[A-Z0-9_-]{4,64}$/;
+
+  const generateSecurePayToken = (): string =>
+    crypto.randomBytes(32).toString("base64url");
+
+  const normalizeTrxId = (raw: unknown): string =>
+    String(raw ?? "")
+      .trim()
+      .toUpperCase()
+      .replace(/\s+/g, "");
+
+  const getDSLinkRulesConfig = (): DSLinkPricingAndShippingRulesConfig => {
+    const rawRentalShip = process.env.DSLINK_RENTAL_SHIPPING_FEE_BDT;
+    const parsedRentalShip =
+      rawRentalShip !== undefined && String(rawRentalShip).trim() !== ""
+        ? Number(rawRentalShip)
+        : DEFAULT_RENTAL_SHIPPING_FEE_BDT;
+    const bangladeshRentalShippingBdt =
+      Number.isFinite(parsedRentalShip) && parsedRentalShip >= 0
+        ? Math.round(parsedRentalShip)
+        : DEFAULT_RENTAL_SHIPPING_FEE_BDT;
+
+    const rentalActivationCollectionRule: RentalActivationCollectionRule =
+      String(process.env.DSLINK_RENTAL_ACTIVATION_RULE || "upfront").trim().toLowerCase() ===
+      "on_activation"
+        ? "on_activation"
+        : "upfront";
+
+    const codAdvanceBdt = Math.max(0, Math.round(Number(process.env.DSLINK_COD_ADVANCE_BDT || 0) || 0));
+
+    const parsedUsdRate = Number(process.env.DSLINK_USD_RATE);
+    const bdtToUsdRate =
+      Number.isFinite(parsedUsdRate) && parsedUsdRate > 0 ? parsedUsdRate : DEFAULT_BDT_TO_USD_RATE;
+
+    const rawIntlUsd = process.env.DSLINK_INTL_SHIPPING_USD;
+    const parsedIntlUsd =
+      rawIntlUsd !== undefined && String(rawIntlUsd).trim() !== "" ? Number(rawIntlUsd) : null;
+    const internationalShippingUsd =
+      typeof parsedIntlUsd === "number" && Number.isFinite(parsedIntlUsd) && parsedIntlUsd >= 0
+        ? roundCurrencyAmount(parsedIntlUsd, "USD")
+        : null;
+
+    return {
+      bangladeshPurchaseShippingBdt: Math.max(0, Math.round(Number(serverShippingConfig.bangladeshFeeBdt) || 0)),
+      bangladeshRentalShippingBdt,
+      internationalShippingBdt: Math.max(0, Math.round(Number(serverShippingConfig.internationalFeeBdt) || 0)),
+      internationalShippingUsd,
+      bdtToUsdRate,
+      rentalActivationCollectionRule,
+      codAdvanceBdt,
+      blockedCountries: serverShippingConfig.blockedCountries,
+    };
+  };
+
+  const getDSLinkConfigDiagnostics = (): DSLinkPayConfigDiagnostics => {
+    const rules = getDSLinkRulesConfig();
+    const stripeEnabled = isStripeEnabled();
+    const stripeSecretConfigured = Boolean(String(process.env.STRIPE_SECRET_KEY || "").trim());
+    const stripeWebhookSecretConfigured = Boolean(String(process.env.STRIPE_WEBHOOK_SECRET || "").trim());
+    const emailApiConfigured = Boolean(String(process.env.RESEND_API_KEY || "").trim());
+    const senderEmailConfigured = Boolean(String(process.env.SENDER_EMAIL || "").trim());
+
+    const internationalShippingUsd =
+      typeof rules.internationalShippingUsd === "number"
+        ? rules.internationalShippingUsd
+        : roundCurrencyAmount(rules.internationalShippingBdt * rules.bdtToUsdRate, "USD");
+
+    const warnings: string[] = [];
+    if (!stripeEnabled) {
+      warnings.push("STRIPE_ENABLED is false — Card payments are hidden in Bangladesh and unavailable for international USD checkouts.");
+    } else {
+      if (!stripeSecretConfigured) {
+        warnings.push("STRIPE_SECRET_KEY is missing — Card checkout sessions cannot be created.");
+      }
+      if (!stripeWebhookSecretConfigured) {
+        warnings.push("STRIPE_WEBHOOK_SECRET is missing — Stripe webhook confirmation cannot verify payments.");
+      }
+    }
+    if (!emailApiConfigured) {
+      warnings.push("RESEND_API_KEY is not configured — confirmation and cancellation emails will be recorded as skipped_unconfigured until configured.");
+    }
+    if (!senderEmailConfigured) {
+      warnings.push("SENDER_EMAIL is not configured — outbound email will fall back to Resend default sender.");
+    }
+    if (!process.env.DSLINK_USD_RATE) {
+      warnings.push(`DSLINK_USD_RATE is not explicitly set — using default server USD conversion rate (${DEFAULT_BDT_TO_USD_RATE} USD/BDT).`);
+    }
+    if (!process.env.DSLINK_INTL_SHIPPING_USD) {
+      warnings.push(`DSLINK_INTL_SHIPPING_USD is not explicitly set — converting ৳${rules.internationalShippingBdt} shipping to $${internationalShippingUsd.toFixed(2)} USD.`);
+    }
+
+    return {
+      stripeEnabled,
+      stripeSecretConfigured,
+      stripeWebhookSecretConfigured,
+      emailApiConfigured,
+      senderEmailConfigured,
+      rentalShippingFeeBdt: rules.bangladeshRentalShippingBdt,
+      rentalActivationCollectionRule: rules.rentalActivationCollectionRule,
+      internationalShippingBdt: rules.internationalShippingBdt,
+      internationalShippingUsd,
+      bdtToUsdRate: rules.bdtToUsdRate,
+      codAdvanceBdt: rules.codAdvanceBdt,
+      warnings,
+    };
+  };
+
+  const getBankTransferConfig = (): DSLinkPayBankTransferConfig => {
+    const bankName = String(process.env.DSLINK_BANK_NAME || "").trim();
+    const accountName = String(process.env.DSLINK_BANK_ACCOUNT_NAME || "").trim();
+    const accountNumber = String(process.env.DSLINK_BANK_ACCOUNT_NUMBER || "").trim();
+    const branchName = String(process.env.DSLINK_BANK_BRANCH_NAME || "").trim();
+    const routingNumber = String(process.env.DSLINK_BANK_ROUTING_NUMBER || "").trim();
+    const directAccountConfigured = Boolean(bankName && accountNumber);
+    return {
+      recipientName: VERIFIED_BANGLA_QR_MERCHANT_NAME,
+      merchantQrId: VERIFIED_BANGLA_QR_MERCHANT_ID,
+      supportPhone: VERIFIED_BANGLA_QR_PHONE,
+      directAccountConfigured,
+      ...(directAccountConfigured
+        ? {
+            bankName,
+            accountName: accountName || VERIFIED_BANGLA_QR_MERCHANT_NAME,
+            accountNumber,
+            ...(branchName ? { branchName } : {}),
+            ...(routingNumber ? { routingNumber } : {}),
+          }
+        : {}),
+    };
+  };
+
+  const isOrderRental = (entity: any): boolean => {
+    if (!entity) return false;
+    if (entity.isRentalOrder === true || entity.source === "rental_checkout") return true;
+    const itemsList = Array.isArray(entity.items) ? entity.items : [];
+    if (
+      itemsList.some(
+        (it: any) =>
+          it?.productClass === "rental" ||
+          String(it?.productId || "").toLowerCase().includes("rental") ||
+          String(it?.variantLabel || "").toLowerCase().includes("rental") ||
+          String(it?.name || "").toLowerCase().includes("rental")
+      )
+    ) {
+      return true;
+    }
+    return String(entity.productId || "").toLowerCase().includes("rental");
+  };
+
+  const resolveRequestContext = (reqRec: ServerPaymentRequestRecord): {
+    order?: any;
+    draft?: ServerCheckoutDraft;
+    entity?: any;
+  } => {
+    const order = reqRec.orderId
+      ? inMemoryOrders.find((o) => o.orderId === reqRec.orderId)
+      : undefined;
+    const draft = reqRec.draftId
+      ? inMemoryCheckoutDrafts.find((d) => d.draftId === reqRec.draftId)
+      : undefined;
+    const resolvedOrder =
+      order || (draft?.finalOrderId ? inMemoryOrders.find((o) => o.orderId === draft.finalOrderId) : undefined);
+    return { order: resolvedOrder, draft, entity: resolvedOrder || draft };
+  };
+
+  const getOrderCurrency = (entity: any): DSLinkPayCurrency => {
+    const explicit = String(entity?.currency || "").trim().toUpperCase();
+    if (explicit === "USD") return "USD";
+    if (explicit === "BDT") return "BDT";
+    const cc = normalizeCountryCode(entity?.countryCode || "BD");
+    return cc === "BD" ? "BDT" : "USD";
+  };
+
+  const recomputeOrderPaymentSummary = (order: any) => {
+    if (!order) {
+      return {
+        currency: "BDT" as DSLinkPayCurrency,
+        orderTotalAmount: 0,
+        paidAmount: 0,
+        remainingBalanceAmount: 0,
+        paidAmountBdt: 0,
+        remainingBalanceBdt: 0,
+      };
+    }
+    const currency = getOrderCurrency(order);
+    const orderTotalAmount = roundCurrencyAmount(
+      Number(order.orderTotalAmount ?? order.totalAmount ?? order.price ?? 0) || 0,
+      currency
+    );
+    const orderTotalBdt = Math.max(0, Math.round(Number(order.orderTotalBdt ?? order.totalAmount ?? order.price ?? 0) || 0));
+
+    // Only non-subscription payment requests count toward the hardware/shipping order balance
+    const orderRequests = inMemoryPaymentRequests.filter(
+      (r) => r.orderId === order.orderId && r.paymentType !== "subscription"
+    );
+    const paidFromRequests = roundCurrencyAmount(
+      orderRequests
+        .filter((r) => r.status === "paid")
+        .reduce(
+          (sum, r) =>
+            sum +
+            Math.max(
+              0,
+              Number(r.verifiedAmount ?? r.requestedAmount ?? r.verifiedAmountBdt ?? r.requestedAmountBdt ?? 0) || 0
+            ),
+          0
+        ),
+      currency
+    );
+
+    const legacyFullPaid =
+      paidFromRequests === 0 &&
+      (order.paymentStatus === "Paid" || order.paymentStatus === "Paid (Stripe Verified)")
+        ? orderTotalAmount
+        : 0;
+
+    const paidAmount = roundCurrencyAmount(Math.min(orderTotalAmount, paidFromRequests + legacyFullPaid), currency);
+    const remainingBalanceAmount = roundCurrencyAmount(Math.max(0, orderTotalAmount - paidAmount), currency);
+
+    const paidAmountBdt = currency === "BDT" ? Math.round(paidAmount) : Math.round(orderTotalBdt * (orderTotalAmount > 0 ? paidAmount / orderTotalAmount : 0));
+    const remainingBalanceBdt = currency === "BDT" ? Math.round(remainingBalanceAmount) : Math.max(0, orderTotalBdt - paidAmountBdt);
+
+    order.currency = currency;
+    order.orderTotalAmount = orderTotalAmount;
+    order.paidAmount = paidAmount;
+    order.remainingBalanceAmount = remainingBalanceAmount;
+    order.paidAmountBdt = paidAmountBdt;
+    order.remainingBalanceBdt = remainingBalanceBdt;
+
+    const hasUnderReview = orderRequests.some((r) => r.status === "under_review");
+    const hasCodSelected = orderRequests.some((r) => r.status === "cod_selected");
+
+    if (orderTotalAmount > 0 && remainingBalanceAmount === 0) {
+      if (order.paymentStatus !== "Paid (Stripe Verified)") {
+        order.paymentStatus = "Paid";
+      }
+      order.codAmountToCollectBdt = 0;
+      if (order.status === "Awaiting Payment" || order.status === "Pending Confirmation" || order.status === "Payment Under Review") {
+        order.status = "Confirmed";
+      }
+    } else if (paidAmount > 0) {
+      order.paymentStatus =
+        isOrderRental(order) && order.rentalBreakdown?.activationCollectionRule === "on_activation"
+          ? "Shipping Paid (Activation Due Later)"
+          : "Advance Paid (Partial)";
+      order.codAmountToCollectBdt = order.codAvailable ? remainingBalanceBdt : 0;
+      if (order.status === "Awaiting Payment" || order.status === "Payment Under Review") {
+        order.status = isOrderRental(order) ? "Confirmed" : "Advance Paid";
+      }
+    } else if (hasUnderReview) {
+      order.paymentStatus = "Under Verification";
+      order.status = "Payment Under Review";
+    } else if (hasCodSelected) {
+      order.paymentStatus = "Pending COD Collection";
+      order.paymentMethod = "cod";
+      order.codAmountToCollectBdt = order.codAvailable ? remainingBalanceBdt : 0;
+      order.status = "Pending Confirmation";
+    } else if (order.paymentMethod !== "cod") {
+      order.paymentStatus = "Awaiting Payment";
+      order.codAmountToCollectBdt = 0;
+    }
+
+    return {
+      currency,
+      orderTotalAmount,
+      paidAmount,
+      remainingBalanceAmount,
+      paidAmountBdt,
+      remainingBalanceBdt,
+    };
+  };
+
+  // ============================================================================
+  // EMAIL OUTBOX (POST-COMMIT CONFIRMATION & CANCELLATION EMAILS + SAFE RETRY)
+  // ============================================================================
+  const buildDSLinkPayEmailContent = (params: {
+    type: "payment_confirmed" | "payment_cancelled";
+    requestRef: string;
+    orderId?: string;
+    amount: number;
+    currency: DSLinkPayCurrency;
+    trxId?: string;
+    cancellationReason?: string;
+    customerName?: string;
+  }): { subject: string; html: string } => {
+    const formattedAmt = `${formatPayAmount(params.amount, params.currency)} ${params.currency}`;
+    const greeting = params.customerName ? `Dear ${params.customerName},` : "Dear Customer,";
+    if (params.type === "payment_confirmed") {
+      const finalOrder = params.orderId || params.requestRef;
+      return {
+        subject: `DSLink Order Confirmed — #${finalOrder} (${formattedAmt})`,
+        html: buildAdminNotificationHtml({
+          badge: "DSLINK PAY · PAYMENT CONFIRMED",
+          heading: `Order #${finalOrder} Confirmed`,
+          summary: `${greeting} Your payment of ${formattedAmt} has been verified by DevSpark Link.`,
+          rows: [
+            { label: "Final Order Number", value: `#${finalOrder}`, highlight: true },
+            { label: "Verified Amount", value: formattedAmt, highlight: true },
+            ...(params.trxId ? [{ label: "Payment Reference", value: params.trxId }] : []),
+            { label: "Confirmed At (Dhaka)", value: getDhakaTimestamp() },
+            { label: "Support", value: `WhatsApp ${VERIFIED_BANGLA_QR_PHONE} · devsparksoft.com.bd` },
+          ],
+        }),
+      };
+    }
+
+    return {
+      subject: `DSLink Payment Request Cancelled — #${params.requestRef}`,
+      html: buildAdminNotificationHtml({
+        badge: "DSLINK PAY · PAYMENT REQUEST CANCELLED",
+        heading: `Payment Request #${params.requestRef} Cancelled`,
+        summary: `${greeting} Your DSLink Pay payment request #${params.requestRef} has been cancelled and closed.`,
+        rows: [
+          { label: "Request Reference", value: `#${params.requestRef}`, highlight: true },
+          { label: "Requested Amount", value: formattedAmt },
+          {
+            label: "Cancellation Reason",
+            value: params.cancellationReason || "Cancelled by DevSpark Link team.",
+            highlight: true,
+          },
+          { label: "Updated At (Dhaka)", value: getDhakaTimestamp() },
+          { label: "Need Help?", value: `WhatsApp ${VERIFIED_BANGLA_QR_PHONE} · devsparksoft.com.bd` },
+        ],
+      }),
+    };
+  };
+
+  const deliverEmailJobViaRestApi = async (
+    job: DSLinkPayEmailJob,
+    html: string
+  ): Promise<DSLinkPayEmailJob> => {
+    job.attempts += 1;
+    job.updatedAt = new Date().toISOString();
+    try {
+      const result: any = await sendResendEmailSafe({
+        to: job.recipientEmail,
+        subject: job.subject,
+        html,
+      });
+      if (result?.skipped) {
+        job.status = "skipped_unconfigured";
+        job.lastError = "RESEND_API_KEY is not configured in server environment.";
+      } else if (result?.error) {
+        job.status = "failed";
+        job.lastError = String(result.error?.message || result.error || "Resend API error").slice(0, 300);
+      } else {
+        job.status = "sent";
+        job.providerMessageId = String(result?.data?.id || "");
+        job.sentAt = new Date().toISOString();
+        job.lastError = undefined;
+      }
+    } catch (err: any) {
+      job.status = "failed";
+      job.lastError = String(err?.message || err || "Email delivery exception").slice(0, 300);
+    }
+    job.updatedAt = new Date().toISOString();
+    persistLocalStore();
+    return job;
+  };
+
+  const enqueueAndSendDSLinkEmailJob = async (params: {
+    type: "payment_confirmed" | "payment_cancelled";
+    paymentRequestId: string;
+    requestRef: string;
+    orderId?: string;
+    recipientEmail: string;
+    amount: number;
+    currency: DSLinkPayCurrency;
+    trxId?: string;
+    cancellationReason?: string;
+    customerName?: string;
+  }): Promise<DSLinkPayEmailJob | null> => {
+    const cleanEmail = String(params.recipientEmail || "").trim();
+    if (!cleanEmail || !cleanEmail.includes("@")) {
+      return null;
+    }
+
+    // Deduplicate confirmation/cancellation job per paymentRequestId + type so retries never duplicate
+    const existing = inMemoryEmailJobs.find(
+      (j) => j.paymentRequestId === params.paymentRequestId && j.type === params.type
+    );
+    const { subject, html } = buildDSLinkPayEmailContent(params);
+    if (existing) {
+      if (existing.status === "sent") {
+        return existing;
+      }
+      return deliverEmailJobViaRestApi(existing, html);
+    }
+
+    const nowIso = new Date().toISOString();
+    const job: DSLinkPayEmailJob = {
+      id: `EML-${Date.now()}-${crypto.randomBytes(3).toString("hex").toUpperCase()}`,
+      type: params.type,
+      paymentRequestId: params.paymentRequestId,
+      requestRef: params.requestRef,
+      ...(params.orderId ? { orderId: params.orderId } : {}),
+      recipientEmail: cleanEmail,
+      subject,
+      status: "queued",
+      attempts: 0,
+      createdAt: nowIso,
+      updatedAt: nowIso,
+    };
+    inMemoryEmailJobs.unshift(job);
+    persistLocalStore();
+    return deliverEmailJobViaRestApi(job, html);
+  };
+
+  const createFinalOrderFromDraft = (
+    draft: ServerCheckoutDraft,
+    opts: {
+      paymentMethod: string;
+      paymentStatus: string;
+      orderStatus: string;
+      trxId?: string;
+      senderBankName?: string;
+      senderNumber?: string;
+    }
+  ) => {
+    // Strictly idempotent: never create two final orders from the same checkout draft
+    if (draft.finalOrderId) {
+      const existing = inMemoryOrders.find((o) => o.orderId === draft.finalOrderId);
+      if (existing) return existing;
+    }
+
+    const orderId = `DS-${Math.floor(100000 + Math.random() * 900000)}`;
+    const nowIso = new Date().toISOString();
+    const orderDoc: any = {
+      orderId,
+      draftId: draft.draftId,
+      orderAccessToken: generateOrderAccessToken(),
+      checkoutIdempotencyKey: draft.checkoutIdempotencyKey,
+      customerName: draft.customerName,
+      fullName: draft.fullName,
+      customerPhone: draft.customerPhone,
+      phone: draft.phone,
+      customerEmail: draft.customerEmail,
+      email: draft.email,
+      address: draft.address,
+      district: draft.district,
+      shippingAddress: draft.shippingAddress,
+      countryCode: draft.countryCode,
+      countryName: draft.countryName,
+      carriers: draft.carriers,
+      currency: draft.currency,
+      isRentalOrder: draft.isRentalOrder,
+      ...(draft.rentalBreakdown ? { rentalBreakdown: draft.rentalBreakdown } : {}),
+      codAvailable: draft.codAvailable,
+      codAdvanceRequiredAmount: draft.codAdvanceRequiredAmount,
+      codRemainingOnDeliveryAmount: draft.codRemainingOnDeliveryAmount,
+      paymentMethod: opts.paymentMethod,
+      paymentStatus: opts.paymentStatus,
+      fulfillmentStatus: "Pending",
+      paidAmount: 0,
+      remainingBalanceAmount: draft.orderTotalAmount,
+      paidAmountBdt: 0,
+      remainingBalanceBdt: draft.orderTotalBdt,
+      codAmountToCollectBdt:
+        opts.paymentMethod === "cod" ? draft.codRemainingOnDeliveryAmount || draft.orderTotalBdt : 0,
+      trxId: opts.trxId || "",
+      senderBankName: opts.senderBankName || "",
+      senderNumber: opts.senderNumber || "",
+      productId: draft.productId,
+      kitName: draft.kitName,
+      productName: draft.productName,
+      items: draft.items,
+      unitPrice: draft.items[0]?.unitPrice ?? draft.subtotalAmount,
+      quantity: draft.quantity,
+      subtotal: draft.subtotalAmount,
+      subtotalBdt: draft.subtotalBdt,
+      shippingFee: draft.shippingFeeAmount,
+      shippingFeeBdt: draft.shippingFeeBdt,
+      discount: 0,
+      totalAmount: draft.orderTotalAmount,
+      orderTotalAmount: draft.orderTotalAmount,
+      orderTotalBdt: draft.orderTotalBdt,
+      price: draft.orderTotalAmount,
+      displayCurrency: draft.displayCurrency,
+      estimatedConvertedTotal: draft.estimatedConvertedTotal,
+      status: opts.orderStatus,
+      source: draft.isRentalOrder ? "rental_checkout" : draft.items.length > 1 ? "cart_checkout" : "promos_or_dslink",
+      createdAt: nowIso,
+      updatedAt: nowIso,
+    };
+
+    inMemoryOrders.unshift(orderDoc);
+    draft.status = "converted_to_order";
+    draft.finalOrderId = orderId;
+    draft.updatedAt = nowIso;
+    return orderDoc;
+  };
+
+  // ============================================================================
+  // ATOMIC PAYMENT VERIFICATION & ORDER FINALIZATION (ADMIN + STRIPE WEBHOOK)
+  // ============================================================================
+  const finalizeVerifiedPaymentRequest = async (params: {
+    reqRec: ServerPaymentRequestRecord;
+    verifiedBy: string;
+    methodOverride?: DSLinkPayMethod;
+    trxId?: string;
+    verifiedAmount?: number;
+    note?: string;
+    isStripeVerified?: boolean;
+    ip?: string;
+  }): Promise<{
+    ok: boolean;
+    httpStatus: number;
+    error?: string;
+    order?: any;
+    emailJob?: DSLinkPayEmailJob | null;
+    verifiedAmount?: number;
+  }> => {
+    const { reqRec } = params;
+    if (reqRec.status === "paid") {
+      return {
+        ok: false,
+        httpStatus: 409,
+        error: "This payment request is already verified and marked paid.",
+      };
+    }
+    if (reqRec.status === "revoked" || reqRec.status === "cancelled" || reqRec.status === "expired") {
+      return {
+        ok: false,
+        httpStatus: 409,
+        error: `Cannot verify a ${reqRec.status} payment request. Reissue a new link if needed.`,
+      };
+    }
+
+    const ctx = resolveRequestContext(reqRec);
+    if (!ctx.order && !ctx.draft) {
+      return {
+        ok: false,
+        httpStatus: 404,
+        error: "Associated checkout draft or order not found.",
+      };
+    }
+
+    // Duplicate transaction ID verification guard (never credit the same verified TrxID twice)
+    const finalTrxRaw = String(params.trxId || reqRec.submittedTrxId || "").trim();
+    const normTrx = finalTrxRaw ? normalizeTrxId(finalTrxRaw) : "";
+    if (normTrx) {
+      const conflict = findDuplicateTrxIdConflict(normTrx, {
+        excludeRequestId: reqRec.id,
+        excludeOrderId: ctx.order?.orderId,
+      });
+      if (conflict) {
+        return {
+          ok: false,
+          httpStatus: 409,
+          error: `Duplicate verified Transaction ID detected (already used on #${conflict.conflictOrderId}).`,
+        };
+      }
+      reqRec.submittedTrxId = finalTrxRaw.slice(0, 64);
+      reqRec.normalizedTrxId = normTrx;
+    }
+
+    // Atomically create EXACTLY ONE final order if this payment request is linked to a draft
+    let order = ctx.order;
+    if (!order && ctx.draft) {
+      order = createFinalOrderFromDraft(ctx.draft, {
+        paymentMethod: params.isStripeVerified
+          ? "stripe"
+          : params.methodOverride || reqRec.submittedMethod || "bangla_qr",
+        paymentStatus: params.isStripeVerified ? "Paid (Stripe Verified)" : "Paid",
+        orderStatus: "Confirmed",
+        trxId: reqRec.submittedTrxId,
+        senderBankName: reqRec.selectedInstitutionName,
+        senderNumber: reqRec.senderHint,
+      });
+      reqRec.orderId = order.orderId;
+      reqRec.requestRef = order.orderId;
+    }
+
+    if (!order) {
+      return { ok: false, httpStatus: 500, error: "Could not materialize order for payment." };
+    }
+
+    const currency = reqRec.currency;
+    const nowIso = new Date().toISOString();
+
+    let verifiedAmt = reqRec.requestedAmount;
+    if (reqRec.paymentType !== "subscription") {
+      const preSummary = recomputeOrderPaymentSummary(order);
+      if (typeof params.verifiedAmount === "number" && Number.isFinite(params.verifiedAmount) && params.verifiedAmount > 0) {
+        verifiedAmt = roundCurrencyAmount(
+          Math.min(preSummary.remainingBalanceAmount || reqRec.requestedAmount, params.verifiedAmount),
+          currency
+        );
+      } else {
+        verifiedAmt = roundCurrencyAmount(
+          Math.min(preSummary.remainingBalanceAmount || reqRec.requestedAmount, reqRec.requestedAmount),
+          currency
+        );
+      }
+    } else if (typeof params.verifiedAmount === "number" && Number.isFinite(params.verifiedAmount) && params.verifiedAmount > 0) {
+      verifiedAmt = roundCurrencyAmount(params.verifiedAmount, currency);
+    }
+
+    reqRec.status = "paid";
+    if (params.methodOverride) reqRec.submittedMethod = params.methodOverride;
+    if (params.isStripeVerified) {
+      reqRec.submittedMethod = "card";
+      reqRec.selectedInstitutionId = "stripe-card";
+      reqRec.selectedInstitutionName = "Card (Stripe)";
+      reqRec.stripePaymentStatus = "paid";
+    }
+    reqRec.submittedAt = reqRec.submittedAt || nowIso;
+    reqRec.verifiedAt = nowIso;
+    reqRec.verifiedBy = params.verifiedBy;
+    reqRec.verifiedAmount = verifiedAmt;
+    reqRec.verifiedAmountBdt = currency === "BDT" ? Math.round(verifiedAmt) : reqRec.requestedAmountBdt;
+    reqRec.rejectionReason = undefined;
+    if (params.note) reqRec.note = String(params.note).trim().slice(0, 200);
+    reqRec.updatedAt = nowIso;
+
+    if (reqRec.submittedTrxId) {
+      order.trxId = reqRec.submittedTrxId;
+    }
+    if (params.isStripeVerified) {
+      order.paymentMethod = "stripe";
+    } else if (reqRec.submittedMethod) {
+      order.paymentMethod = reqRec.submittedMethod;
+    }
+
+    if (reqRec.paymentType === "subscription") {
+      // Apply verified rental subscription directly to the SAME rental order (never create a second order)
+      order.subscriptionPaymentStatus = "Paid";
+      order.activeSubscriptionPlanId = reqRec.subscriptionPlanId || "bd_residential_standard";
+      order.activeSubscriptionPlan = reqRec.subscriptionPlanName || "Bangladesh Residential Standard";
+      order.subscriptionBillingPeriod = reqRec.subscriptionBillingPeriod || nowIso.slice(0, 7);
+      order.subscriptionPaidAt = nowIso;
+      if (!Array.isArray(order.paidSubscriptionPeriods)) {
+        order.paidSubscriptionPeriods = [];
+      }
+      if (!order.paidSubscriptionPeriods.includes(order.subscriptionBillingPeriod)) {
+        order.paidSubscriptionPeriods.push(order.subscriptionBillingPeriod);
+      }
+      order.updatedAt = nowIso;
+    } else {
+      const updatedSummary = recomputeOrderPaymentSummary(order);
+      if (params.isStripeVerified && updatedSummary.remainingBalanceAmount === 0) {
+        order.paymentStatus = "Paid (Stripe Verified)";
+        order.status = "Confirmed";
+      }
+    }
+
+    // Commit state BEFORE queuing/sending outbound email
+    persistLocalStore();
+
+    const activeDb = await getActiveFirestoreDb();
+    if (activeDb) {
+      try {
+        await setDoc(doc(activeDb, "orders", order.orderId), order, { merge: true });
+        await setDoc(doc(activeDb, "payment_requests", reqRec.id), reqRec, { merge: true });
+      } catch (dbErr: any) {
+        if (isFirestoreUnavailableError(dbErr)) {
+          disableFirestoreGracefully(dbErr?.message || "finalize payment write failed");
+        }
+      }
+    }
+
+    recordAuditLog(
+      params.isStripeVerified ? "stripe_dslink_pay_verified" : "admin_dslink_pay_verified",
+      params.verifiedBy,
+      order.orderId,
+      {
+        paymentRequestId: reqRec.id,
+        draftId: reqRec.draftId || null,
+        paymentType: reqRec.paymentType,
+        verifiedAmount: verifiedAmt,
+        currency,
+        trxId: reqRec.submittedTrxId || null,
+      },
+      params.ip || "server"
+    );
+
+    // Trigger post-commit confirmation email via server-side Resend REST API
+    const recipientEmail = String(order.email || order.customerEmail || ctx.draft?.email || "").trim();
+    const emailJob = await enqueueAndSendDSLinkEmailJob({
+      type: "payment_confirmed",
+      paymentRequestId: reqRec.id,
+      requestRef: order.orderId,
+      orderId: order.orderId,
+      recipientEmail,
+      amount: verifiedAmt,
+      currency,
+      trxId: reqRec.submittedTrxId,
+      customerName: order.fullName || order.customerName || ctx.draft?.fullName,
+    });
+
+    return {
+      ok: true,
+      httpStatus: 200,
+      order,
+      emailJob,
+      verifiedAmount: verifiedAmt,
+    };
+  };
+
+  onDSLinkPayRequestPaidViaStripe = async (reqRec, _order, paymentRef) => {
+    const res = await finalizeVerifiedPaymentRequest({
+      reqRec,
+      verifiedBy: "stripe_webhook",
+      methodOverride: "card",
+      trxId: paymentRef.slice(0, 64),
+      verifiedAmount: reqRec.requestedAmount,
+      isStripeVerified: true,
+      ip: "stripe",
+    });
+    return res.order;
+  };
+
+  const evaluateRequestExpiry = (reqRec: ServerPaymentRequestRecord): boolean => {
+    if (reqRec.status === "pending" || reqRec.status === "rejected") {
+      const expMs = Date.parse(reqRec.expiresAt);
+      if (Number.isFinite(expMs) && Date.now() > expMs) {
+        reqRec.status = "expired";
+        reqRec.updatedAt = new Date().toISOString();
+        persistLocalStore();
+        return true;
+      }
+    }
+    return false;
+  };
+
+  const findDuplicateTrxIdConflict = (
+    normalized: string,
+    opts?: { excludeRequestId?: string; excludeOrderId?: string }
+  ): { conflictOrderId: string; conflictRequestId?: string } | null => {
+    if (!normalized) return null;
+    const reqConflict = inMemoryPaymentRequests.find(
+      (r) =>
+        r.id !== opts?.excludeRequestId &&
+        (r.status === "under_review" || r.status === "paid") &&
+        r.normalizedTrxId === normalized
+    );
+    if (reqConflict) {
+      return {
+        conflictOrderId: reqConflict.orderId || reqConflict.requestRef,
+        conflictRequestId: reqConflict.id,
+      };
+    }
+    const orderConflict = inMemoryOrders.find((o) => {
+      if (opts?.excludeOrderId && o.orderId === opts.excludeOrderId) return false;
+      const orderNorm = normalizeTrxId(o.trxId);
+      if (!orderNorm || orderNorm !== normalized) return false;
+      const st = String(o.paymentStatus || "").toLowerCase();
+      return st.includes("paid") || st.includes("verif") || st.includes("review");
+    });
+    if (orderConflict) {
+      return { conflictOrderId: orderConflict.orderId };
+    }
+    return null;
+  };
+
+  const revokeActivePaymentRequestsForOrder = (
+    orderId: string,
+    reason: string,
+    replacedById?: string,
+    opts?: { includeSubscriptions?: boolean }
+  ): number => {
+    const now = new Date().toISOString();
+    let count = 0;
+    for (const r of inMemoryPaymentRequests) {
+      if (
+        r.orderId === orderId &&
+        (opts?.includeSubscriptions ? true : r.paymentType !== "subscription") &&
+        (r.status === "pending" || r.status === "rejected")
+      ) {
+        r.status = "revoked";
+        r.revokedReason = reason;
+        if (replacedById) r.replacedById = replacedById;
+        r.updatedAt = now;
+        count += 1;
+      }
+    }
+    return count;
+  };
+
+  const buildEntityItemsSummary = (entity: any, currency: DSLinkPayCurrency) => {
+    if (Array.isArray(entity?.items) && entity.items.length > 0) {
+      return entity.items.map((it: any) => ({
+        productId: String(it.productId || entity.productId || "starlink-kit"),
+        name: String(it.name || entity.productName || "Starlink Kit"),
+        ...(it.variantLabel ? { variantLabel: String(it.variantLabel) } : {}),
+        ...(it.productClass ? { productClass: it.productClass } : {}),
+        quantity: Math.max(1, Math.round(Number(it.quantity) || 1)),
+        unitPrice: roundCurrencyAmount(Number(it.unitPrice ?? entity.unitPrice ?? 0) || 0, currency),
+        lineTotal: roundCurrencyAmount(
+          Number(
+            it.lineTotal ??
+              (Number(it.unitPrice ?? entity.unitPrice ?? 0) * Math.max(1, Number(it.quantity) || 1))
+          ) || 0,
+          currency
+        ),
+        currency,
+      }));
+    }
+    const qty = Math.max(1, Math.round(Number(entity?.quantity) || 1));
+    const unit = roundCurrencyAmount(
+      Number(entity?.unitPrice ?? entity?.subtotalAmount ?? entity?.subtotal ?? entity?.totalAmount ?? 0) || 0,
+      currency
+    );
+    return [
+      {
+        productId: String(entity?.productId || "starlink-kit"),
+        name: String(entity?.productName || "Starlink Kit"),
+        quantity: qty,
+        unitPrice: unit,
+        lineTotal: roundCurrencyAmount(unit * qty, currency),
+        currency,
+      },
+    ];
+  };
+
+  const computeLiveEligibleMethodsForRequest = (
+    reqRec: ServerPaymentRequestRecord,
+    entity: any
+  ): { eligibleMethods: DSLinkPayMethod[]; stripeCardEnabled: boolean; cardUnavailableForDestination: boolean } => {
+    const countryCode = normalizeCountryCode(entity?.countryCode || "BD");
+    const isBangladesh = countryCode === "BD";
+    const stripeActive = isStripeConfiguredAndEnabled();
+    const acceptsNow = reqRec.status === "pending" || reqRec.status === "rejected";
+    const stripeCardEnabled = stripeActive && acceptsNow;
+
+    const orderTotal = roundCurrencyAmount(
+      Number(entity?.orderTotalAmount ?? entity?.totalAmount ?? reqRec.requestedAmount) || 0,
+      reqRec.currency
+    );
+    const remaining =
+      typeof entity?.remainingBalanceAmount === "number"
+        ? entity.remainingBalanceAmount
+        : orderTotal;
+
+    const methods = computeEligibleMethodsForPaymentRequest({
+      countryCode,
+      currency: reqRec.currency,
+      isRentalOrder: isOrderRental(entity),
+      paymentType: reqRec.paymentType,
+      codAvailable: Boolean(entity?.codAvailable) && !isOrderRental(entity),
+      requestedAmount: reqRec.requestedAmount,
+      remainingBalanceAmount: remaining,
+      stripeCardEnabled: stripeActive,
+    });
+
+    return {
+      eligibleMethods: methods,
+      stripeCardEnabled,
+      cardUnavailableForDestination: (!isBangladesh || reqRec.currency === "USD") && !stripeActive,
+    };
+  };
+
+  const toPublicPaymentRequest = (
+    reqRec: ServerPaymentRequestRecord,
+    order?: any,
+    draft?: ServerCheckoutDraft
+  ): DSLinkPayRequestPublic => {
+    evaluateRequestExpiry(reqRec);
+    const entity = order || draft;
+    const currency: DSLinkPayCurrency = reqRec.currency === "USD" ? "USD" : "BDT";
+    const countryCode = normalizeCountryCode(entity?.countryCode || "BD");
+    const countryName = String(entity?.countryName || getCountryConfig(countryCode).name);
+
+    let paidAmount = 0;
+    let remainingBalanceAmount = reqRec.requestedAmount;
+    let orderTotalAmount = roundCurrencyAmount(
+      Number(entity?.orderTotalAmount ?? entity?.totalAmount ?? entity?.price ?? reqRec.requestedAmount) || 0,
+      currency
+    );
+    let subtotalAmount = roundCurrencyAmount(
+      Number(entity?.subtotalAmount ?? entity?.subtotal ?? orderTotalAmount) || 0,
+      currency
+    );
+    let shippingFeeAmount = roundCurrencyAmount(
+      Number(entity?.shippingFeeAmount ?? entity?.shippingFee ?? 0) || 0,
+      currency
+    );
+    let paidAmountBdt = 0;
+    let remainingBalanceBdt = reqRec.requestedAmountBdt;
+    let orderTotalBdt = Math.max(0, Math.round(Number(entity?.orderTotalBdt ?? entity?.totalAmount ?? reqRec.requestedAmountBdt) || 0));
+    let subtotalBdt = Math.max(0, Math.round(Number(entity?.subtotalBdt ?? entity?.subtotal ?? orderTotalBdt) || 0));
+    let shippingFeeBdt = Math.max(0, Math.round(Number(entity?.shippingFeeBdt ?? entity?.shippingFee ?? 0) || 0));
+
+    if (order) {
+      const summary = recomputeOrderPaymentSummary(order);
+      paidAmount = summary.paidAmount;
+      remainingBalanceAmount =
+        reqRec.paymentType === "subscription"
+          ? reqRec.status === "paid"
+            ? 0
+            : reqRec.requestedAmount
+          : summary.remainingBalanceAmount;
+      orderTotalAmount =
+        reqRec.paymentType === "subscription" ? reqRec.requestedAmount : summary.orderTotalAmount;
+      paidAmountBdt = summary.paidAmountBdt;
+      remainingBalanceBdt =
+        reqRec.paymentType === "subscription"
+          ? reqRec.status === "paid"
+            ? 0
+            : reqRec.requestedAmountBdt
+          : summary.remainingBalanceBdt;
+    } else if (draft) {
+      paidAmount = 0;
+      remainingBalanceAmount = draft.orderTotalAmount;
+      paidAmountBdt = 0;
+      remainingBalanceBdt = draft.orderTotalBdt;
+    }
+
+    const remainingAfterThisPaymentAmount =
+      reqRec.status === "paid"
+        ? remainingBalanceAmount
+        : roundCurrencyAmount(Math.max(0, remainingBalanceAmount - reqRec.requestedAmount), currency);
+    const remainingAfterThisPaymentBdt =
+      reqRec.status === "paid"
+        ? remainingBalanceBdt
+        : Math.max(0, Math.round(remainingBalanceBdt - reqRec.requestedAmountBdt));
+
+    const items =
+      reqRec.paymentType === "subscription"
+        ? [
+            {
+              productId: reqRec.subscriptionPlanId || "rental-subscription",
+              name: reqRec.subscriptionPlanName || "Starlink Rental Monthly Subscription",
+              variantLabel: reqRec.subscriptionBillingPeriod
+                ? `Billing Period: ${reqRec.subscriptionBillingPeriod}`
+                : "Monthly Plan",
+              productClass: "rental" as const,
+              quantity: 1,
+              unitPrice: reqRec.requestedAmount,
+              lineTotal: reqRec.requestedAmount,
+              currency,
+            },
+          ]
+        : buildEntityItemsSummary(entity, currency);
+
+    const productSummary =
+      reqRec.paymentType === "subscription"
+        ? `${reqRec.subscriptionPlanName || "Starlink Rental Subscription"} (${reqRec.subscriptionBillingPeriod || "Monthly"})`
+        : String(entity?.productName || "").trim() ||
+          items.map((i: any) => `${i.name} × ${i.quantity}`).join(", ");
+
+    const { eligibleMethods, stripeCardEnabled, cardUnavailableForDestination } =
+      computeLiveEligibleMethodsForRequest(reqRec, entity);
+
+    const isDraftOnly = !order && Boolean(draft);
+    const rentalBreakdown = reqRec.rentalBreakdown || entity?.rentalBreakdown;
+
+    // STRICT ZERO-PII PUBLIC PAYLOAD: No customer name, phone, email, address, or senderHint.
+    return {
+      id: reqRec.id,
+      token: reqRec.token,
+      requestRef: reqRec.orderId || reqRec.requestRef || reqRec.draftId || reqRec.id,
+      orderId: reqRec.orderId || "",
+      ...(reqRec.draftId ? { draftId: reqRec.draftId } : {}),
+      isDraftOnly,
+      items,
+      productSummary,
+      currency,
+      subtotalAmount: reqRec.paymentType === "subscription" ? reqRec.requestedAmount : subtotalAmount,
+      shippingFeeAmount: reqRec.paymentType === "subscription" ? 0 : shippingFeeAmount,
+      orderTotalAmount,
+      paidAmount,
+      remainingBalanceAmount,
+      requestedAmount: reqRec.requestedAmount,
+      requestedAmountMinor: reqRec.requestedAmountMinor,
+      remainingAfterThisPaymentAmount,
+      subtotalBdt: reqRec.paymentType === "subscription" ? reqRec.requestedAmountBdt : subtotalBdt,
+      shippingFeeBdt: reqRec.paymentType === "subscription" ? 0 : shippingFeeBdt,
+      orderTotalBdt: reqRec.paymentType === "subscription" ? reqRec.requestedAmountBdt : orderTotalBdt,
+      paidAmountBdt,
+      remainingBalanceBdt,
+      requestedAmountBdt: reqRec.requestedAmountBdt,
+      remainingAfterThisPaymentBdt,
+      paymentType: reqRec.paymentType,
+      status: reqRec.status,
+      eligibleMethods,
+      stripeCardEnabled,
+      cardUnavailableForDestination,
+      ...(reqRec.stripePaymentStatus ? { stripePaymentStatus: reqRec.stripePaymentStatus } : {}),
+      isRentalOrder: isOrderRental(entity),
+      ...(rentalBreakdown ? { rentalBreakdown } : {}),
+      ...(reqRec.subscriptionPlanId ? { subscriptionPlanId: reqRec.subscriptionPlanId } : {}),
+      ...(reqRec.subscriptionPlanName ? { subscriptionPlanName: reqRec.subscriptionPlanName } : {}),
+      ...(reqRec.subscriptionBillingPeriod
+        ? { subscriptionBillingPeriod: reqRec.subscriptionBillingPeriod }
+        : {}),
+      ...(typeof reqRec.codAdvanceRequiredAmount === "number" && reqRec.codAdvanceRequiredAmount > 0
+        ? {
+            codAdvanceRequiredAmount: reqRec.codAdvanceRequiredAmount,
+            codRemainingOnDeliveryAmount: reqRec.codRemainingOnDeliveryAmount ?? 0,
+          }
+        : {}),
+      countryCode,
+      countryName,
+      ...(reqRec.submittedMethod ? { submittedMethod: reqRec.submittedMethod } : {}),
+      ...(reqRec.submittedTrxId ? { submittedTrxId: reqRec.submittedTrxId } : {}),
+      ...(reqRec.selectedInstitutionId ? { selectedInstitutionId: reqRec.selectedInstitutionId } : {}),
+      ...(reqRec.selectedInstitutionName ? { selectedInstitutionName: reqRec.selectedInstitutionName } : {}),
+      ...(reqRec.rejectionReason ? { rejectionReason: reqRec.rejectionReason } : {}),
+      ...(reqRec.cancellationReason ? { cancellationReason: reqRec.cancellationReason } : {}),
+      merchant: {
+        name: VERIFIED_BANGLA_QR_MERCHANT_NAME,
+        banglaQrMerchantId:
+          currency === "BDT" &&
+          (eligibleMethods.includes("bangla_qr") || eligibleMethods.includes("bank_transfer"))
+            ? VERIFIED_BANGLA_QR_MERCHANT_ID
+            : "",
+        banglaQrImageUrl:
+          currency === "BDT" &&
+          (eligibleMethods.includes("bangla_qr") || eligibleMethods.includes("bank_transfer"))
+            ? EXACT_BANGLA_QR_IMAGE_URL
+            : "",
+        supportPhone: VERIFIED_BANGLA_QR_PHONE,
+        ...(currency === "BDT" && eligibleMethods.includes("bank_transfer")
+          ? { bankTransfer: getBankTransferConfig() }
+          : {}),
+      },
+      expiresAt: reqRec.expiresAt,
+      createdAt: reqRec.createdAt,
+      updatedAt: reqRec.updatedAt,
+      ...(reqRec.submittedAt ? { submittedAt: reqRec.submittedAt } : {}),
+      ...(reqRec.verifiedAt ? { verifiedAt: reqRec.verifiedAt } : {}),
+      ...(reqRec.revokedReason ? { revokedReason: reqRec.revokedReason } : {}),
+    };
+  };
+
+  const toDraftAdminSummary = (draft: ServerCheckoutDraft): DSLinkPayDraftSummaryAdmin => ({
+    draftId: draft.draftId,
+    customerName: draft.fullName || draft.customerName || "Customer",
+    phone: draft.phone || draft.customerPhone || "",
+    email: draft.email || draft.customerEmail || "",
+    countryCode: draft.countryCode,
+    countryName: draft.countryName,
+    address: draft.address || "",
+    currency: draft.currency,
+    totalAmount: draft.orderTotalAmount,
+    isRentalOrder: draft.isRentalOrder,
+    ...(draft.finalOrderId ? { finalOrderId: draft.finalOrderId } : {}),
+    createdAt: draft.createdAt,
+  });
+
+  const toAdminPaymentRequest = (
+    reqRec: ServerPaymentRequestRecord,
+    order?: any,
+    draft?: ServerCheckoutDraft
+  ): DSLinkPayRequestAdmin => {
+    const pub = toPublicPaymentRequest(reqRec, order, draft);
+    const payPath = `/pay/${reqRec.token}`;
+    const payUrl = `${CANONICAL_PAY_ORIGIN}${payPath}`;
+    const whatsappShareMessage = buildPaymentRequestShareMessage({
+      orderId: pub.orderId,
+      requestRef: pub.requestRef,
+      requestedAmount: pub.requestedAmount,
+      requestedAmountBdt: pub.requestedAmountBdt,
+      currency: pub.currency,
+      payUrl,
+      paymentType: pub.paymentType,
+      remainingAfterThisPaymentAmount: pub.remainingAfterThisPaymentAmount,
+      remainingAfterThisPaymentBdt: pub.remainingAfterThisPaymentBdt,
+    });
+    const phone = order?.phone || order?.customerPhone || draft?.phone || draft?.customerPhone;
+    const whatsappShareUrl = buildWhatsAppShareUrl(whatsappShareMessage, phone);
+    return {
+      ...pub,
+      payPath,
+      payUrl,
+      createdBy: reqRec.createdBy,
+      ...(reqRec.senderHint ? { senderHint: reqRec.senderHint } : {}),
+      ...(reqRec.verifiedBy ? { verifiedBy: reqRec.verifiedBy } : {}),
+      ...(typeof reqRec.verifiedAmount === "number" ? { verifiedAmount: reqRec.verifiedAmount } : {}),
+      ...(typeof reqRec.verifiedAmountBdt === "number" ? { verifiedAmountBdt: reqRec.verifiedAmountBdt } : {}),
+      ...(reqRec.note ? { note: reqRec.note } : {}),
+      ...(reqRec.replacedById ? { replacedById: reqRec.replacedById } : {}),
+      ...(draft ? { draft: toDraftAdminSummary(draft) } : {}),
+      whatsappShareMessage,
+      whatsappShareUrl,
+    };
+  };
+
+  const persistPaymentRequestRecord = async (record: ServerPaymentRequestRecord) => {
+    persistLocalStore();
+    const activeDb = await getActiveFirestoreDb();
+    if (activeDb) {
+      try {
+        await setDoc(doc(activeDb, "payment_requests", record.id), record, { merge: true });
+      } catch (dbErr: any) {
+        if (isFirestoreUnavailableError(dbErr)) {
+          disableFirestoreGracefully(dbErr?.message || "payment_request write failed");
+        }
+      }
+    }
+  };
+
+  const createPaymentRequestForDraft = async (opts: {
+    draft: ServerCheckoutDraft;
+    expiresInHours?: number;
+    createdBy: string;
+    checkoutIdempotencyKey?: string;
+    note?: string;
+  }): Promise<ServerPaymentRequestRecord> => {
+    const { draft } = opts;
+    const currency = draft.currency;
+    const requestedAmount = roundCurrencyAmount(draft.payableNowAmount, currency);
+    const requestedAmountBdt =
+      currency === "BDT" ? Math.round(requestedAmount) : Math.round(draft.orderTotalBdt);
+    const hours = Math.min(720, Math.max(1, Number(opts.expiresInHours) || 72));
+    const nowMs = Date.now();
+    const nowIso = new Date(nowMs).toISOString();
+    const id = `PR-${nowMs}-${crypto.randomBytes(3).toString("hex").toUpperCase()}`;
+
+    const eligibleMethods = computeEligibleMethodsForPaymentRequest({
+      countryCode: draft.countryCode,
+      currency,
+      isRentalOrder: draft.isRentalOrder,
+      paymentType: "full",
+      codAvailable: draft.codAvailable,
+      requestedAmount,
+      remainingBalanceAmount: draft.orderTotalAmount,
+      stripeCardEnabled: isStripeConfiguredAndEnabled(),
+    });
+
+    const record: ServerPaymentRequestRecord = {
+      id,
+      token: generateSecurePayToken(),
+      requestRef: draft.draftId,
+      orderId: "",
+      draftId: draft.draftId,
+      paymentType: "full",
+      requestedAmount,
+      requestedAmountMinor: toMinorUnits(requestedAmount, currency),
+      requestedAmountBdt,
+      currency,
+      eligibleMethods,
+      status: "pending",
+      ...(draft.rentalBreakdown ? { rentalBreakdown: draft.rentalBreakdown } : {}),
+      ...(draft.codAdvanceRequiredAmount > 0
+        ? {
+            codAdvanceRequiredAmount: draft.codAdvanceRequiredAmount,
+            codRemainingOnDeliveryAmount: draft.codRemainingOnDeliveryAmount,
+          }
+        : {}),
+      ...(opts.checkoutIdempotencyKey ? { checkoutIdempotencyKey: opts.checkoutIdempotencyKey } : {}),
+      createdBy: opts.createdBy,
+      expiresAt: new Date(nowMs + hours * 3600 * 1000).toISOString(),
+      ...(opts.note ? { note: opts.note } : {}),
+      createdAt: nowIso,
+      updatedAt: nowIso,
+    };
+
+    inMemoryPaymentRequests.unshift(record);
+    await persistPaymentRequestRecord(record);
+    return record;
+  };
+
+  const createPaymentRequestForOrder = async (opts: {
+    order: any;
+    paymentType: DSLinkPayType;
+    requestedAmount: number;
+    currency?: DSLinkPayCurrency;
+    expiresInHours?: number;
+    createdBy: string;
+    checkoutIdempotencyKey?: string;
+    note?: string;
+    revokePreviousReason?: string;
+    subscriptionPlanId?: string;
+    subscriptionPlanName?: string;
+    subscriptionBillingPeriod?: string;
+  }): Promise<ServerPaymentRequestRecord> => {
+    const summary = recomputeOrderPaymentSummary(opts.order);
+    const currency: DSLinkPayCurrency = opts.currency || summary.currency;
+    const amount = roundCurrencyAmount(Math.max(0.5, Number(opts.requestedAmount) || 0), currency);
+    const hours = Math.min(720, Math.max(1, Number(opts.expiresInHours) || 72));
+    const nowMs = Date.now();
+    const nowIso = new Date(nowMs).toISOString();
+    const id = `PR-${nowMs}-${crypto.randomBytes(3).toString("hex").toUpperCase()}`;
+
+    if (opts.revokePreviousReason && opts.paymentType !== "subscription") {
+      revokeActivePaymentRequestsForOrder(opts.order.orderId, opts.revokePreviousReason, id);
+    }
+
+    const eligibleMethods = computeEligibleMethodsForPaymentRequest({
+      countryCode: normalizeCountryCode(opts.order.countryCode || "BD"),
+      currency,
+      isRentalOrder: isOrderRental(opts.order),
+      paymentType: opts.paymentType,
+      codAvailable: Boolean(opts.order.codAvailable) && !isOrderRental(opts.order),
+      requestedAmount: amount,
+      remainingBalanceAmount: summary.remainingBalanceAmount,
+      stripeCardEnabled: isStripeConfiguredAndEnabled(),
+    });
+
+    const record: ServerPaymentRequestRecord = {
+      id,
+      token: generateSecurePayToken(),
+      requestRef: opts.order.orderId,
+      orderId: opts.order.orderId,
+      paymentType: opts.paymentType,
+      requestedAmount: amount,
+      requestedAmountMinor: toMinorUnits(amount, currency),
+      requestedAmountBdt: currency === "BDT" ? Math.round(amount) : Math.round(amount / getDSLinkRulesConfig().bdtToUsdRate),
+      currency,
+      eligibleMethods,
+      status: "pending",
+      ...(opts.order.rentalBreakdown ? { rentalBreakdown: opts.order.rentalBreakdown } : {}),
+      ...(opts.subscriptionPlanId ? { subscriptionPlanId: opts.subscriptionPlanId } : {}),
+      ...(opts.subscriptionPlanName ? { subscriptionPlanName: opts.subscriptionPlanName } : {}),
+      ...(opts.subscriptionBillingPeriod ? { subscriptionBillingPeriod: opts.subscriptionBillingPeriod } : {}),
+      ...(opts.checkoutIdempotencyKey ? { checkoutIdempotencyKey: opts.checkoutIdempotencyKey } : {}),
+      createdBy: opts.createdBy,
+      expiresAt: new Date(nowMs + hours * 3600 * 1000).toISOString(),
+      ...(opts.note ? { note: opts.note } : {}),
+      createdAt: nowIso,
+      updatedAt: nowIso,
+    };
+
+    inMemoryPaymentRequests.unshift(record);
+    await persistPaymentRequestRecord(record);
+    return record;
+  };
+
+  /**
+   * Creates or reuses ONE single subscription payment request on the SAME rental order
+   * for a given plan & billing period. Both "Mark Delivered" and "Start Activation" call this
+   * exact helper so both events ALWAYS resolve to the same payment request.
+   */
+  const createOrReuseRentalSubscriptionRequest = async (opts: {
+    order: any;
+    planId?: string;
+    billingPeriod?: string;
+    createdBy: string;
+  }): Promise<{ paymentRequest: ServerPaymentRequestRecord; reused: boolean }> => {
+    const plan =
+      RENTAL_SUBSCRIPTION_PLANS.find((p) => p.id === String(opts.planId || "").trim()) ||
+      RENTAL_SUBSCRIPTION_PLANS[0];
+    const billingPeriod =
+      String(opts.billingPeriod || "").trim().slice(0, 32) ||
+      new Date().toISOString().slice(0, 7); // YYYY-MM
+
+    const existing = inMemoryPaymentRequests.find((r) => {
+      evaluateRequestExpiry(r);
+      return (
+        r.orderId === opts.order.orderId &&
+        r.paymentType === "subscription" &&
+        r.subscriptionPlanId === plan.id &&
+        r.subscriptionBillingPeriod === billingPeriod &&
+        (r.status === "pending" || r.status === "under_review" || r.status === "paid" || r.status === "rejected")
+      );
+    });
+
+    if (existing) {
+      return { paymentRequest: existing, reused: true };
+    }
+
+    const created = await createPaymentRequestForOrder({
+      order: opts.order,
+      paymentType: "subscription",
+      requestedAmount: plan.monthlyFeeBdt,
+      currency: "BDT",
+      expiresInHours: 168,
+      createdBy: opts.createdBy,
+      subscriptionPlanId: plan.id,
+      subscriptionPlanName: plan.name,
+      subscriptionBillingPeriod: billingPeriod,
+      note: `Rental subscription (${plan.name}, ${billingPeriod})`,
+    });
+
+    return { paymentRequest: created, reused: false };
+  };
+
+  // Public Checkout Endpoint (Cart -> Validated Address -> Checkout Draft -> DSLink Pay Link)
   app.post("/api/promos/order", rateLimitMutation(25), async (req, res) => {
     try {
       await hydratePricingFromFirestore();
       const {
-        orderId = `DS-${Math.floor(100000 + Math.random() * 900000)}`,
+        orderId: requestedOrderId,
         fullName = "",
         phone = "",
         email = "",
@@ -2279,17 +3774,20 @@ async function startServer() {
         district = "Dhaka",
         shippingAddress,
         countryCode,
-        paymentMethod = "cod",
+        paymentMethod = "dslink_pay",
         trxId = "",
         senderBankName = "",
         senderNumber = "",
         productId = "",
-        productName = "Starlink Standard Kit 4X (Purchase)",
+        productName = "Starlink Standard 4X USA Kit + Roam Unlimited Internet",
         quantity = 1,
         items,
         currency = "BDT",
+        checkoutIdempotencyKey = "",
+        requireDeliveryAddress = false,
       } = req.body || {};
 
+      const cleanIdempotencyKey = String(checkoutIdempotencyKey || "").trim().slice(0, 128);
       const resolvedCountry = countryCode
         ? normalizeCountryCode(countryCode)
         : normalizeCountryCode(
@@ -2299,92 +3797,278 @@ async function startServer() {
               : "BD"
           );
 
-      const blockedSet = new Set(serverShippingConfig.blockedCountries);
-      const carrierAvailable = isCarrierSupported(resolvedCountry) && !blockedSet.has(resolvedCountry);
-      if (!carrierAvailable) {
-        return res.status(400).json({
-          success: false,
-          inquiryRequired: true,
-          error: `Standard DHL / FedEx checkout is unavailable for ${getCountryConfig(resolvedCountry).name}. Please submit a Delivery Inquiry instead.`,
-        });
+      if (requireDeliveryAddress) {
+        const addrObj = shippingAddress && typeof shippingAddress === "object" ? shippingAddress : null;
+        const missing: string[] = [];
+        if (!String(fullName || addrObj?.fullName || "").trim()) missing.push("Full Name");
+        if (
+          !String(phone || addrObj?.phone || "").trim() ||
+          String(phone || addrObj?.phone || "").replace(/[^0-9]/g, "").length < 7
+        ) {
+          missing.push("Valid Phone Number");
+        }
+        if (!String(addrObj?.houseFlat || address || "").trim()) missing.push("House/Flat");
+        if (!String(addrObj?.roadStreet || "").trim()) missing.push("Road/Street");
+        if (!String(addrObj?.area || "").trim()) missing.push("Area/Thana");
+        if (!String(addrObj?.cityDistrict || district || "").trim()) missing.push("City/District");
+        if (!String(addrObj?.stateDivision || "").trim()) missing.push("State/Division");
+        if (!String(addrObj?.postalCode || "").trim()) missing.push("Postal Code");
+        if (missing.length > 0) {
+          return res.status(400).json({
+            success: false,
+            error: `Please complete all required delivery address fields: ${missing.join(", ")}.`,
+          });
+        }
       }
 
-      let subtotal = 0;
-      let isRentalOrder = false;
-      let hasBangladeshOnlyItem = false;
-      let totalQty = 0;
-      let resolvedItems: Array<{ productId: string; name: string; variantLabel?: string; unitPrice: number; quantity: number; lineTotal: number }> = [];
-
+      // Resolve authoritative catalog products strictly on server
+      const catalogEntries: Array<{ product: any; quantity: number }> = [];
       if (Array.isArray(items) && items.length > 0) {
         for (const rawItem of items.slice(0, 20)) {
           const itemQty = Math.min(20, Math.max(1, Math.floor(Number(rawItem?.quantity) || 1)));
           const prod = resolveAuthoritativeProduct(rawItem?.productId, rawItem?.name);
-          if (prod.category === "rental") isRentalOrder = true;
-          if (!prod.globalDeliveryAvailable) hasBangladeshOnlyItem = true;
-          const lineTotal = prod.price * itemQty;
-          subtotal += lineTotal;
-          totalQty += itemQty;
-          resolvedItems.push({
-            productId: prod.id,
-            name: prod.name,
-            variantLabel: prod.variantLabel,
-            unitPrice: prod.price,
-            quantity: itemQty,
-            lineTotal,
-          });
+          catalogEntries.push({ product: prod, quantity: itemQty });
         }
       } else {
         const qty = Math.min(50, Math.max(1, Math.floor(Number(quantity) || 1)));
         const matchedProduct = resolveAuthoritativeProduct(productId, productName);
-        isRentalOrder = matchedProduct.category === "rental";
-        if (!matchedProduct.globalDeliveryAvailable) hasBangladeshOnlyItem = true;
-        subtotal = matchedProduct.price * qty;
-        totalQty = qty;
-        resolvedItems.push({
-          productId: matchedProduct.id,
-          name: matchedProduct.name,
-          variantLabel: matchedProduct.variantLabel,
-          unitPrice: matchedProduct.price,
-          quantity: qty,
-          lineTotal: subtotal,
-        });
+        catalogEntries.push({ product: matchedProduct, quantity: qty });
       }
 
-      if (hasBangladeshOnlyItem && resolvedCountry !== "BD") {
+      const rules = getDSLinkRulesConfig();
+      const evaluation = evaluateCheckoutEligibility({
+        countryCode: resolvedCountry,
+        items: catalogEntries,
+        rules,
+        stripeCardEnabled: isStripeConfiguredAndEnabled(),
+      });
+
+      if (!evaluation.valid) {
         return res.status(400).json({
           success: false,
-          error:
-            "Bangladesh Residential Purchase and Standard 4X Rental offers are available only for delivery inside Bangladesh. For international destinations, please select the Starlink Standard 4X USA Kit + Roam Unlimited Internet or Starlink Mini Global Roam variant.",
+          inquiryRequired: !evaluation.carrierSupported,
+          error: evaluation.error || "Checkout items or destination are not eligible.",
+          errorBn: evaluation.errorBn,
+          ineligibleItems: evaluation.ineligibleItems,
+          countryCode: evaluation.countryCode,
         });
       }
 
-      const primaryItem = resolvedItems[0];
-      const shippingFee = calculateShipping(resolvedCountry, serverShippingConfig.internationalFeeBdt);
-      const authoritativeTotal = subtotal + shippingFee;
-      const codAllowed = isCODAvailable(resolvedCountry, isRentalOrder);
-      const effectivePaymentMethod =
-        paymentMethod === "cod" && !codAllowed
-          ? isRentalOrder
-            ? "bangla_qr"
-            : "international_prepaid"
-          : paymentMethod;
+      // Idempotent Checkout Reuse: Refreshing or double-clicking reuses the SAME active draft/order & DSLink Pay link!
+      if (cleanIdempotencyKey.length >= 8) {
+        const existingReq = inMemoryPaymentRequests.find((r) => {
+          evaluateRequestExpiry(r);
+          return (
+            r.checkoutIdempotencyKey === cleanIdempotencyKey &&
+            (r.status === "pending" || r.status === "under_review") &&
+            r.currency === evaluation.currency &&
+            Math.abs(r.requestedAmount - evaluation.payableNowAmount) < 0.01
+          );
+        });
+        if (existingReq) {
+          const ctx = resolveRequestContext(existingReq);
+          if (ctx.entity && ctx.entity.countryCode === evaluation.countryCode) {
+            const adminPay = toAdminPaymentRequest(existingReq, ctx.order, ctx.draft);
+            return res.json({
+              success: true,
+              reused: true,
+              isDraftOnly: adminPay.isDraftOnly,
+              draftId: ctx.draft?.draftId,
+              requestRef: adminPay.requestRef,
+              orderId: adminPay.orderId,
+              status: ctx.order?.status || "Draft Awaiting Payment",
+              paymentStatus: ctx.order?.paymentStatus || "Awaiting Payment",
+              fulfillmentStatus: ctx.order?.fulfillmentStatus || "Draft",
+              countryCode: evaluation.countryCode,
+              carriers: ctx.entity.carriers,
+              codAvailable: evaluation.codAvailable,
+              currency: evaluation.currency,
+              paymentMethod,
+              productId: ctx.entity.productId,
+              productName: ctx.entity.productName,
+              items: evaluation.items,
+              quantity: ctx.entity.quantity,
+              subtotal: evaluation.subtotalAmount,
+              shippingFee: evaluation.shippingFeeAmount,
+              totalAmount: evaluation.orderTotalAmount,
+              payableNowAmount: evaluation.payableNowAmount,
+              rentalBreakdown: evaluation.rentalBreakdown,
+              eligibleMethods: adminPay.eligibleMethods,
+              cardUnavailableForDestination: adminPay.cardUnavailableForDestination,
+              paymentRequest: {
+                id: adminPay.id,
+                token: adminPay.token,
+                requestRef: adminPay.requestRef,
+                payPath: adminPay.payPath,
+                payUrl: adminPay.payUrl,
+                status: adminPay.status,
+                requestedAmount: adminPay.requestedAmount,
+                requestedAmountBdt: adminPay.requestedAmountBdt,
+                currency: adminPay.currency,
+                eligibleMethods: adminPay.eligibleMethods,
+                cardUnavailableForDestination: adminPay.cardUnavailableForDestination,
+                expiresAt: adminPay.expiresAt,
+              },
+              message: "Reused existing active DSLink Pay payment request.",
+            });
+          }
+        }
+      }
 
+      const primaryItem = evaluation.items[0];
+      const totalQty = evaluation.items.reduce((sum, i) => sum + i.quantity, 0);
       const ratesSnap = await getLiveExchangeRates();
       const targetCurrency = normalizeCurrencyCode(currency);
-      const converted = convertFromBdt(authoritativeTotal, targetCurrency, ratesSnap.rates);
+      const converted = convertFromBdt(evaluation.orderTotalBdt, targetCurrency, ratesSnap.rates);
+      const normalizedAddressObj = shippingAddress || {
+        fullName,
+        phone,
+        houseFlat: address,
+        roadStreet: "",
+        area: "",
+        cityDistrict: district,
+        stateDivision: district,
+        postalCode: "",
+        countryCode: evaluation.countryCode,
+      };
+      const kitSummary =
+        evaluation.items.length > 1
+          ? evaluation.items.map((i) => `${i.name} ×${i.quantity}`).join(", ")
+          : primaryItem.name;
 
-      const isManualQrPayment =
-        effectivePaymentMethod === "bangla_qr" ||
-        effectivePaymentMethod === "international_prepaid" ||
-        Boolean(String(trxId || "").trim());
-      const paymentStatus = isManualQrPayment ? "Awaiting Payment" : "Pending COD Collection";
-      const fulfillmentStatus = "Pending";
-      const orderStatus = isManualQrPayment ? "Awaiting Payment" : "Pending Confirmation";
+      // DRAFT-FIRST PREPAID CHECKOUT FLOW:
+      // For dslink_pay (default cart checkout), save a checkout draft and create its shareable DSLink Pay link.
+      // Do NOT create a final order prematurely — final order is created atomically upon verified payment or eligible COD selection!
+      if (paymentMethod === "dslink_pay" || paymentMethod === "bangla_qr" || paymentMethod === "international_prepaid") {
+        const draftId = `DRF-${Math.floor(100000 + Math.random() * 900000)}`;
+        const nowIso = new Date().toISOString();
+        const draft: ServerCheckoutDraft = {
+          draftId,
+          ...(cleanIdempotencyKey ? { checkoutIdempotencyKey: cleanIdempotencyKey } : {}),
+          customerName: fullName,
+          fullName,
+          customerPhone: phone,
+          phone,
+          customerEmail: email,
+          email,
+          address,
+          district,
+          shippingAddress: normalizedAddressObj,
+          countryCode: evaluation.countryCode,
+          countryName: evaluation.countryName,
+          carriers: getCarriersForCountry(evaluation.countryCode),
+          currency: evaluation.currency,
+          isRentalOrder: evaluation.hasRental,
+          hasBdResidential: evaluation.hasBdResidential,
+          codAvailable: evaluation.codAvailable,
+          codAdvanceRequiredAmount: evaluation.codAdvanceRequiredAmount,
+          codRemainingOnDeliveryAmount: evaluation.codRemainingOnDeliveryAmount,
+          ...(evaluation.rentalBreakdown ? { rentalBreakdown: evaluation.rentalBreakdown } : {}),
+          productId: primaryItem.productId,
+          productName: kitSummary,
+          kitName: evaluation.items.map((i) => `${i.name} ×${i.quantity}`).join(", "),
+          items: evaluation.items,
+          quantity: totalQty,
+          subtotalBdt: evaluation.subtotalBdt,
+          shippingFeeBdt: evaluation.shippingFeeBdt,
+          orderTotalBdt: evaluation.orderTotalBdt,
+          subtotalAmount: evaluation.subtotalAmount,
+          shippingFeeAmount: evaluation.shippingFeeAmount,
+          orderTotalAmount: evaluation.orderTotalAmount,
+          payableNowAmount: evaluation.payableNowAmount,
+          remainingDueLaterAmount: evaluation.remainingDueLaterAmount,
+          displayCurrency: targetCurrency,
+          estimatedConvertedTotal: converted.amount,
+          status: "draft",
+          createdAt: nowIso,
+          updatedAt: nowIso,
+        };
 
+        inMemoryCheckoutDrafts.unshift(draft);
+        const payRequest = await createPaymentRequestForDraft({
+          draft,
+          expiresInHours: 72,
+          createdBy: "customer_checkout",
+          checkoutIdempotencyKey: cleanIdempotencyKey || undefined,
+        });
+        const payAdminMeta = toAdminPaymentRequest(payRequest, undefined, draft);
+
+        recordAuditLog(
+          "checkout_draft_created",
+          email || phone || "customer",
+          draftId,
+          {
+            countryCode: evaluation.countryCode,
+            currency: evaluation.currency,
+            payableNowAmount: evaluation.payableNowAmount,
+            orderTotalAmount: evaluation.orderTotalAmount,
+            isRentalOrder: evaluation.hasRental,
+            paymentRequestId: payRequest.id,
+          },
+          extractClientIp(req)
+        );
+
+        return res.json({
+          success: true,
+          reused: false,
+          isDraftOnly: true,
+          draftId,
+          requestRef: draftId,
+          orderId: "",
+          status: "Draft Awaiting Payment",
+          paymentStatus: "Awaiting Payment",
+          fulfillmentStatus: "Draft",
+          countryCode: evaluation.countryCode,
+          carriers: draft.carriers,
+          codAvailable: evaluation.codAvailable,
+          currency: evaluation.currency,
+          paymentMethod: "dslink_pay",
+          productId: primaryItem.productId,
+          productName: kitSummary,
+          items: evaluation.items,
+          unitPrice: primaryItem.unitPrice,
+          quantity: totalQty,
+          subtotal: evaluation.subtotalAmount,
+          shippingFee: evaluation.shippingFeeAmount,
+          totalAmount: evaluation.orderTotalAmount,
+          payableNowAmount: evaluation.payableNowAmount,
+          rentalBreakdown: evaluation.rentalBreakdown,
+          eligibleMethods: payAdminMeta.eligibleMethods,
+          cardUnavailableForDestination: payAdminMeta.cardUnavailableForDestination,
+          displayCurrency: targetCurrency,
+          estimatedConvertedTotal: converted.amount,
+          paymentRequest: {
+            id: payAdminMeta.id,
+            token: payAdminMeta.token,
+            requestRef: payAdminMeta.requestRef,
+            payPath: payAdminMeta.payPath,
+            payUrl: payAdminMeta.payUrl,
+            status: payAdminMeta.status,
+            requestedAmount: payAdminMeta.requestedAmount,
+            requestedAmountBdt: payAdminMeta.requestedAmountBdt,
+            currency: payAdminMeta.currency,
+            eligibleMethods: payAdminMeta.eligibleMethods,
+            cardUnavailableForDestination: payAdminMeta.cardUnavailableForDestination,
+            expiresAt: payAdminMeta.expiresAt,
+          },
+          message: "Checkout draft saved and DSLink Pay payment link created.",
+        });
+      }
+
+      // Direct COD checkout (ONLY allowed for eligible BD purchase kits when no advance is required)
+      if (paymentMethod === "cod" && !evaluation.codAvailable) {
+        return res.status(400).json({
+          success: false,
+          error: "Cash on Delivery is not eligible for this destination or kit type.",
+        });
+      }
+
+      const orderId = String(requestedOrderId || `DS-${Math.floor(100000 + Math.random() * 900000)}`).trim();
       const orderAccessToken = generateOrderAccessToken();
-      const orderDoc = {
+      const orderDoc: any = {
         orderId,
         orderAccessToken,
+        checkoutIdempotencyKey: cleanIdempotencyKey || undefined,
         customerName: fullName,
         fullName,
         customerPhone: phone,
@@ -2393,110 +4077,99 @@ async function startServer() {
         email,
         address,
         district,
-        shippingAddress: shippingAddress || {
-          fullName,
-          phone,
-          houseFlat: address,
-          roadStreet: "",
-          area: "",
-          cityDistrict: district,
-          stateDivision: district,
-          postalCode: "",
-          countryCode: resolvedCountry,
-        },
-        countryCode: resolvedCountry,
-        countryName: getCountryConfig(resolvedCountry).name,
-        carriers: getCarriersForCountry(resolvedCountry),
-        codAvailable: codAllowed,
-        paymentMethod: effectivePaymentMethod,
-        paymentStatus,
-        fulfillmentStatus,
-        codAmountToCollectBdt: effectivePaymentMethod === "cod" ? authoritativeTotal : 0,
+        shippingAddress: normalizedAddressObj,
+        countryCode: evaluation.countryCode,
+        countryName: evaluation.countryName,
+        carriers: getCarriersForCountry(evaluation.countryCode),
+        currency: evaluation.currency,
+        isRentalOrder: evaluation.hasRental,
+        codAvailable: evaluation.codAvailable,
+        paymentMethod: "cod",
+        paymentStatus: "Pending COD Collection",
+        fulfillmentStatus: "Pending",
+        paidAmount: 0,
+        remainingBalanceAmount: evaluation.orderTotalAmount,
+        paidAmountBdt: 0,
+        remainingBalanceBdt: evaluation.orderTotalBdt,
+        codAmountToCollectBdt: evaluation.orderTotalBdt,
         trxId,
         senderBankName,
         senderNumber,
         productId: primaryItem.productId,
-        kitName: resolvedItems.map((i) => `${i.name} ×${i.quantity}`).join(", "),
-        productName: resolvedItems.length > 1 ? resolvedItems.map((i) => `${i.name} ×${i.quantity}`).join(", ") : primaryItem.name,
-        items: resolvedItems,
+        kitName: evaluation.items.map((i) => `${i.name} ×${i.quantity}`).join(", "),
+        productName: kitSummary,
+        items: evaluation.items,
         unitPrice: primaryItem.unitPrice,
         quantity: totalQty,
-        subtotal,
-        shippingFee,
+        subtotal: evaluation.subtotalAmount,
+        subtotalBdt: evaluation.subtotalBdt,
+        shippingFee: evaluation.shippingFeeAmount,
+        shippingFeeBdt: evaluation.shippingFeeBdt,
         discount: 0,
-        totalAmount: authoritativeTotal,
-        price: authoritativeTotal,
+        totalAmount: evaluation.orderTotalAmount,
+        orderTotalAmount: evaluation.orderTotalAmount,
+        orderTotalBdt: evaluation.orderTotalBdt,
+        price: evaluation.orderTotalAmount,
         displayCurrency: targetCurrency,
         estimatedConvertedTotal: converted.amount,
-        status: orderStatus,
-        source: isRentalOrder ? "rental_checkout" : resolvedItems.length > 1 ? "cart_checkout" : "promos_or_dslink",
+        status: "Pending Confirmation",
+        source: evaluation.items.length > 1 ? "cart_checkout" : "promos_or_dslink",
         createdAt: new Date().toISOString(),
       };
 
       inMemoryOrders.unshift(orderDoc);
       persistLocalStore();
-      recordAuditLog("public_order_created", email || phone || "customer", orderId, {
-        countryCode: resolvedCountry,
-        subtotal,
-        shippingFee,
-        totalAmount: authoritativeTotal,
-        paymentMethod: effectivePaymentMethod,
-        paymentStatus,
-        fulfillmentStatus,
-      }, extractClientIp(req));
 
-      const activeDb = await getActiveFirestoreDb();
-      if (activeDb) {
-        try {
-          await addDoc(collection(activeDb, "orders"), orderDoc);
-        } catch (dbErr: any) {
-          if (isFirestoreUnavailableError(dbErr)) {
-            disableFirestoreGracefully(dbErr?.message || "order write failed");
-          }
-        }
-      }
+      const payRequest = await createPaymentRequestForOrder({
+        order: orderDoc,
+        paymentType: "full",
+        requestedAmount: evaluation.payableNowAmount,
+        currency: evaluation.currency,
+        expiresInHours: 72,
+        createdBy: "customer_checkout",
+        checkoutIdempotencyKey: cleanIdempotencyKey || undefined,
+      });
+      const payAdminMeta = toAdminPaymentRequest(payRequest, orderDoc);
 
-      const eventId = `pur_${orderId}_${Date.now()}`;
-      sendToFbCapi(
-        {
-          eventName: "Purchase",
-          eventId,
-          value: authoritativeTotal,
-          currency: "BDT",
-          contentName: orderDoc.productName,
-          orderId,
-          userAgent: req.headers["user-agent"],
-          ip: req.ip || req.headers["x-forwarded-for"],
-          fbc: req.body.fbc,
-          fbp: req.body.fbp,
-          utmCampaign: req.body.utmCampaign,
-        },
-        { email, phone }
-      );
-
-      // Strict Notification Rule: Public orders generate zero automatic outbound emails.
       return res.json({
         success: true,
+        reused: false,
+        isDraftOnly: false,
         orderId,
+        requestRef: orderId,
         orderAccessToken,
-        status: orderStatus,
-        paymentStatus,
-        fulfillmentStatus,
-        countryCode: resolvedCountry,
+        status: orderDoc.status,
+        paymentStatus: orderDoc.paymentStatus,
+        fulfillmentStatus: orderDoc.fulfillmentStatus,
+        countryCode: evaluation.countryCode,
         carriers: orderDoc.carriers,
-        codAvailable: codAllowed,
-        paymentMethod: effectivePaymentMethod,
+        codAvailable: evaluation.codAvailable,
+        currency: evaluation.currency,
+        paymentMethod: orderDoc.paymentMethod,
         productId: primaryItem.productId,
         productName: orderDoc.productName,
-        items: resolvedItems,
+        items: evaluation.items,
         unitPrice: primaryItem.unitPrice,
         quantity: totalQty,
-        subtotal,
-        shippingFee,
-        totalAmount: authoritativeTotal,
+        subtotal: evaluation.subtotalAmount,
+        shippingFee: evaluation.shippingFeeAmount,
+        totalAmount: evaluation.orderTotalAmount,
         displayCurrency: targetCurrency,
         estimatedConvertedTotal: converted.amount,
-        message: "Order submitted with server-verified pricing and shipping (zero automatic notifications triggered).",
+        paymentRequest: {
+          id: payAdminMeta.id,
+          token: payAdminMeta.token,
+          requestRef: payAdminMeta.requestRef,
+          payPath: payAdminMeta.payPath,
+          payUrl: payAdminMeta.payUrl,
+          status: payAdminMeta.status,
+          requestedAmount: payAdminMeta.requestedAmount,
+          requestedAmountBdt: payAdminMeta.requestedAmountBdt,
+          currency: payAdminMeta.currency,
+          eligibleMethods: payAdminMeta.eligibleMethods,
+          expiresAt: payAdminMeta.expiresAt,
+        },
+        message: "Order saved and DSLink Pay payment link created.",
       });
     } catch (error: any) {
       console.error("Promo order endpoint error:", error?.message || error);
@@ -2505,6 +4178,1102 @@ async function startServer() {
         error: error?.message || "Failed to place order",
       });
     }
+  });
+
+  // ============================================================================
+  // DSLINK PAY — PUBLIC SCOPED PAYMENT LINK ENDPOINTS (ZERO PII, NO LOGIN NEEDED)
+  // ============================================================================
+  app.get("/api/pay/:token", (req, res) => {
+    res.setHeader("Cache-Control", "no-store, private");
+    res.setHeader("X-Robots-Tag", "noindex, nofollow");
+    const token = String(req.params.token || "").trim();
+    if (!PAY_TOKEN_REGEX.test(token)) {
+      return res.status(404).json({ success: false, error: "Payment link not found." });
+    }
+    const reqRec = inMemoryPaymentRequests.find((r) => r.token === token);
+    if (!reqRec) {
+      return res.status(404).json({ success: false, error: "Payment link not found or unavailable." });
+    }
+    const ctx = resolveRequestContext(reqRec);
+    if (!ctx.entity) {
+      return res.status(404).json({ success: false, error: "Associated order or checkout draft was not found." });
+    }
+    return res.json({
+      success: true,
+      paymentRequest: toPublicPaymentRequest(reqRec, ctx.order, ctx.draft),
+    });
+  });
+
+  app.post("/api/pay/:token/submit", rateLimitMutation(20), async (req, res) => {
+    res.setHeader("Cache-Control", "no-store, private");
+    res.setHeader("X-Robots-Tag", "noindex, nofollow");
+    const token = String(req.params.token || "").trim();
+    if (!PAY_TOKEN_REGEX.test(token)) {
+      return res.status(404).json({ success: false, error: "Invalid payment link." });
+    }
+    const reqRec = inMemoryPaymentRequests.find((r) => r.token === token);
+    if (!reqRec) {
+      return res.status(404).json({ success: false, error: "Payment link not found." });
+    }
+    const ctx = resolveRequestContext(reqRec);
+    if (!ctx.entity) {
+      return res.status(404).json({ success: false, error: "Associated order or draft not found." });
+    }
+
+    evaluateRequestExpiry(reqRec);
+
+    if (reqRec.status === "paid") {
+      return res.status(409).json({
+        success: false,
+        error: "এই পেমেন্ট লিংকের পেমেন্ট ইতিমধ্যে নিশ্চিত হয়েছে। (This payment link is already paid.)",
+        paymentRequest: toPublicPaymentRequest(reqRec, ctx.order, ctx.draft),
+      });
+    }
+    if (reqRec.status === "expired") {
+      return res.status(410).json({
+        success: false,
+        error: "এই পেমেন্ট লিংকের মেয়াদ শেষ হয়ে গেছে। (This payment link has expired.)",
+        paymentRequest: toPublicPaymentRequest(reqRec, ctx.order, ctx.draft),
+      });
+    }
+    if (reqRec.status === "revoked" || reqRec.status === "cancelled") {
+      return res.status(410).json({
+        success: false,
+        error: "পেমেন্ট রিকোয়েস্ট বাতিল হয়েছে। নতুন পেমেন্ট জমা দেওয়া যাবে না। (This payment request is cancelled or no longer active.)",
+        paymentRequest: toPublicPaymentRequest(reqRec, ctx.order, ctx.draft),
+      });
+    }
+    if (reqRec.status === "under_review") {
+      return res.status(409).json({
+        success: false,
+        error: "পেমেন্ট যাচাই চলছে। আপনার ট্রানজেকশন আইডি ইতিমধ্যে জমা হয়েছে।",
+        paymentRequest: toPublicPaymentRequest(reqRec, ctx.order, ctx.draft),
+      });
+    }
+    if (reqRec.status === "cod_selected") {
+      return res.status(409).json({
+        success: false,
+        error: "এই অর্ডারের জন্য ক্যাশ অন ডেলিভারি নির্বাচিত হয়েছে।",
+        paymentRequest: toPublicPaymentRequest(reqRec, ctx.order, ctx.draft),
+      });
+    }
+
+    const {
+      method = "bangla_qr",
+      trxId = "",
+      institutionId = "",
+      institutionName = "",
+      senderHint = "",
+    } = req.body || {};
+
+    if (method !== "bangla_qr" && method !== "bank_transfer") {
+      return res.status(400).json({
+        success: false,
+        error: "Select an eligible MFS or Bank Bangla QR option to submit a transaction ID.",
+      });
+    }
+
+    // Strictly enforce server-side method eligibility (blocks MFS/Bank/QR/TrxID for international USD requests!)
+    const { eligibleMethods } = computeLiveEligibleMethodsForRequest(reqRec, ctx.entity);
+    if (!eligibleMethods.includes(method) || reqRec.currency !== "BDT") {
+      return res.status(400).json({
+        success: false,
+        error: "MFS, Bank, and Bangla QR payments are not eligible for this destination or currency.",
+      });
+    }
+
+    const rawTrx = String(trxId || "").trim();
+    const normTrx = normalizeTrxId(rawTrx);
+    if (!normTrx || !TRX_ID_REGEX.test(normTrx)) {
+      return res.status(400).json({
+        success: false,
+        error: "সঠিক ট্রানজেকশন আইডি (TrxID) দিন (৪ থেকে ৬৪ অক্ষর, শুধু ইংরেজি অক্ষর ও সংখ্যা)।",
+      });
+    }
+
+    const duplicate = findDuplicateTrxIdConflict(normTrx, {
+      excludeRequestId: reqRec.id,
+      excludeOrderId: ctx.order?.orderId,
+    });
+    if (duplicate) {
+      return res.status(409).json({
+        success: false,
+        error: "এই ট্রানজেকশন আইডি ইতিমধ্যে অন্য একটি রিকোয়েস্টে ব্যবহৃত হয়েছে। সঠিক TrxID দিন অথবা সাপোর্টে যোগাযোগ করুন।",
+      });
+    }
+
+    const nowIso = new Date().toISOString();
+    reqRec.status = "under_review";
+    reqRec.submittedMethod = method;
+    reqRec.submittedTrxId = rawTrx.slice(0, 64);
+    reqRec.normalizedTrxId = normTrx;
+    reqRec.selectedInstitutionId = String(institutionId || "").trim().slice(0, 64) || undefined;
+    reqRec.selectedInstitutionName = String(institutionName || "").trim().slice(0, 120) || undefined;
+    reqRec.senderHint = String(senderHint || "").trim().slice(0, 80) || undefined;
+    reqRec.rejectionReason = undefined;
+    reqRec.submittedAt = nowIso;
+    reqRec.updatedAt = nowIso;
+
+    if (ctx.order) {
+      ctx.order.paymentMethod = method;
+      ctx.order.trxId = reqRec.submittedTrxId;
+      if (reqRec.selectedInstitutionName) ctx.order.senderBankName = reqRec.selectedInstitutionName;
+      if (reqRec.senderHint) ctx.order.senderNumber = reqRec.senderHint;
+      recomputeOrderPaymentSummary(ctx.order);
+    }
+
+    await persistPaymentRequestRecord(reqRec);
+
+    recordAuditLog(
+      "dslink_pay_reference_submitted",
+      "customer",
+      reqRec.requestRef,
+      {
+        paymentRequestId: reqRec.id,
+        draftId: reqRec.draftId || null,
+        orderId: reqRec.orderId || null,
+        method,
+        trxId: reqRec.submittedTrxId,
+        institution: reqRec.selectedInstitutionName || null,
+        requestedAmount: reqRec.requestedAmount,
+        currency: reqRec.currency,
+      },
+      extractClientIp(req)
+    );
+
+    return res.json({
+      success: true,
+      message: "পেমেন্ট যাচাই চলছে। আপনার ট্রানজেকশন আইডি সফলভাবে জমা হয়েছে।",
+      paymentRequest: toPublicPaymentRequest(reqRec, ctx.order, ctx.draft),
+    });
+  });
+
+  app.post("/api/pay/:token/select-cod", rateLimitMutation(20), async (req, res) => {
+    res.setHeader("Cache-Control", "no-store, private");
+    res.setHeader("X-Robots-Tag", "noindex, nofollow");
+    const token = String(req.params.token || "").trim();
+    if (!PAY_TOKEN_REGEX.test(token)) {
+      return res.status(404).json({ success: false, error: "Invalid payment link." });
+    }
+    const reqRec = inMemoryPaymentRequests.find((r) => r.token === token);
+    if (!reqRec) {
+      return res.status(404).json({ success: false, error: "Payment link not found." });
+    }
+    const ctx = resolveRequestContext(reqRec);
+    if (!ctx.entity) {
+      return res.status(404).json({ success: false, error: "Associated order or draft not found." });
+    }
+
+    evaluateRequestExpiry(reqRec);
+
+    const { eligibleMethods } = computeLiveEligibleMethodsForRequest(reqRec, ctx.entity);
+    if (!eligibleMethods.includes("cod")) {
+      return res.status(400).json({
+        success: false,
+        error: "এই অর্ডারের জন্য ক্যাশ অন ডেলিভারি (COD) প্রযোজ্য নয়। (Cash on Delivery is not eligible for this payment request.)",
+      });
+    }
+    if (reqRec.status !== "pending" && reqRec.status !== "rejected") {
+      return res.status(409).json({
+        success: false,
+        error: "এই পেমেন্ট লিংকটি আর পরিবর্তনযোগ্য নয়।",
+        paymentRequest: toPublicPaymentRequest(reqRec, ctx.order, ctx.draft),
+      });
+    }
+    if (reqRec.codAdvanceRequiredAmount && reqRec.codAdvanceRequiredAmount > 0) {
+      return res.status(400).json({
+        success: false,
+        error: `ক্যাশ অন ডেলিভারির আগে অগ্রিম ৳${reqRec.codAdvanceRequiredAmount.toLocaleString("en-US")} পরিশোধ করতে হবে।`,
+      });
+    }
+
+    let order = ctx.order;
+    if (!order && ctx.draft) {
+      order = createFinalOrderFromDraft(ctx.draft, {
+        paymentMethod: "cod",
+        paymentStatus: "Pending COD Collection",
+        orderStatus: "Pending Confirmation",
+      });
+      reqRec.orderId = order.orderId;
+      reqRec.requestRef = order.orderId;
+    }
+
+    const nowIso = new Date().toISOString();
+    reqRec.status = "cod_selected";
+    reqRec.submittedMethod = "cod";
+    reqRec.submittedAt = nowIso;
+    reqRec.updatedAt = nowIso;
+
+    if (order) {
+      order.paymentMethod = "cod";
+      recomputeOrderPaymentSummary(order);
+    }
+    await persistPaymentRequestRecord(reqRec);
+
+    recordAuditLog(
+      "dslink_pay_cod_selected",
+      "customer",
+      reqRec.orderId || reqRec.requestRef,
+      {
+        paymentRequestId: reqRec.id,
+        codAmountBdt: order?.codAmountToCollectBdt ?? reqRec.requestedAmountBdt,
+      },
+      extractClientIp(req)
+    );
+
+    return res.json({
+      success: true,
+      message: "ক্যাশ অন ডেলিভারি নির্বাচিত হয়েছে। ডেলিভারির সময় নির্ধারিত টাকা পরিশোধ করুন।",
+      paymentRequest: toPublicPaymentRequest(reqRec, order, ctx.draft),
+    });
+  });
+
+  // DSLink Pay — Start COD Advance Payment Request when COD requires an upfront advance (BD purchase kits only)
+  app.post("/api/pay/:token/start-cod-advance", rateLimitMutation(20), async (req, res) => {
+    res.setHeader("Cache-Control", "no-store, private");
+    res.setHeader("X-Robots-Tag", "noindex, nofollow");
+    const token = String(req.params.token || "").trim();
+    if (!PAY_TOKEN_REGEX.test(token)) {
+      return res.status(404).json({ success: false, error: "Invalid payment link." });
+    }
+    const reqRec = inMemoryPaymentRequests.find((r) => r.token === token);
+    if (!reqRec) {
+      return res.status(404).json({ success: false, error: "Payment link not found." });
+    }
+    const ctx = resolveRequestContext(reqRec);
+    if (!ctx.entity) {
+      return res.status(404).json({ success: false, error: "Associated order or draft not found." });
+    }
+    evaluateRequestExpiry(reqRec);
+    const { eligibleMethods } = computeLiveEligibleMethodsForRequest(reqRec, ctx.entity);
+    if (!eligibleMethods.includes("cod") || reqRec.currency !== "BDT") {
+      return res.status(400).json({
+        success: false,
+        error: "এই অর্ডারের জন্য ক্যাশ অন ডেলিভারি (COD) প্রযোজ্য নয়।",
+      });
+    }
+    if (reqRec.status !== "pending" && reqRec.status !== "rejected") {
+      return res.status(409).json({
+        success: false,
+        error: "এই পেমেন্ট লিংকটি আর পরিবর্তনযোগ্য নয়।",
+      });
+    }
+    const advanceAmt = Number(reqRec.codAdvanceRequiredAmount || 0);
+    if (advanceAmt <= 0 || advanceAmt >= reqRec.requestedAmount) {
+      return res.status(400).json({
+        success: false,
+        error: "এই অর্ডারের জন্য আলাদা COD অগ্রিম প্রয়োজন নেই।",
+      });
+    }
+
+    // Reuse an existing active advance request for the same draft/order if present
+    const existingAdvance = inMemoryPaymentRequests.find(
+      (r) =>
+        r.paymentType === "advance" &&
+        r.requestedAmount === advanceAmt &&
+        ((reqRec.orderId && r.orderId === reqRec.orderId) ||
+          (reqRec.draftId && r.draftId === reqRec.draftId)) &&
+        !evaluateRequestExpiry(r) &&
+        (r.status === "pending" || r.status === "under_review")
+    );
+    if (existingAdvance) {
+      return res.json({
+        success: true,
+        reused: true,
+        payPath: `/pay/${existingAdvance.token}`,
+        paymentRequest: toPublicPaymentRequest(existingAdvance, ctx.order, ctx.draft),
+      });
+    }
+
+    const nowIso = new Date().toISOString();
+    const advanceReq: ServerPaymentRequestRecord = {
+      id: `PR-${Date.now()}-${crypto.randomBytes(3).toString("hex").toUpperCase()}`,
+      token: generateSecurePayToken(),
+      orderId: reqRec.orderId || "",
+      draftId: reqRec.draftId,
+      requestRef: reqRec.orderId || reqRec.draftId || reqRec.requestRef,
+      paymentType: "advance",
+      currency: "BDT",
+      requestedAmount: advanceAmt,
+      requestedAmountMinor: toMinorUnits(advanceAmt, "BDT"),
+      requestedAmountBdt: Math.round(advanceAmt),
+      eligibleMethods: eligibleMethods.filter((m) => m !== "cod"),
+      codAdvanceRequiredAmount: advanceAmt,
+      codRemainingOnDeliveryAmount: Math.max(0, Math.round(reqRec.requestedAmount - advanceAmt)),
+      status: "pending",
+      expiresAt: reqRec.expiresAt,
+      createdAt: nowIso,
+      updatedAt: nowIso,
+      createdBy: "customer_cod_advance",
+      note: `COD Advance (Remaining ৳${Math.max(0, Math.round(reqRec.requestedAmount - advanceAmt))} due on delivery)`,
+    };
+    inMemoryPaymentRequests.unshift(advanceReq);
+    await persistPaymentRequestRecord(advanceReq);
+
+    return res.json({
+      success: true,
+      reused: false,
+      payPath: `/pay/${advanceReq.token}`,
+      paymentRequest: toPublicPaymentRequest(advanceReq, ctx.order, ctx.draft),
+    });
+  });
+
+  // DSLink Pay — Stripe-Hosted Card Checkout Session (BDT & USD, Draft or Order; Disabled when STRIPE_ENABLED !== "true")
+  app.post("/api/pay/:token/stripe-checkout", rateLimitMutation(20), async (req, res) => {
+    res.setHeader("Cache-Control", "no-store, private");
+    res.setHeader("X-Robots-Tag", "noindex, nofollow");
+
+    if (!isStripeEnabled()) {
+      return res.status(403).json({
+        success: false,
+        error: "Card payments via Stripe are currently disabled.",
+      });
+    }
+
+    const token = String(req.params.token || "").trim();
+    if (!PAY_TOKEN_REGEX.test(token)) {
+      return res.status(404).json({ success: false, error: "Invalid payment link." });
+    }
+    const reqRec = inMemoryPaymentRequests.find((r) => r.token === token);
+    if (!reqRec) {
+      return res.status(404).json({ success: false, error: "Payment link not found." });
+    }
+    const ctx = resolveRequestContext(reqRec);
+    if (!ctx.entity) {
+      return res.status(404).json({ success: false, error: "Associated order or draft not found." });
+    }
+
+    evaluateRequestExpiry(reqRec);
+
+    const { eligibleMethods } = computeLiveEligibleMethodsForRequest(reqRec, ctx.entity);
+    if (!eligibleMethods.includes("card")) {
+      return res.status(403).json({
+        success: false,
+        error: "Card payment is not eligible or not configured for this payment request.",
+      });
+    }
+
+    const proto = String(req.headers["x-forwarded-proto"] || req.protocol || "https")
+      .split(",")[0]
+      .trim();
+    const host = String(req.headers["x-forwarded-host"] || req.headers.host || "devsparksoft.com.bd")
+      .split(",")[0]
+      .trim();
+    const origin = `${proto}://${host}`;
+
+    const result = await createStripeCheckoutSessionForPaymentRequest({
+      paymentRequest: reqRec,
+      order: ctx.order,
+      origin,
+      onMutated: async () => {
+        await persistPaymentRequestRecord(reqRec);
+        recordAuditLog(
+          "dslink_pay_stripe_session_created",
+          "customer",
+          reqRec.requestRef,
+          {
+            paymentRequestId: reqRec.id,
+            stripeSessionId: reqRec.stripeSessionId,
+            requestedAmount: reqRec.requestedAmount,
+            currency: reqRec.currency,
+          },
+          extractClientIp(req)
+        );
+      },
+    });
+
+    return res.status(result.httpStatus).json({
+      success: result.success,
+      ...(result.sessionId ? { sessionId: result.sessionId } : {}),
+      ...(result.url ? { url: result.url } : {}),
+      ...(typeof result.reused === "boolean" ? { reused: result.reused } : {}),
+      ...(result.error ? { error: result.error } : {}),
+      paymentRequest: toPublicPaymentRequest(reqRec, ctx.order, ctx.draft),
+    });
+  });
+
+  // Rental Activation Trigger — creates or reuses the EXACT SAME subscription payment request as Delivery
+  app.post("/api/rental/orders/:orderId/start-activation", rateLimitMutation(20), async (req, res) => {
+    res.setHeader("Cache-Control", "no-store");
+    const orderId = String(req.params.orderId || "").trim();
+    const order = inMemoryOrders.find((o) => o.orderId === orderId);
+    if (!order) {
+      return res.status(404).json({ success: false, error: "Rental order not found." });
+    }
+    if (!isOrderRental(order)) {
+      return res.status(400).json({ success: false, error: "Order is not a Starlink Rental order." });
+    }
+
+    const { planId, billingPeriod } = req.body || {};
+    const { paymentRequest, reused } = await createOrReuseRentalSubscriptionRequest({
+      order,
+      planId,
+      billingPeriod,
+      createdBy: "rental_activation",
+    });
+
+    order.activationStartedAt = order.activationStartedAt || new Date().toISOString();
+    persistLocalStore();
+
+    recordAuditLog(
+      "rental_activation_subscription_request",
+      "customer_or_staff",
+      order.orderId,
+      {
+        paymentRequestId: paymentRequest.id,
+        reused,
+        planId: paymentRequest.subscriptionPlanId,
+        billingPeriod: paymentRequest.subscriptionBillingPeriod,
+      },
+      extractClientIp(req)
+    );
+
+    const adminMeta = toAdminPaymentRequest(paymentRequest, order);
+    return res.json({
+      success: true,
+      reused,
+      orderId: order.orderId,
+      paymentRequest: {
+        id: adminMeta.id,
+        token: adminMeta.token,
+        requestRef: adminMeta.requestRef,
+        payPath: adminMeta.payPath,
+        payUrl: adminMeta.payUrl,
+        status: adminMeta.status,
+        requestedAmount: adminMeta.requestedAmount,
+        currency: adminMeta.currency,
+        subscriptionPlanId: adminMeta.subscriptionPlanId,
+        subscriptionPlanName: adminMeta.subscriptionPlanName,
+        subscriptionBillingPeriod: adminMeta.subscriptionBillingPeriod,
+      },
+    });
+  });
+
+  // ============================================================================
+  // DSLINK PAY — AUTHORIZED STAFF / ADMIN MANAGEMENT ENDPOINTS
+  // ============================================================================
+  app.get("/api/admin/dslink-pay/orders", (req, res) => {
+    if (!isAuthorizedAdminRequest(req)) {
+      return res.status(403).json({ success: false, error: "Authorized DSLink admin required." });
+    }
+    res.setHeader("Cache-Control", "no-store");
+
+    const ordersWithPay = inMemoryOrders.map((order) => {
+      const summary = recomputeOrderPaymentSummary(order);
+      const requests = inMemoryPaymentRequests
+        .filter((r) => r.orderId === order.orderId)
+        .map((r) => {
+          const draft = r.draftId
+            ? inMemoryCheckoutDrafts.find((d) => d.draftId === r.draftId)
+            : undefined;
+          return toAdminPaymentRequest(r, order, draft);
+        });
+      return {
+        orderId: order.orderId,
+        draftId: order.draftId,
+        customerName: order.fullName || order.customerName || "Customer",
+        phone: order.phone || order.customerPhone || "",
+        email: order.email || order.customerEmail || "",
+        countryCode: order.countryCode || "BD",
+        countryName: order.countryName || getCountryConfig(order.countryCode || "BD").name,
+        currency: summary.currency,
+        productName: order.productName || order.kitName || "Starlink Kit",
+        items: buildEntityItemsSummary(order, summary.currency),
+        subtotal: roundCurrencyAmount(Number(order.subtotal ?? order.totalAmount ?? 0) || 0, summary.currency),
+        shippingFee: roundCurrencyAmount(Number(order.shippingFee ?? 0) || 0, summary.currency),
+        totalAmount: summary.orderTotalAmount,
+        paidAmount: summary.paidAmount,
+        remainingBalanceAmount: summary.remainingBalanceAmount,
+        paidAmountBdt: summary.paidAmountBdt,
+        remainingBalanceBdt: summary.remainingBalanceBdt,
+        codAvailable: Boolean(order.codAvailable) && !isOrderRental(order),
+        isRentalOrder: isOrderRental(order),
+        rentalBreakdown: order.rentalBreakdown,
+        subscriptionPaymentStatus: order.subscriptionPaymentStatus,
+        activeSubscriptionPlan: order.activeSubscriptionPlan,
+        subscriptionBillingPeriod: order.subscriptionBillingPeriod,
+        deliveredAt: order.deliveredAt,
+        paymentMethod: order.paymentMethod || "bangla_qr",
+        paymentStatus: order.paymentStatus || "Awaiting Payment",
+        fulfillmentStatus: order.fulfillmentStatus || "Pending",
+        status: order.status || "Pending",
+        createdAt: order.createdAt,
+        paymentRequests: requests,
+      };
+    });
+
+    const allRequests = inMemoryPaymentRequests
+      .map((r) => {
+        const ctx = resolveRequestContext(r);
+        return ctx.entity ? toAdminPaymentRequest(r, ctx.order, ctx.draft) : null;
+      })
+      .filter(Boolean) as DSLinkPayRequestAdmin[];
+
+    const pendingPayments = allRequests.filter(
+      (r) => r.status === "under_review" || (r.isDraftOnly && r.status === "pending")
+    );
+
+    const drafts = inMemoryCheckoutDrafts.map(toDraftAdminSummary);
+
+    return res.json({
+      success: true,
+      orders: ordersWithPay,
+      drafts,
+      paymentRequests: allRequests,
+      pendingPayments,
+      emailJobs: inMemoryEmailJobs.slice(0, 100),
+      diagnostics: getDSLinkConfigDiagnostics(),
+      rentalPlans: RENTAL_SUBSCRIPTION_PLANS,
+    });
+  });
+
+  app.post("/api/admin/dslink-pay/requests", rateLimitMutation(40), async (req, res) => {
+    if (!isAuthorizedAdminRequest(req)) {
+      return res.status(403).json({ success: false, error: "Authorized DSLink admin required." });
+    }
+    const adminEmail = String(req.headers["x-admin-email"] || "admin").trim();
+    const {
+      orderId = "",
+      paymentType = "full",
+      amount,
+      amountBdt,
+      expiresInHours = 72,
+      note = "",
+      planId,
+      billingPeriod,
+    } = req.body || {};
+
+    const order = inMemoryOrders.find((o) => o.orderId === String(orderId).trim());
+    if (!order) {
+      return res.status(404).json({ success: false, error: "Selected order not found." });
+    }
+
+    const rental = isOrderRental(order);
+    const resolvedType: DSLinkPayType =
+      paymentType === "advance"
+        ? "advance"
+        : paymentType === "remaining"
+        ? "remaining"
+        : paymentType === "subscription"
+        ? "subscription"
+        : "full";
+
+    if (resolvedType === "subscription") {
+      if (!rental) {
+        return res.status(400).json({
+          success: false,
+          error: "Subscription payment links are only eligible for Starlink Rental orders.",
+        });
+      }
+      const { paymentRequest, reused } = await createOrReuseRentalSubscriptionRequest({
+        order,
+        planId,
+        billingPeriod,
+        createdBy: adminEmail,
+      });
+      return res.json({
+        success: true,
+        reused,
+        paymentRequest: toAdminPaymentRequest(paymentRequest, order),
+        message: reused
+          ? "Reused existing active rental subscription link for this plan & billing period."
+          : "Rental subscription DSLink Pay link created.",
+      });
+    }
+
+    const summary = recomputeOrderPaymentSummary(order);
+    if (summary.remainingBalanceAmount <= 0) {
+      return res.status(400).json({
+        success: false,
+        error: "This order is already fully paid. No additional payment request can be created.",
+      });
+    }
+
+    if (resolvedType === "advance" && rental) {
+      return res.status(400).json({
+        success: false,
+        error: "Rental orders do not support partial advance splits — collect full shipping/activation fee or remaining balance.",
+      });
+    }
+
+    const currency = summary.currency;
+    let requestedAmount = summary.remainingBalanceAmount;
+    if (resolvedType === "advance") {
+      const rawAmt = amount !== undefined ? amount : amountBdt;
+      const parsedAmount = roundCurrencyAmount(Number(rawAmt), currency);
+      if (!Number.isFinite(parsedAmount) || parsedAmount <= 0 || parsedAmount >= summary.remainingBalanceAmount) {
+        return res.status(400).json({
+          success: false,
+          error: `Advance amount must be greater than 0 and less than remaining balance (${formatPayAmount(summary.remainingBalanceAmount, currency)} ${currency}).`,
+        });
+      }
+      requestedAmount = parsedAmount;
+    }
+
+    const created = await createPaymentRequestForOrder({
+      order,
+      paymentType: resolvedType,
+      requestedAmount,
+      currency,
+      expiresInHours: Number(expiresInHours) || 72,
+      createdBy: adminEmail,
+      note: String(note || "").trim().slice(0, 200) || undefined,
+      revokePreviousReason: "Superseded by a new staff payment request",
+    });
+
+    recordAuditLog(
+      "admin_dslink_pay_request_created",
+      adminEmail,
+      order.orderId,
+      {
+        paymentRequestId: created.id,
+        paymentType: resolvedType,
+        requestedAmount,
+        currency,
+        expiresAt: created.expiresAt,
+      },
+      extractClientIp(req)
+    );
+
+    return res.json({
+      success: true,
+      paymentRequest: toAdminPaymentRequest(created, order),
+      message: "DSLink Pay link created. Share it with the customer via Copy Link or WhatsApp.",
+    });
+  });
+
+  // Mark Rental Order Delivered -> Automatically creates or reuses ONE subscription payment request on the same rental order
+  app.post("/api/admin/dslink-pay/orders/:orderId/mark-delivered", rateLimitMutation(30), async (req, res) => {
+    if (!isAuthorizedAdminRequest(req)) {
+      return res.status(403).json({ success: false, error: "Authorized DSLink admin required." });
+    }
+    const adminEmail = String(req.headers["x-admin-email"] || "admin").trim();
+    const order = inMemoryOrders.find((o) => o.orderId === req.params.orderId);
+    if (!order) {
+      return res.status(404).json({ success: false, error: "Order not found." });
+    }
+
+    const nowIso = new Date().toISOString();
+    order.fulfillmentStatus = "Delivered";
+    order.deliveredAt = order.deliveredAt || nowIso;
+    order.updatedAt = nowIso;
+
+    let subscriptionPayRequest: DSLinkPayRequestAdmin | null = null;
+    let subscriptionReused = false;
+    if (isOrderRental(order)) {
+      const { planId, billingPeriod } = req.body || {};
+      const result = await createOrReuseRentalSubscriptionRequest({
+        order,
+        planId,
+        billingPeriod,
+        createdBy: adminEmail,
+      });
+      subscriptionReused = result.reused;
+      subscriptionPayRequest = toAdminPaymentRequest(result.paymentRequest, order);
+    }
+
+    persistLocalStore();
+    recordAuditLog(
+      "admin_order_marked_delivered",
+      adminEmail,
+      order.orderId,
+      {
+        isRentalOrder: isOrderRental(order),
+        subscriptionPaymentRequestId: subscriptionPayRequest?.id || null,
+        subscriptionReused,
+      },
+      extractClientIp(req)
+    );
+
+    return res.json({
+      success: true,
+      orderId: order.orderId,
+      fulfillmentStatus: order.fulfillmentStatus,
+      deliveredAt: order.deliveredAt,
+      subscriptionReused,
+      subscriptionPaymentRequest: subscriptionPayRequest,
+    });
+  });
+
+  app.post("/api/admin/dslink-pay/requests/:id/verify", rateLimitMutation(40), async (req, res) => {
+    if (!isAuthorizedAdminRequest(req)) {
+      return res.status(403).json({ success: false, error: "Authorized DSLink admin required." });
+    }
+    const adminEmail = String(req.headers["x-admin-email"] || "admin").trim();
+    const reqRec = inMemoryPaymentRequests.find((r) => r.id === req.params.id);
+    if (!reqRec) {
+      return res.status(404).json({ success: false, error: "Payment request not found." });
+    }
+
+    const { trxId, verifiedAmount, verifiedAmountBdt, note } = req.body || {};
+    const parsedVerified =
+      verifiedAmount !== undefined
+        ? Number(verifiedAmount)
+        : verifiedAmountBdt !== undefined
+        ? Number(verifiedAmountBdt)
+        : undefined;
+
+    const outcome = await finalizeVerifiedPaymentRequest({
+      reqRec,
+      verifiedBy: adminEmail,
+      trxId,
+      verifiedAmount: Number.isFinite(parsedVerified) ? parsedVerified : undefined,
+      note,
+      ip: extractClientIp(req),
+    });
+
+    if (!outcome.ok || !outcome.order) {
+      return res.status(outcome.httpStatus).json({
+        success: false,
+        error: outcome.error || "Could not verify payment request.",
+      });
+    }
+
+    const order = outcome.order;
+    const summary = recomputeOrderPaymentSummary(order);
+    const ctx = resolveRequestContext(reqRec);
+
+    return res.json({
+      success: true,
+      message: `Payment confirmed (${formatPayAmount(outcome.verifiedAmount || reqRec.requestedAmount, reqRec.currency)} ${reqRec.currency}). Final order #${order.orderId}.`,
+      orderId: order.orderId,
+      paymentRequest: toAdminPaymentRequest(reqRec, order, ctx.draft),
+      emailJob: outcome.emailJob || null,
+      orderSummary: {
+        orderId: order.orderId,
+        currency: summary.currency,
+        totalAmount: summary.orderTotalAmount,
+        paidAmount: summary.paidAmount,
+        remainingBalanceAmount: summary.remainingBalanceAmount,
+        paidAmountBdt: summary.paidAmountBdt,
+        remainingBalanceBdt: summary.remainingBalanceBdt,
+        paymentStatus: order.paymentStatus,
+      },
+    });
+  });
+
+  app.post("/api/admin/dslink-pay/requests/:id/reject", rateLimitMutation(40), async (req, res) => {
+    if (!isAuthorizedAdminRequest(req)) {
+      return res.status(403).json({ success: false, error: "Authorized DSLink admin required." });
+    }
+    const adminEmail = String(req.headers["x-admin-email"] || "admin").trim();
+    const reqRec = inMemoryPaymentRequests.find((r) => r.id === req.params.id);
+    if (!reqRec) {
+      return res.status(404).json({ success: false, error: "Payment request not found." });
+    }
+    const ctx = resolveRequestContext(reqRec);
+    if (!ctx.entity) {
+      return res.status(404).json({ success: false, error: "Associated order or draft not found." });
+    }
+    if (reqRec.status === "paid") {
+      return res.status(409).json({ success: false, error: "Cannot reject an already verified paid request." });
+    }
+
+    const reason =
+      String(req.body?.reason || "").trim().slice(0, 200) ||
+      "Transaction reference could not be verified. Please check your TrxID and resubmit.";
+    reqRec.status = "rejected";
+    reqRec.rejectionReason = reason;
+    reqRec.normalizedTrxId = undefined;
+    reqRec.updatedAt = new Date().toISOString();
+
+    if (ctx.order) recomputeOrderPaymentSummary(ctx.order);
+    await persistPaymentRequestRecord(reqRec);
+
+    recordAuditLog(
+      "admin_dslink_pay_rejected",
+      adminEmail,
+      reqRec.requestRef,
+      { paymentRequestId: reqRec.id, reason },
+      extractClientIp(req)
+    );
+
+    return res.json({
+      success: true,
+      paymentRequest: toAdminPaymentRequest(reqRec, ctx.order, ctx.draft),
+    });
+  });
+
+  app.post("/api/admin/dslink-pay/requests/:id/cancel", rateLimitMutation(40), async (req, res) => {
+    if (!isAuthorizedAdminRequest(req)) {
+      return res.status(403).json({ success: false, error: "Authorized DSLink admin required." });
+    }
+    const adminEmail = String(req.headers["x-admin-email"] || "admin").trim();
+    const reqRec = inMemoryPaymentRequests.find((r) => r.id === req.params.id);
+    if (!reqRec) {
+      return res.status(404).json({ success: false, error: "Payment request not found." });
+    }
+    const ctx = resolveRequestContext(reqRec);
+    if (!ctx.entity) {
+      return res.status(404).json({ success: false, error: "Associated order or draft not found." });
+    }
+    if (reqRec.status === "paid") {
+      return res.status(409).json({ success: false, error: "Cannot cancel an already paid request." });
+    }
+
+    const cancellationReason =
+      String(req.body?.reason || "").trim().slice(0, 240) ||
+      "পেমেন্ট রিকোয়েস্ট DSLink টিম দ্বারা বাতিল করা হয়েছে।";
+
+    const nowIso = new Date().toISOString();
+    reqRec.status = "cancelled";
+    reqRec.cancellationReason = cancellationReason;
+    reqRec.revokedReason = cancellationReason;
+    reqRec.normalizedTrxId = undefined;
+    reqRec.updatedAt = nowIso;
+
+    if (ctx.draft && !ctx.draft.finalOrderId) {
+      ctx.draft.status = "cancelled";
+      ctx.draft.updatedAt = nowIso;
+    }
+    if (ctx.order) {
+      recomputeOrderPaymentSummary(ctx.order);
+    }
+
+    // Commit state BEFORE queuing/sending cancellation email
+    await persistPaymentRequestRecord(reqRec);
+
+    recordAuditLog(
+      "admin_dslink_pay_cancelled",
+      adminEmail,
+      reqRec.requestRef,
+      { paymentRequestId: reqRec.id, cancellationReason },
+      extractClientIp(req)
+    );
+
+    const recipientEmail = String(
+      ctx.order?.email || ctx.order?.customerEmail || ctx.draft?.email || ""
+    ).trim();
+    const emailJob = await enqueueAndSendDSLinkEmailJob({
+      type: "payment_cancelled",
+      paymentRequestId: reqRec.id,
+      requestRef: reqRec.requestRef,
+      orderId: ctx.order?.orderId,
+      recipientEmail,
+      amount: reqRec.requestedAmount,
+      currency: reqRec.currency,
+      cancellationReason,
+      customerName: ctx.order?.fullName || ctx.draft?.fullName,
+    });
+
+    return res.json({
+      success: true,
+      paymentRequest: toAdminPaymentRequest(reqRec, ctx.order, ctx.draft),
+      emailJob: emailJob || null,
+    });
+  });
+
+  // Safe Email Delivery Retry (never duplicates orders or payments)
+  app.post("/api/admin/dslink-pay/email-jobs/:jobId/retry", rateLimitMutation(30), async (req, res) => {
+    if (!isAuthorizedAdminRequest(req)) {
+      return res.status(403).json({ success: false, error: "Authorized DSLink admin required." });
+    }
+    const job = inMemoryEmailJobs.find((j) => j.id === req.params.jobId);
+    if (!job) {
+      return res.status(404).json({ success: false, error: "Email job not found." });
+    }
+    const reqRec = inMemoryPaymentRequests.find((r) => r.id === job.paymentRequestId);
+    const ctx = reqRec ? resolveRequestContext(reqRec) : {};
+    const { html } = buildDSLinkPayEmailContent({
+      type: job.type,
+      requestRef: job.requestRef,
+      orderId: job.orderId,
+      amount: reqRec?.verifiedAmount ?? reqRec?.requestedAmount ?? 0,
+      currency: reqRec?.currency || "BDT",
+      trxId: reqRec?.submittedTrxId,
+      cancellationReason: reqRec?.cancellationReason,
+      customerName: ctx.order?.fullName || ctx.draft?.fullName,
+    });
+
+    const updated = await deliverEmailJobViaRestApi(job, html);
+    return res.json({
+      success: true,
+      emailJob: updated,
+    });
+  });
+
+  app.post("/api/admin/dslink-pay/requests/:id/expire", rateLimitMutation(40), async (req, res) => {
+    if (!isAuthorizedAdminRequest(req)) {
+      return res.status(403).json({ success: false, error: "Authorized DSLink admin required." });
+    }
+    const reqRec = inMemoryPaymentRequests.find((r) => r.id === req.params.id);
+    if (!reqRec) {
+      return res.status(404).json({ success: false, error: "Payment request not found." });
+    }
+    const ctx = resolveRequestContext(reqRec);
+    if (!ctx.entity) {
+      return res.status(404).json({ success: false, error: "Associated order or draft not found." });
+    }
+    if (reqRec.status === "paid") {
+      return res.status(409).json({ success: false, error: "Cannot expire an already paid request." });
+    }
+
+    reqRec.expiresAt = new Date(Date.now() - 1000).toISOString();
+    reqRec.status = "expired";
+    reqRec.updatedAt = new Date().toISOString();
+    await persistPaymentRequestRecord(reqRec);
+
+    return res.json({
+      success: true,
+      paymentRequest: toAdminPaymentRequest(reqRec, ctx.order, ctx.draft),
+    });
+  });
+
+  app.post("/api/admin/dslink-pay/requests/:id/reissue", rateLimitMutation(40), async (req, res) => {
+    if (!isAuthorizedAdminRequest(req)) {
+      return res.status(403).json({ success: false, error: "Authorized DSLink admin required." });
+    }
+    const adminEmail = String(req.headers["x-admin-email"] || "admin").trim();
+    const oldReq = inMemoryPaymentRequests.find((r) => r.id === req.params.id);
+    if (!oldReq) {
+      return res.status(404).json({ success: false, error: "Payment request not found." });
+    }
+    const ctx = resolveRequestContext(oldReq);
+    if (!ctx.entity) {
+      return res.status(404).json({ success: false, error: "Associated order or draft not found." });
+    }
+
+    let created: ServerPaymentRequestRecord;
+    if (ctx.order) {
+      const summary = recomputeOrderPaymentSummary(ctx.order);
+      if (oldReq.paymentType !== "subscription" && summary.remainingBalanceAmount <= 0) {
+        return res.status(400).json({ success: false, error: "Order is already fully paid." });
+      }
+      const nextType: DSLinkPayType =
+        req.body?.paymentType === "advance" && !isOrderRental(ctx.order)
+          ? "advance"
+          : oldReq.paymentType;
+      const requestedAmount =
+        oldReq.paymentType === "subscription"
+          ? oldReq.requestedAmount
+          : nextType === "advance" && Number(req.body?.amount ?? req.body?.amountBdt) > 0
+          ? roundCurrencyAmount(Number(req.body?.amount ?? req.body?.amountBdt), summary.currency)
+          : summary.remainingBalanceAmount;
+
+      created = await createPaymentRequestForOrder({
+        order: ctx.order,
+        paymentType: nextType,
+        requestedAmount,
+        currency: oldReq.currency,
+        expiresInHours: Number(req.body?.expiresInHours) || 72,
+        createdBy: adminEmail,
+        revokePreviousReason: "Reissued with a fresh payment link",
+        subscriptionPlanId: oldReq.subscriptionPlanId,
+        subscriptionPlanName: oldReq.subscriptionPlanName,
+        subscriptionBillingPeriod: oldReq.subscriptionBillingPeriod,
+      });
+    } else if (ctx.draft) {
+      created = await createPaymentRequestForDraft({
+        draft: ctx.draft,
+        expiresInHours: Number(req.body?.expiresInHours) || 72,
+        createdBy: adminEmail,
+      });
+    } else {
+      return res.status(404).json({ success: false, error: "Associated record not found." });
+    }
+
+    if (oldReq.status === "pending" || oldReq.status === "rejected" || oldReq.status === "under_review") {
+      oldReq.status = "revoked";
+      oldReq.revokedReason = "Reissued with a fresh payment link";
+      oldReq.replacedById = created.id;
+      oldReq.updatedAt = new Date().toISOString();
+      await persistPaymentRequestRecord(oldReq);
+    }
+
+    recordAuditLog(
+      "admin_dslink_pay_reissued",
+      adminEmail,
+      created.requestRef,
+      {
+        oldPaymentRequestId: oldReq.id,
+        newPaymentRequestId: created.id,
+        requestedAmount: created.requestedAmount,
+        currency: created.currency,
+      },
+      extractClientIp(req)
+    );
+
+    return res.json({
+      success: true,
+      paymentRequest: toAdminPaymentRequest(created, ctx.order, ctx.draft),
+    });
+  });
+
+  // Update order amount/shipping -> automatically revokes active links & issues a fresh DSLink Pay link
+  app.patch("/api/admin/dslink-pay/orders/:orderId", rateLimitMutation(30), async (req, res) => {
+    if (!isAuthorizedAdminRequest(req)) {
+      return res.status(403).json({ success: false, error: "Authorized DSLink admin required." });
+    }
+    const adminEmail = String(req.headers["x-admin-email"] || "admin").trim();
+    const order = inMemoryOrders.find((o) => o.orderId === req.params.orderId);
+    if (!order) {
+      return res.status(404).json({ success: false, error: "Order not found." });
+    }
+
+    const currency = getOrderCurrency(order);
+    const { totalAmount, shippingFee, reason } = req.body || {};
+    const newShipping =
+      typeof shippingFee === "number" && Number.isFinite(shippingFee) && shippingFee >= 0
+        ? roundCurrencyAmount(shippingFee, currency)
+        : roundCurrencyAmount(Number(order.shippingFee || 0), currency);
+    const newTotal =
+      typeof totalAmount === "number" && Number.isFinite(totalAmount) && totalAmount > 0
+        ? roundCurrencyAmount(totalAmount, currency)
+        : roundCurrencyAmount(Math.max(0, Number(order.subtotal || 0) + newShipping), currency);
+
+    order.shippingFee = newShipping;
+    order.totalAmount = newTotal;
+    order.orderTotalAmount = newTotal;
+    order.price = newTotal;
+    if (currency === "BDT") {
+      order.shippingFeeBdt = Math.round(newShipping);
+      order.orderTotalBdt = Math.round(newTotal);
+    }
+    const summary = recomputeOrderPaymentSummary(order);
+
+    let newPaymentRequest: DSLinkPayRequestAdmin | null = null;
+    if (summary.remainingBalanceAmount > 0) {
+      const created = await createPaymentRequestForOrder({
+        order,
+        paymentType: summary.paidAmount > 0 ? "remaining" : "full",
+        requestedAmount: summary.remainingBalanceAmount,
+        currency,
+        expiresInHours: 72,
+        createdBy: adminEmail,
+        revokePreviousReason: String(reason || "Order amount updated by DSLink staff").slice(0, 160),
+      });
+      newPaymentRequest = toAdminPaymentRequest(created, order);
+    } else {
+      revokeActivePaymentRequestsForOrder(order.orderId, "Order settled after adjustment");
+    }
+
+    persistLocalStore();
+    recordAuditLog(
+      "admin_order_amount_updated",
+      adminEmail,
+      order.orderId,
+      {
+        newTotal,
+        newShipping,
+        currency,
+        remainingBalanceAmount: summary.remainingBalanceAmount,
+        newPaymentRequestId: newPaymentRequest?.id || null,
+      },
+      extractClientIp(req)
+    );
+
+    return res.json({
+      success: true,
+      orderId: order.orderId,
+      currency,
+      totalAmount: order.totalAmount,
+      shippingFee: order.shippingFee,
+      paidAmount: summary.paidAmount,
+      remainingBalanceAmount: summary.remainingBalanceAmount,
+      paidAmountBdt: summary.paidAmountBdt,
+      remainingBalanceBdt: summary.remainingBalanceBdt,
+      paymentRequest: newPaymentRequest,
+    });
   });
 
   // Dedicated Test Email Endpoint — Disabled per strict 2-workflow notification policy

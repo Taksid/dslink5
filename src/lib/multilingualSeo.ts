@@ -908,6 +908,12 @@ export function getLocalizedRouteSeo(
     } else if (lowerPath === '/blog' || lowerPath.startsWith('/blog/')) {
       canonicalBasePath = lowerPath === '/blog' ? '/blog' : rawBasePath;
       entryKey = 'blog';
+    } else if (lowerPath === '/pay' || lowerPath.startsWith('/pay/')) {
+      canonicalBasePath = '/pay';
+      title = 'DSLink Pay — Secure Payment Portal | DevSpark Link';
+      description =
+        'Complete your DSLink order payment via verified Bangla QR, Bank Transfer, or eligible Cash on Delivery.';
+      keywords = 'DSLink Pay, DevSpark Link Payment, Bangla QR';
     } else if (
       lowerPath === '/partnerships' ||
       lowerPath === '/partnership' ||

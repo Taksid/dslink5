@@ -33,12 +33,19 @@ export default defineConfig({
         navigateFallback: '/index.html',
         navigateFallbackDenylist: [
           /^\/api\//,
+          /^\/pay(\/|$)/i,
           /^\/robots\.txt$/i,
           /^\/sitemap\.xml$/i,
           /^\/manifest\.json$/i,
           /^\/(bn|my|zh-hans)(\/|$)/i,
         ],
         runtimeCaching: [
+          {
+            // DSLink Pay routes & payment APIs must NEVER be served from offline caches
+            urlPattern: ({ url }) =>
+              /^\/pay(\/|$)/i.test(url.pathname) || /^\/api\/pay(\/|$)/i.test(url.pathname),
+            handler: 'NetworkOnly',
+          },
           {
             // Localized & public pages: fast network-first with 3s fallback to cache on unstable connections
             urlPattern: ({ request, url }) =>

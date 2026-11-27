@@ -189,6 +189,7 @@ export function buildLocalePath(pathInput: string, targetLang: AppLanguage | str
 
   if (
     lower.startsWith('/admin') ||
+    lower.startsWith('/pay') ||
     lower.startsWith('/api/') ||
     lower.startsWith('/assets/')
   ) {
@@ -216,6 +217,7 @@ export function isPrivateOrNonIndexablePath(pathnameInput?: string | null): bool
     '/profile',
     '/cart',
     '/checkout',
+    '/pay',
     '/single-checkout',
     '/promo',
     '/promos',
@@ -247,6 +249,7 @@ export function isPrivateOrNonIndexablePath(pathnameInput?: string | null): bool
     '/admin/',
     '/account/',
     '/checkout/',
+    '/pay/',
     '/order-success/',
     '/invoice/',
     '/invoices/',

@@ -4,18 +4,13 @@ import {
   Plus,
   Minus,
   Trash2,
-  CheckCircle2,
   AlertCircle,
-  Send,
-  Banknote,
-  CreditCard,
-  QrCode,
+  ArrowRight,
   RefreshCw,
 } from 'lucide-react';
 import { SiteHeader } from '../components/SiteHeader';
 import { Footer } from '../components/Footer';
 import { CompactShippingNotice } from '../components/CompactShippingNotice';
-import { BanglaQrPaymentSection } from '../components/BanglaQrPaymentSection';
 import { useCart } from '../lib/cartStore';
 import { SHIPPING_COUNTRIES, useSelectedShippingCountry } from '../lib/shippingConfig';
 import { useGlobalCurrency } from '../lib/currencyConfig';
@@ -24,6 +19,14 @@ import {
   useCentralPricing,
   formatBdt,
 } from '../lib/pricingConfig';
+import {
+  DEFAULT_BDT_TO_USD_RATE,
+  DEFAULT_RENTAL_SHIPPING_FEE_BDT,
+  DSLinkPricingAndShippingRulesConfig,
+  RENTAL_SHIPPING_EXCLUSION_NOTICE_BN,
+  evaluateCheckoutEligibility,
+} from '../lib/dslinkPayRules';
+import { formatPayAmount } from '../lib/dslinkPayConfig';
 
 interface CartCheckoutPageProps {
   onNavigate?: (path: string) => void;
@@ -43,28 +46,36 @@ interface ServerOrderStatus {
   stripePaymentStatus?: string;
 }
 
+const DEFAULT_CLIENT_RULES: DSLinkPricingAndShippingRulesConfig = {
+  bangladeshPurchaseShippingBdt: 0,
+  bangladeshRentalShippingBdt: DEFAULT_RENTAL_SHIPPING_FEE_BDT,
+  internationalShippingBdt: 2500,
+  internationalShippingUsd: null,
+  bdtToUsdRate: DEFAULT_BDT_TO_USD_RATE,
+  rentalActivationCollectionRule: 'upfront',
+  codAdvanceBdt: 0,
+  blockedCountries: ['KP', 'SY', 'IR', 'CU', 'AF'],
+};
+
 export const CartCheckoutPage: React.FC<CartCheckoutPageProps> = ({
   onNavigate,
   onBackToMainSite,
 }) => {
   const { countryCode, setCountryCode, countryConfig } = useSelectedShippingCountry();
   const { currency, formatPrice } = useGlobalCurrency();
-  const { pricing, standard4xPrice } = useCentralPricing();
+  const { pricing } = useCentralPricing();
   const {
     items,
     itemCount,
     subtotalBdt,
-    shippingFeeBdt,
-    totalBdt,
-    hasRental,
-    hasBangladeshOnlyItem,
-    codAvailable,
-    carrierAvailable,
     addItem,
     setQuantity,
     removeItem,
     clear,
   } = useCart(countryCode);
+
+  const [serverRules, setServerRules] = useState<DSLinkPricingAndShippingRulesConfig>(DEFAULT_CLIENT_RULES);
+  const [stripeConfigured, setStripeConfigured] = useState(false);
 
   // Guest vs Signed-In Checkout Mode
   const [checkoutAccountMode, setCheckoutAccountMode] = useState<'guest' | 'signed-in'>('guest');
@@ -81,15 +92,9 @@ export const CartCheckoutPage: React.FC<CartCheckoutPageProps> = ({
   const [postalCode, setPostalCode] = useState('1212');
   const [landmarkNote, setLandmarkNote] = useState('');
 
-  const [paymentMethod, setPaymentMethod] = useState<'cod' | 'prepaid' | 'stripe'>('cod');
-  const [trxId, setTrxId] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [orderReceipt, setOrderReceipt] = useState<any | null>(null);
   const [inquirySubmittedId, setInquirySubmittedId] = useState<string | null>(null);
-
-  // Server-side Stripe availability flag (defaults to false — hidden in production)
-  const [stripeEnabled, setStripeEnabled] = useState(false);
 
   // Return banner state after Stripe redirect (?stripe=success|cancel&orderId=...)
   const [stripeReturnState, setStripeReturnState] = useState<{
@@ -100,32 +105,77 @@ export const CartCheckoutPage: React.FC<CartCheckoutPageProps> = ({
     error?: string;
   } | null>(null);
 
-  const previewOrderId = useMemo(
-    () => `DS-${Math.floor(100000 + (Date.now() % 900000))}`,
-    []
-  );
+  useEffect(() => {
+    let active = true;
+    fetch('/api/payments/config', { cache: 'no-store' })
+      .then((res) => res.json())
+      .then((data) => {
+        if (!active || !data?.success) return;
+        setStripeConfigured(Boolean(data.stripeConfigured));
+        if (data.rules) {
+          setServerRules({
+            bangladeshPurchaseShippingBdt: Number(data.rules.bangladeshPurchaseShippingBdt ?? 0),
+            bangladeshRentalShippingBdt: Number(
+              data.rules.bangladeshRentalShippingBdt ?? DEFAULT_RENTAL_SHIPPING_FEE_BDT
+            ),
+            internationalShippingBdt: Number(data.rules.internationalShippingBdt ?? 2500),
+            internationalShippingUsd:
+              typeof data.rules.internationalShippingUsd === 'number'
+                ? data.rules.internationalShippingUsd
+                : null,
+            bdtToUsdRate: Number(data.rules.bdtToUsdRate ?? DEFAULT_BDT_TO_USD_RATE),
+            rentalActivationCollectionRule:
+              data.rules.rentalActivationCollectionRule === 'on_activation'
+                ? 'on_activation'
+                : 'upfront',
+            codAdvanceBdt: Number(data.rules.codAdvanceBdt ?? 0),
+            blockedCountries: Array.isArray(data.rules.blockedCountries)
+              ? data.rules.blockedCountries
+              : ['KP', 'SY', 'IR', 'CU', 'AF'],
+          });
+        }
+      })
+      .catch(() => {
+        // Keep safe defaults
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const featuredProducts = useMemo(
     () => CORE_FEATURED_VARIANT_IDS.map((id) => pricing.products[id]).filter(Boolean),
     [pricing]
   );
 
-  const bdRestrictionViolation = hasBangladeshOnlyItem && countryCode !== 'BD';
+  const checkoutEval = useMemo(() => {
+    const resolvedEntries = items
+      .map((item) => {
+        const prod = pricing.products[item.productId];
+        if (!prod) return null;
+        return { product: prod, quantity: item.quantity };
+      })
+      .filter(Boolean) as Array<{ product: typeof pricing.products[string]; quantity: number }>;
+
+    return evaluateCheckoutEligibility({
+      countryCode,
+      items: resolvedEntries,
+      rules: serverRules,
+      stripeCardEnabled: stripeConfigured,
+    });
+  }, [items, pricing, countryCode, serverRules, stripeConfigured]);
+
+  const hasRental = checkoutEval.hasRental;
+  const codAvailable = checkoutEval.codAvailable;
+  const carrierAvailable = checkoutEval.carrierSupported;
+  const bdRestrictionViolation = checkoutEval.ineligibleItems.length > 0;
+  const ineligibleIdSet = useMemo(
+    () => new Set(checkoutEval.ineligibleItems.map((i) => i.productId)),
+    [checkoutEval.ineligibleItems]
+  );
 
   useEffect(() => {
     window.scrollTo(0, 0);
-
-    // Query authoritative server payment feature flags (Stripe hidden unless STRIPE_ENABLED=true)
-    fetch('/api/payments/config', { cache: 'no-store' })
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => {
-        if (data && data.stripeEnabled === true) {
-          setStripeEnabled(true);
-        } else {
-          setStripeEnabled(false);
-        }
-      })
-      .catch(() => setStripeEnabled(false));
   }, []);
 
   // Handle Stripe redirect return — NEVER mark an order paid from URL query params; always fetch server status
@@ -182,20 +232,6 @@ export const CartCheckoutPage: React.FC<CartCheckoutPageProps> = ({
     }
   }, []);
 
-  // Automatically switch away from COD when COD is unavailable (outside BD or Rental Kit)
-  useEffect(() => {
-    if (!codAvailable && paymentMethod === 'cod') {
-      setPaymentMethod('prepaid');
-    }
-  }, [codAvailable, paymentMethod]);
-
-  // If Stripe becomes disabled while selected, revert cleanly
-  useEffect(() => {
-    if (!stripeEnabled && paymentMethod === 'stripe') {
-      setPaymentMethod(codAvailable ? 'cod' : 'prepaid');
-    }
-  }, [stripeEnabled, paymentMethod, codAvailable]);
-
   const combinedStreetAddress = useMemo(() => {
     const parts = [
       houseFlat.trim(),
@@ -210,17 +246,34 @@ export const CartCheckoutPage: React.FC<CartCheckoutPageProps> = ({
     return parts.join(', ');
   }, [houseFlat, roadStreet, area, cityDistrict, stateDivision, postalCode, countryCode, landmarkNote]);
 
-  const productSummaryText = useMemo(() => {
-    if (items.length === 0) return 'Starlink Standard 4X — Bangladesh Residential Purchase';
-    return items.map((i) => `${i.name} × ${i.quantity}`).join(', ');
-  }, [items]);
+  // Deterministic idempotency key per cart+address snapshot so double-click or refresh reuses the same active DSLink Pay request
+  const getOrCreateCheckoutIdempotencyKey = (): string => {
+    const fingerprint = [
+      countryCode,
+      items.map((i) => `${i.productId}:${i.quantity}`).sort().join(','),
+      phone.replace(/[^0-9]/g, ''),
+      houseFlat.trim().toLowerCase(),
+      postalCode.trim().toLowerCase(),
+    ].join('|');
+    const storageKey = `dslink_checkout_idem_${fingerprint}`;
+    try {
+      const existing = window.sessionStorage.getItem(storageKey);
+      if (existing && existing.length >= 12) return existing;
+      const fresh = `CHK-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 12)}`;
+      window.sessionStorage.setItem(storageKey, fresh);
+      return fresh;
+    } catch {
+      return `CHK-${fingerprint.slice(0, 64)}`;
+    }
+  };
 
   const handleCheckoutSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (submitting) return;
     setError(null);
 
     if (items.length === 0) {
-      setError('Your cart is empty. Please add a Starlink Kit first.');
+      setError('আপনার কার্ট খালি। আগে একটি Starlink কিট যোগ করুন। (Your cart is empty.)');
       return;
     }
     if (bdRestrictionViolation) {
@@ -232,6 +285,7 @@ export const CartCheckoutPage: React.FC<CartCheckoutPageProps> = ({
     if (
       !fullName.trim() ||
       !phone.trim() ||
+      phone.replace(/[^0-9]/g, '').length < 7 ||
       !houseFlat.trim() ||
       !roadStreet.trim() ||
       !area.trim() ||
@@ -240,7 +294,7 @@ export const CartCheckoutPage: React.FC<CartCheckoutPageProps> = ({
       !postalCode.trim()
     ) {
       setError(
-        'Please complete all required shipping address fields (Full Name, Phone with Country Code, House/Flat, Road/Street, Area, City/District, State/Division, and Postal Code).'
+        'অনুগ্রহ করে ডেলিভারির সকল প্রয়োজনীয় তথ্য পূরণ করুন (নাম, সঠিক ফোন নম্বর, বাসা/ফ্ল্যাট, রোড, এলাকা, জেলা/শহর, বিভাগ ও পোস্টাল কোড)।'
       );
       return;
     }
@@ -281,20 +335,12 @@ export const CartCheckoutPage: React.FC<CartCheckoutPageProps> = ({
         return;
       }
 
-      const wantsStripe = stripeEnabled && paymentMethod === 'stripe';
-      const effectiveMethod = wantsStripe
-        ? 'stripe_checkout'
-        : codAvailable && paymentMethod === 'cod'
-        ? 'cod'
-        : countryCode === 'BD' || hasRental
-        ? 'bangla_qr'
-        : 'international_prepaid';
+      const checkoutIdempotencyKey = getOrCreateCheckoutIdempotencyKey();
 
       const res = await fetch('/api/promos/order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          orderId: previewOrderId,
           fullName: fullName.trim(),
           phone: phone.trim(),
           email: email.trim(),
@@ -304,17 +350,17 @@ export const CartCheckoutPage: React.FC<CartCheckoutPageProps> = ({
           countryCode,
           currency,
           checkoutMode: checkoutAccountMode,
-          paymentMethod: effectiveMethod,
-          trxId: wantsStripe ? '' : trxId.trim(),
+          paymentMethod: 'dslink_pay',
+          requireDeliveryAddress: true,
+          checkoutIdempotencyKey,
           items: items.map((i) => ({ productId: i.productId, name: i.name, quantity: i.quantity })),
         }),
       });
-      const data = await res.json();
-      if (!res.ok || !data?.success) {
-        throw new Error(data?.error || 'Order submission failed.');
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data?.success || !data?.paymentRequest?.payPath) {
+        throw new Error(data?.error || 'Order validation failed. Please check your delivery details.');
       }
 
-      // Persist short-lived session order access token so Stripe return can read live order status
       if (data.orderAccessToken && data.orderId) {
         try {
           window.sessionStorage.setItem(
@@ -326,37 +372,15 @@ export const CartCheckoutPage: React.FC<CartCheckoutPageProps> = ({
         }
       }
 
-      if (wantsStripe) {
-        const stripeRes = await fetch('/api/stripe/create-checkout-session', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            orderId: data.orderId,
-            orderAccessToken: data.orderAccessToken,
-          }),
-        });
-        const stripeData = await stripeRes.json().catch(() => ({}));
-        if (!stripeRes.ok || !stripeData?.url) {
-          throw new Error(
-            stripeData?.error || 'Unable to initiate Stripe Checkout. Please use Bangla QR or COD.'
-          );
-        }
-        clear();
-        window.location.assign(stripeData.url);
-        return;
-      }
-
-      setOrderReceipt({
-        ...data,
-        shippingAddress: shippingAddress10,
-        paymentStatus:
-          effectiveMethod === 'cod' ? 'Pending COD Collection' : 'Awaiting Payment',
-        fulfillmentStatus: 'Pending',
-        codAmountToCollectBdt: effectiveMethod === 'cod' ? data.totalAmount : 0,
-      });
       clear();
+      const targetPayPath = String(data.paymentRequest.payPath);
+      if (onNavigate) {
+        onNavigate(targetPayPath);
+      } else {
+        window.location.assign(targetPayPath);
+      }
     } catch (err: any) {
-      setError(err?.message || 'Unable to process checkout. Please try again.');
+      setError(err?.message || 'চেকআউট সম্পন্ন করা যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।');
     } finally {
       setSubmitting(false);
     }
@@ -377,10 +401,10 @@ export const CartCheckoutPage: React.FC<CartCheckoutPageProps> = ({
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-5">
           <div className="min-w-0">
             <p className="text-xs font-mono uppercase tracking-[0.16em] text-cyan-300">
-              SERVER-VALIDATED PRICING · BANGLA QR SCAN &amp; PAY · WORLDWIDE SHIPPING
+              CART → DELIVERY ADDRESS → DSLINK PAY → PAYMENT STATUS
             </p>
             <h1 className="text-2xl sm:text-3xl font-bold text-white mt-1 break-words">
-              Shopping Cart &amp; Bangla QR / Worldwide Checkout ({itemCount})
+              কার্ট ও ডেলিভারি ঠিকানা — Cart &amp; Delivery Checkout ({itemCount})
             </h1>
           </div>
           <div className="flex flex-wrap items-center gap-3">
@@ -398,6 +422,42 @@ export const CartCheckoutPage: React.FC<CartCheckoutPageProps> = ({
             </a>
           </div>
         </div>
+
+        {/* 4-Step Flow Indicator */}
+        <nav aria-label="Checkout steps" className="rounded-xl border border-slate-800 bg-[#0b0f17] px-4 py-3">
+          <ol className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+            {[
+              { step: '১', label: 'কার্ট (Cart)', active: items.length === 0, done: items.length > 0 },
+              { step: '২', label: 'ডেলিভারি ঠিকানা', active: items.length > 0, done: false },
+              { step: '৩', label: 'DSLink Pay', active: false, done: false },
+              { step: '৪', label: 'পেমেন্ট স্ট্যাটাস', active: false, done: false },
+            ].map((s) => (
+              <li
+                key={s.step}
+                className={`flex items-center gap-2 rounded-lg px-2.5 py-2 border ${
+                  s.active
+                    ? 'border-cyan-400/70 bg-cyan-950/35 text-white font-bold'
+                    : s.done
+                    ? 'border-slate-700 bg-[#04070c] text-slate-200'
+                    : 'border-slate-800 bg-[#04070c]/60 text-slate-400'
+                }`}
+              >
+                <span
+                  className={`w-5 h-5 rounded-full text-[11px] font-bold flex items-center justify-center shrink-0 ${
+                    s.active
+                      ? 'bg-cyan-400 text-[#04131a]'
+                      : s.done
+                      ? 'bg-emerald-500/25 text-emerald-300 border border-emerald-500/50'
+                      : 'bg-slate-800 text-slate-400'
+                  }`}
+                >
+                  {s.step}
+                </span>
+                <span className="truncate">{s.label}</span>
+              </li>
+            ))}
+          </ol>
+        </nav>
 
         {/* Authoritative Order Status Panel for Stripe Return Redirects */}
         {stripeReturnState && (
@@ -466,92 +526,7 @@ export const CartCheckoutPage: React.FC<CartCheckoutPageProps> = ({
           </section>
         )}
 
-        {orderReceipt ? (
-          <section className="rounded-xl border border-emerald-500/45 bg-[#0b1310] p-6 sm:p-8 space-y-5 max-w-2xl mx-auto">
-            <div className="flex items-center gap-2.5 text-emerald-300">
-              <CheckCircle2 className="w-6 h-6 shrink-0" aria-hidden="true" />
-              <h2 className="text-xl font-bold text-white break-all">
-                Order #{orderReceipt.orderId} Recorded
-              </h2>
-            </div>
-            <p className="text-sm text-slate-200 leading-relaxed">
-              Your order has been saved with server-validated pricing and 10-field shipping address details. Manual payments remain in Awaiting Payment until verified by our team.
-            </p>
-            <dl className="grid grid-cols-1 sm:grid-cols-2 gap-3 rounded-lg border border-slate-700 bg-[#04070c] p-4 text-xs font-mono tabular-nums">
-              <div>
-                <dt className="text-slate-400">Order ID</dt>
-                <dd className="text-white font-bold break-all">#{orderReceipt.orderId}</dd>
-              </div>
-              <div>
-                <dt className="text-slate-400">Fulfillment Status</dt>
-                <dd className="text-amber-300 font-bold">{orderReceipt.fulfillmentStatus || 'Pending'}</dd>
-              </div>
-              <div className="sm:col-span-2 space-y-1">
-                <dt className="text-slate-400">Selected Item(s)</dt>
-                <dd className="text-white font-bold break-words">{orderReceipt.productName}</dd>
-                {Array.isArray(orderReceipt.items) && orderReceipt.items.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5 pt-0.5">
-                    {orderReceipt.items.map((it: any, idx: number) =>
-                      it?.variantLabel ? (
-                        <span
-                          key={`${it.productId || idx}-${it.variantLabel}`}
-                          className="inline-block text-xs font-mono uppercase tracking-wider px-2 py-0.5 rounded border border-cyan-400/45 bg-cyan-950/40 text-cyan-200"
-                        >
-                          {it.variantLabel}
-                        </span>
-                      ) : null
-                    )}
-                  </div>
-                )}
-              </div>
-              <div>
-                <dt className="text-slate-400">Payment Status</dt>
-                <dd className="text-amber-300 font-bold">{orderReceipt.paymentStatus || 'Awaiting Payment'}</dd>
-              </div>
-              <div>
-                <dt className="text-slate-400">Payment Method</dt>
-                <dd className="text-white uppercase">{orderReceipt.paymentMethod}</dd>
-              </div>
-              <div>
-                <dt className="text-slate-400">Shipping Destination</dt>
-                <dd className="text-white break-words">
-                  {orderReceipt.countryCode} ({(orderReceipt.carriers || []).join(' / ')})
-                </dd>
-              </div>
-              <div>
-                <dt className="text-slate-400">Shipping Fee</dt>
-                <dd className="text-white">
-                  {orderReceipt.shippingFee === 0 ? 'FREE (৳0)' : formatBdt(orderReceipt.shippingFee)}
-                </dd>
-              </div>
-              {orderReceipt.paymentMethod === 'cod' && (
-                <div className="sm:col-span-2 pt-2 border-t border-slate-800 flex justify-between gap-2 text-amber-300 font-bold">
-                  <span>Amount to Collect at Delivery (COD):</span>
-                  <span>{formatBdt(orderReceipt.totalAmount)} BDT</span>
-                </div>
-              )}
-              <div className="sm:col-span-2 pt-2 border-t border-slate-800 flex justify-between gap-2 text-sm">
-                <span className="text-slate-200">Authoritative Total Payable:</span>
-                <span className="text-white font-bold">{formatBdt(orderReceipt.totalAmount)} BDT</span>
-              </div>
-            </dl>
-            <div className="flex flex-wrap gap-3 pt-2">
-              <a
-                href={`/track/${encodeURIComponent(orderReceipt.orderId)}`}
-                className="min-h-[44px] inline-flex items-center justify-center px-4 py-2.5 rounded-lg bg-cyan-400 text-[#04131a] font-bold text-xs sm:text-sm hover:bg-cyan-300"
-              >
-                Track Order Status
-              </a>
-              <button
-                type="button"
-                onClick={() => setOrderReceipt(null)}
-                className="min-h-[44px] inline-flex items-center justify-center px-4 py-2.5 rounded-lg border border-slate-600 bg-slate-900 text-white text-xs sm:text-sm font-semibold hover:bg-slate-800 cursor-pointer"
-              >
-                Place Another Order
-              </button>
-            </div>
-          </section>
-        ) : inquirySubmittedId ? (
+        {inquirySubmittedId ? (
           <section className="rounded-xl border border-amber-500/40 bg-amber-950/15 p-6 max-w-2xl mx-auto space-y-3">
             <h2 className="text-lg font-bold text-white">Delivery Inquiry #{inquirySubmittedId} Submitted</h2>
             <p className="text-sm text-neutral-300">
@@ -567,7 +542,7 @@ export const CartCheckoutPage: React.FC<CartCheckoutPageProps> = ({
           </section>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            {/* Left Column: Cart Items + Bangla QR Scan & Pay Section */}
+            {/* Left Column: Cart Summary & Items */}
             <div className="lg:col-span-7 space-y-6 min-w-0">
               {items.length === 0 ? (
                 <div className="rounded-xl border border-slate-700/70 bg-[#0b0f17] p-5 sm:p-6 space-y-5">
@@ -630,10 +605,17 @@ export const CartCheckoutPage: React.FC<CartCheckoutPageProps> = ({
                 </div>
               ) : (
                 <div className="rounded-xl border border-slate-700/70 bg-[#0b0f17] divide-y divide-slate-800">
-                  {items.map((item) => (
+                  {items.map((item) => {
+                    const isIneligible = ineligibleIdSet.has(item.productId);
+                    const badEntry = checkoutEval.ineligibleItems.find(
+                      (entry) => entry.productId === item.productId
+                    );
+                    return (
                     <div
                       key={`${item.productId}-${item.roamingPackageId || ''}`}
-                      className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                      className={`p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${
+                        isIneligible ? 'bg-amber-950/20' : ''
+                      }`}
                     >
                       <div className="flex items-start gap-3.5 min-w-0">
                         {item.image && (
@@ -646,15 +628,27 @@ export const CartCheckoutPage: React.FC<CartCheckoutPageProps> = ({
                           />
                         )}
                         <div className="min-w-0 space-y-1">
-                          <div className="text-xs font-mono uppercase text-cyan-300">
-                            {item.variantLabel ||
-                              (item.category === 'rental'
-                                ? 'Rental Kit · One-Time Fee'
-                                : 'Outright Hardware Purchase')}
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span className="text-xs font-mono uppercase text-cyan-300">
+                              {item.variantLabel ||
+                                (item.category === 'rental'
+                                  ? 'Rental Kit · One-Time Fee'
+                                  : 'Outright Hardware Purchase')}
+                            </span>
+                            {isIneligible && (
+                              <span className="inline-flex items-center px-2 py-0.5 rounded bg-amber-500/20 border border-amber-400/50 text-amber-200 text-[11px] font-bold">
+                                Ineligible for {countryConfig.name}
+                              </span>
+                            )}
                           </div>
                           <h3 className="text-sm sm:text-base font-bold text-white break-words">
                             {item.name}
                           </h3>
+                          {badEntry && (
+                            <p className="text-xs text-amber-200 leading-snug">
+                              {badEntry.reason}
+                            </p>
+                          )}
                           {item.roamingPackageId && (
                             <div className="text-xs text-emerald-300 font-mono break-all">
                               Paired Roaming Plan: {item.roamingPackageId}
@@ -710,7 +704,8 @@ export const CartCheckoutPage: React.FC<CartCheckoutPageProps> = ({
                         </button>
                       </div>
                     </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
 
@@ -737,26 +732,16 @@ export const CartCheckoutPage: React.FC<CartCheckoutPageProps> = ({
                   ))}
                 </div>
               )}
-
-              {/* Official Bangla QR Scan & Pay Section */}
-              <BanglaQrPaymentSection
-                orderId={previewOrderId}
-                productSummary={productSummaryText}
-                amountBdt={totalBdt > 0 ? totalBdt : standard4xPrice}
-                transactionId={trxId}
-                onTransactionIdChange={setTrxId}
-                paymentStatus="Awaiting Payment"
-              />
             </div>
 
-            {/* Right Column: 10-Field Shipping Address & Order Submission Form */}
+            {/* Right Column: Delivery Address & Continue to Payment */}
             <form
               onSubmit={handleCheckoutSubmit}
               className="lg:col-span-5 rounded-xl border border-slate-700 bg-[#0b0f17] p-5 sm:p-6 space-y-4 text-xs sm:text-sm lg:sticky lg:top-20 min-w-0"
             >
               <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3">
                 <h2 className="text-base font-bold text-white">
-                  10-Field Shipping Address &amp; Checkout
+                  ডেলিভারি ঠিকানা (Delivery Address)
                 </h2>
                 <div className="inline-flex rounded-lg border border-slate-700 bg-[#04070c] p-0.5 text-xs">
                   <button
@@ -798,17 +783,50 @@ export const CartCheckoutPage: React.FC<CartCheckoutPageProps> = ({
                 >
                   {SHIPPING_COUNTRIES.map((c) => (
                     <option key={c.code} value={c.code}>
-                      {c.name} ({c.code === 'BD' ? 'FREE' : c.carrierAvailable ? '৳2,500' : 'Inquiry'})
+                      {c.name} (
+                      {c.code === 'BD'
+                        ? hasRental
+                          ? 'BDT · ৳500 Rental Shipping'
+                          : 'BDT · FREE Shipping'
+                        : c.carrierAvailable
+                        ? 'USD · International Card'
+                        : 'Inquiry Only'}
+                      )
                     </option>
                   ))}
                 </select>
                 <CompactShippingNotice countryCode={countryCode} isRental={hasRental} />
                 {bdRestrictionViolation && (
-                  <div className="mt-2 rounded-lg border border-amber-400/55 bg-amber-950/40 p-3 text-amber-100 flex items-start gap-2 text-xs">
-                    <AlertCircle className="w-4 h-4 text-amber-300 shrink-0 mt-0.5" aria-hidden="true" />
-                    <span>
-                      Bangladesh Residential &amp; Standard 4X Rental items ship within Bangladesh (BD) only. Switch destination to Bangladesh or select the Roam Unlimited / Global Roam variant.
-                    </span>
+                  <div
+                    role="alert"
+                    className="mt-2 rounded-lg border border-amber-400/55 bg-amber-950/40 p-3 text-amber-100 space-y-2 text-xs"
+                  >
+                    <div className="flex items-start gap-2 font-semibold">
+                      <AlertCircle className="w-4 h-4 text-amber-300 shrink-0 mt-0.5" aria-hidden="true" />
+                      <span>
+                        The following item(s) cannot ship to {countryConfig.name}. Remove them or switch Destination Country to Bangladesh (BD):
+                      </span>
+                    </div>
+                    <ul className="space-y-1.5 pl-6">
+                      {checkoutEval.ineligibleItems.map((bad) => (
+                        <li
+                          key={bad.productId}
+                          className="flex items-center justify-between gap-2 bg-[#04070c]/60 border border-amber-500/30 rounded px-2.5 py-1.5"
+                        >
+                          <div className="min-w-0">
+                            <div className="font-bold text-white truncate">{bad.name}</div>
+                            <div className="text-[11px] text-amber-200">{bad.reason}</div>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => removeItem(bad.productId)}
+                            className="shrink-0 px-2.5 py-1 rounded bg-amber-400 hover:bg-amber-300 text-[#04131a] font-bold text-[11px] cursor-pointer"
+                          >
+                            Remove
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                 )}
               </div>
@@ -948,123 +966,129 @@ export const CartCheckoutPage: React.FC<CartCheckoutPageProps> = ({
                 </div>
               </div>
 
-              {/* Payment Method Selection */}
-              {carrierAvailable && (
-                <div className="space-y-2 pt-2">
-                  <span className="block text-slate-200 font-semibold">Payment Method</span>
-                  <div className="grid grid-cols-1 gap-2">
-                    {codAvailable && (
-                      <label className="flex items-start gap-2.5 p-3 rounded-lg border border-slate-600 bg-[#04070c] hover:border-cyan-400/60 cursor-pointer">
-                        <input
-                          type="radio"
-                          name="cart-payment"
-                          checked={paymentMethod === 'cod'}
-                          onChange={() => setPaymentMethod('cod')}
-                          className="accent-cyan-400 mt-1 w-4 h-4 shrink-0"
-                        />
-                        <div className="min-w-0">
-                          <div className="flex items-center gap-1.5 text-white font-bold text-xs sm:text-sm">
-                            <Banknote className="w-4 h-4 text-emerald-300 shrink-0" aria-hidden="true" />
-                            <span>Cash on Delivery (COD — Bangladesh Only)</span>
-                          </div>
-                          <span className="text-xs text-amber-300 block mt-0.5">
-                            Amount to Collect at Delivery: {formatBdt(totalBdt)} BDT
-                          </span>
-                        </div>
-                      </label>
-                    )}
-
-                    <label className="flex items-start gap-2.5 p-3 rounded-lg border border-slate-600 bg-[#04070c] hover:border-cyan-400/60 cursor-pointer">
-                      <input
-                        type="radio"
-                        name="cart-payment"
-                        checked={paymentMethod === 'prepaid' || (!codAvailable && paymentMethod !== 'stripe')}
-                        onChange={() => setPaymentMethod('prepaid')}
-                        className="accent-cyan-400 mt-1 w-4 h-4 shrink-0"
-                      />
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-1.5 text-white font-bold text-xs sm:text-sm">
-                          <QrCode className="w-4 h-4 text-emerald-300 shrink-0" aria-hidden="true" />
-                          <span>
-                            {countryCode === 'BD'
-                              ? 'Bangla QR Scan & Pay (bKash, Nagad, Rocket & All Banks)'
-                              : 'Advance Payment (Bangla QR / International Wire / MFS)'}
-                          </span>
-                        </div>
-                        <span className="text-xs text-slate-300 block mt-0.5">
-                          Status remains Awaiting Payment until verified by DSLink finance.
-                        </span>
-                      </div>
-                    </label>
-
-                    {/* Stripe Checkout option — rendered ONLY when server STRIPE_ENABLED=true */}
-                    {stripeEnabled && (
-                      <label
-                        data-testid="stripe-checkout-option"
-                        className="flex items-start gap-2.5 p-3 rounded-lg border border-slate-600 bg-[#04070c] hover:border-cyan-400/60 cursor-pointer"
-                      >
-                        <input
-                          type="radio"
-                          name="cart-payment"
-                          checked={paymentMethod === 'stripe'}
-                          onChange={() => setPaymentMethod('stripe')}
-                          className="accent-cyan-400 mt-1 w-4 h-4 shrink-0"
-                        />
-                        <div className="min-w-0">
-                          <div className="flex items-center gap-1.5 text-white font-bold text-xs sm:text-sm">
-                            <CreditCard className="w-4 h-4 text-cyan-300 shrink-0" aria-hidden="true" />
-                            <span>Pay Online with Card (Stripe Hosted Checkout)</span>
-                          </div>
-                          <span className="text-xs text-slate-300 block mt-0.5">
-                            Redirects to Stripe Hosted Checkout. Payment confirmed via verified webhook.
-                          </span>
-                        </div>
-                      </label>
-                    )}
-                  </div>
-
-                  {paymentMethod === 'prepaid' && (
-                    <input
-                      type="text"
-                      value={trxId}
-                      onChange={(e) => setTrxId(e.target.value)}
-                      placeholder="Bangla QR / MFS / Bank Transaction ID (TrxID)"
-                      className="w-full min-h-[44px] bg-[#04070c] border border-slate-600 focus:border-cyan-400 rounded-lg px-3 py-2 text-white placeholder:text-slate-400 font-mono text-sm outline-none"
-                    />
-                  )}
-                </div>
-              )}
-
-              {/* Totals Breakdown */}
+              {/* Totals Breakdown (Authoritative Server-Matched Currency & Rules) */}
               <div className="rounded-lg border border-slate-700 bg-[#04070c] p-4 space-y-2 font-mono tabular-nums text-xs">
-                <div className="flex justify-between gap-2 text-slate-200">
-                  <span>Hardware Subtotal</span>
-                  <span>{formatPrice(subtotalBdt)}</span>
-                </div>
-                <div className="flex justify-between gap-2 text-slate-200">
-                  <span>Shipping ({countryConfig.name})</span>
-                  <span className={shippingFeeBdt === 0 ? 'text-emerald-300 font-bold' : 'text-white'}>
-                    {shippingFeeBdt === 0 ? 'FREE (৳0)' : formatPrice(shippingFeeBdt)}
-                  </span>
-                </div>
-                <div className="flex justify-between gap-2 text-slate-300">
-                  <span>Monthly Starlink Plan</span>
-                  <span>Billed Separately</span>
-                </div>
-                <div className="flex justify-between gap-2 text-white font-bold text-sm pt-2 border-t border-slate-800">
-                  <span>Total Payable</span>
-                  <span>{formatPrice(totalBdt, { includeEstimateLabel: currency !== 'BDT' })}</span>
-                </div>
-                {paymentMethod === 'cod' && codAvailable && (
-                  <div className="text-xs text-amber-300 font-bold flex justify-between gap-2 pt-1">
-                    <span>COD Amount to Collect at Delivery:</span>
-                    <span>{formatBdt(totalBdt)} BDT</span>
-                  </div>
-                )}
-                {currency !== 'BDT' && (
-                  <div className="text-xs text-slate-300 text-right">
-                    Authoritative BDT Total: {formatBdt(totalBdt)} BDT
-                  </div>
+                {checkoutEval.isBangladesh && checkoutEval.hasRental && checkoutEval.rentalBreakdown ? (
+                  <>
+                    <div className="flex justify-between gap-2 text-slate-200">
+                      <span>
+                        One-Time Rental / Activation Fee (
+                        {checkoutEval.rentalBreakdown.activationCollectionRule === 'upfront'
+                          ? 'Upfront'
+                          : 'On Activation'}
+                        )
+                      </span>
+                      <span>
+                        {formatPayAmount(checkoutEval.rentalBreakdown.activationFeeBdt, 'BDT')}
+                      </span>
+                    </div>
+                    <div className="flex justify-between gap-2 text-slate-200">
+                      <span>Upfront Rental Shipping (Bangladesh)</span>
+                      <span className="text-white font-semibold">
+                        {formatPayAmount(checkoutEval.rentalBreakdown.rentalShippingFeeBdt, 'BDT')}
+                      </span>
+                    </div>
+                    <div className="flex justify-between gap-2 text-slate-300">
+                      <span>Monthly Starlink Subscription</span>
+                      <span>Excluded Today</span>
+                    </div>
+                    <div className="flex justify-between gap-2 text-white font-bold text-sm pt-2 border-t border-slate-800">
+                      <span>Payable Now (BDT)</span>
+                      <span>{formatPayAmount(checkoutEval.payableNowAmount, 'BDT')}</span>
+                    </div>
+                    <div className="rounded-md border border-cyan-500/40 bg-cyan-950/30 p-2.5 text-cyan-100 font-sans text-xs leading-relaxed">
+                      {RENTAL_SHIPPING_EXCLUSION_NOTICE_BN}
+                    </div>
+                    <div className="text-xs text-slate-300 font-sans pt-0.5">
+                      Prepaid only in Bangladesh (MFS / Bangla QR, Bank Transfer
+                      {stripeConfigured ? ', or Card' : ''}). Cash on Delivery (COD) is not available for Rental Kits.
+                    </div>
+                  </>
+                ) : !checkoutEval.isBangladesh && carrierAvailable ? (
+                  <>
+                    <div className="flex justify-between gap-2 text-slate-200">
+                      <span>Hardware Subtotal (USD)</span>
+                      <span>{formatPayAmount(checkoutEval.subtotalAmount, 'USD')}</span>
+                    </div>
+                    <div className="flex justify-between gap-2 text-slate-200">
+                      <span>International Shipping ({countryConfig.name})</span>
+                      <span className="text-white">
+                        {formatPayAmount(checkoutEval.shippingFeeAmount, 'USD')}
+                      </span>
+                    </div>
+                    <div className="flex justify-between gap-2 text-slate-300">
+                      <span>Monthly Starlink Plan</span>
+                      <span>Billed Separately</span>
+                    </div>
+                    <div className="flex justify-between gap-2 text-white font-bold text-sm pt-2 border-t border-slate-800">
+                      <span>Total Payable (USD)</span>
+                      <span>{formatPayAmount(checkoutEval.payableNowAmount, 'USD')}</span>
+                    </div>
+                    <div className="text-xs text-slate-300 font-sans pt-1">
+                      International orders to {countryConfig.name} are charged strictly in USD via Card only. MFS, Bank Transfer, Bangla QR, and COD are not available outside Bangladesh.
+                    </div>
+                    {!stripeConfigured && (
+                      <div className="rounded-md border border-amber-400/50 bg-amber-950/35 p-2.5 text-amber-100 font-sans text-xs leading-relaxed">
+                        Card checkout is currently unavailable for {countryConfig.name}. Continuing will save an unpaid checkout draft until international Card payment is enabled.
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <div className="flex justify-between gap-2 text-slate-200">
+                      <span>Hardware Subtotal</span>
+                      <span>{formatPayAmount(checkoutEval.subtotalAmount, 'BDT')}</span>
+                    </div>
+                    <div className="flex justify-between gap-2 text-slate-200">
+                      <span>Shipping ({countryConfig.name})</span>
+                      <span
+                        className={
+                          checkoutEval.shippingFeeAmount === 0
+                            ? 'text-emerald-300 font-bold'
+                            : 'text-white'
+                        }
+                      >
+                        {checkoutEval.shippingFeeAmount === 0
+                          ? 'FREE (৳0)'
+                          : formatPayAmount(checkoutEval.shippingFeeAmount, 'BDT')}
+                      </span>
+                    </div>
+                    <div className="flex justify-between gap-2 text-slate-300">
+                      <span>Monthly Starlink Plan</span>
+                      <span>Billed Separately</span>
+                    </div>
+                    <div className="flex justify-between gap-2 text-white font-bold text-sm pt-2 border-t border-slate-800">
+                      <span>Total Payable (BDT)</span>
+                      <span>{formatPayAmount(checkoutEval.payableNowAmount, 'BDT')}</span>
+                    </div>
+                    {checkoutEval.codAdvanceRequiredAmount > 0 && codAvailable && (
+                      <div className="rounded-md border border-slate-700 bg-[#0b0f17] p-2.5 space-y-1 text-slate-200">
+                        <div className="flex justify-between gap-2">
+                          <span>If paying by COD — Advance Now</span>
+                          <span className="font-bold text-cyan-300">
+                            {formatPayAmount(checkoutEval.codAdvanceRequiredAmount, 'BDT')}
+                          </span>
+                        </div>
+                        <div className="flex justify-between gap-2">
+                          <span>Remaining Due on Delivery</span>
+                          <span>
+                            {formatPayAmount(checkoutEval.codRemainingOnDeliveryAmount, 'BDT')}
+                          </span>
+                        </div>
+                      </div>
+                    )}
+                    <div className="text-xs text-slate-300 font-sans pt-1">
+                      {codAvailable
+                        ? `Eligible on DSLink Pay (BDT): MFS / Bangla QR, Bank Transfer, Cash on Delivery (COD)${stripeConfigured ? ', or Card' : ''}.`
+                        : `Prepaid on DSLink Pay (BDT): MFS / Bangla QR or Bank Transfer${stripeConfigured ? ' or Card' : ''}.`}
+                    </div>
+                    {currency !== 'BDT' && (
+                      <div className="text-xs text-slate-400 text-right">
+                        Display reference ({currency}):{' '}
+                        {formatPrice(subtotalBdt, { includeEstimateLabel: true })} · Charged in BDT
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
 
@@ -1081,18 +1105,19 @@ export const CartCheckoutPage: React.FC<CartCheckoutPageProps> = ({
               <button
                 type="submit"
                 disabled={submitting || items.length === 0 || bdRestrictionViolation}
-                className="w-full min-h-[48px] py-3.5 px-5 rounded-lg bg-cyan-400 hover:bg-cyan-300 text-[#04131a] font-bold text-sm flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="w-full min-h-[52px] py-3.5 px-5 rounded-lg bg-cyan-400 hover:bg-cyan-300 text-[#04131a] font-extrabold text-sm flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
-                <Send className="w-4 h-4 shrink-0" aria-hidden="true" />
                 <span>
                   {submitting
-                    ? 'Processing Order...'
+                    ? 'পেমেন্ট লিংক তৈরি হচ্ছে...'
                     : !carrierAvailable
                     ? `Submit Delivery Inquiry (${countryConfig.name})`
-                    : stripeEnabled && paymentMethod === 'stripe'
-                    ? `Continue to Stripe Checkout (${formatPrice(totalBdt)})`
-                    : `Place Order (${formatPrice(totalBdt)})`}
+                    : `পেমেন্টে এগিয়ে যান · Continue to Payment (${formatPayAmount(
+                        checkoutEval.payableNowAmount,
+                        checkoutEval.currency
+                      )})`}
                 </span>
+                <ArrowRight className="w-4 h-4 shrink-0" aria-hidden="true" />
               </button>
             </form>
           </div>

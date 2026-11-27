@@ -309,3 +309,42 @@ h1, h2, h3, h4, .font-display {
   -ms-overflow-style: none !important;
   scrollbar-width: none !important;
 }
+
+/*
+ * Standalone Light Theme for DSLink Pay (/pay/:token)
+ * Scoped strictly via .dslink-pay-light on html/body while the payment route is active.
+ * Keeps the rest of the storefront's dark theme untouched.
+ */
+html.dslink-pay-light {
+  color-scheme: light !important;
+  background-color: #ffffff !important;
+}
+
+body.dslink-pay-light {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+}
+
+.dslink-pay-light input::placeholder,
+.dslink-pay-light textarea::placeholder {
+  color: #64748b !important;
+  opacity: 1;
+}
+
+.dslink-pay-light :is(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 2px solid #0284c7 !important;
+  outline-offset: 2px;
+}
+
+.dslink-pay-light ::-webkit-scrollbar-track {
+  background: #f8fafc;
+}
+
+.dslink-pay-light ::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+}
+
+.dslink-pay-light ::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+

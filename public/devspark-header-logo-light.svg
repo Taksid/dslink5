@@ -2,29 +2,38 @@
   <defs>
     <linearGradient id="dsDishGradLight" x1="8" y1="16" x2="54" y2="54" gradientUnits="userSpaceOnUse">
       <stop offset="0%" stop-color="#0EA5E9"/>
+      <stop offset="55%" stop-color="#0284C7"/>
       <stop offset="100%" stop-color="#0369A1"/>
+    </linearGradient>
+    <linearGradient id="dsOrbitGradLight" x1="6" y1="54" x2="62" y2="26" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#06B6D4"/>
+      <stop offset="100%" stop-color="#0284C7"/>
     </linearGradient>
   </defs>
 
+  <!-- Satellite Dish Emblem -->
   <g transform="translate(2, 5)">
-    <path d="M40 16 C47 17, 52 22, 53 29" stroke="#0284C7" stroke-width="3.2" stroke-linecap="round" fill="none"/>
-    <path d="M41 9 C52 10, 59 17, 60 28" stroke="#0369A1" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+    <path d="M40 16 C47 17, 52 22, 53 29" stroke="#06B6D4" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+    <path d="M41 9 C52 10, 59 17, 60 28" stroke="#0284C7" stroke-width="3.2" stroke-linecap="round" fill="none"/>
     <path d="M31 48 L31 56 L38 56 L39 45" fill="#0369A1"/>
-    <ellipse cx="29" cy="36" rx="16" ry="11.5" transform="rotate(-38 29 36)" fill="url(#dsDishGradLight)" stroke="#0284C7" stroke-width="1.4"/>
+    <ellipse cx="29" cy="36" rx="16" ry="11.5" transform="rotate(-38 29 36)" fill="url(#dsDishGradLight)" stroke="#38BDF8" stroke-width="1.4"/>
     <line x1="29" y1="36" x2="43" y2="21" stroke="#0F172A" stroke-width="2.8" stroke-linecap="round"/>
     <circle cx="43.5" cy="20.5" r="2.6" fill="#0F172A"/>
-    <path d="M12 41 C4 50, 12 58, 31 50 C49 42, 60 30, 51 25" stroke="#0284C7" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+    <path d="M12 41 C4 50, 12 58, 31 50 C49 42, 60 30, 51 25" stroke="url(#dsOrbitGradLight)" stroke-width="3.2" stroke-linecap="round" fill="none"/>
   </g>
 
-  <line x1="72" y1="12" x2="72" y2="62" stroke="#334155" stroke-width="2" stroke-linecap="round"/>
+  <!-- Subtle Gray Divider -->
+  <line x1="72" y1="12" x2="72" y2="62" stroke="#CBD5E1" stroke-width="2" stroke-linecap="round"/>
 
+  <!-- Wordmark: DEVSPARK LINK (Dark Ink for White Background) -->
   <text x="83" y="38" font-family="'Plus Jakarta Sans', 'Manrope', 'Inter', system-ui, -apple-system, sans-serif" font-size="25" font-weight="900" letter-spacing="0.4">
     <tspan fill="#0F172A">DEVSPARK </tspan><tspan fill="#0284C7">LINK</tspan>
   </text>
 
-  <line x1="84" y1="54" x2="102" y2="54" stroke="#475569" stroke-width="1.5" stroke-linecap="round"/>
-  <text x="190" y="57.5" text-anchor="middle" font-family="'Plus Jakarta Sans', 'Manrope', 'Inter', system-ui, -apple-system, sans-serif" font-size="9.5" font-weight="700" letter-spacing="2.4" fill="#334155">
+  <!-- Subtitle -->
+  <line x1="84" y1="54" x2="102" y2="54" stroke="#94A3B8" stroke-width="1.5" stroke-linecap="round"/>
+  <text x="190" y="57.5" text-anchor="middle" font-family="'Plus Jakarta Sans', 'Manrope', 'Inter', system-ui, -apple-system, sans-serif" font-size="9.5" font-weight="700" letter-spacing="2.4" fill="#475569">
     STARLINK BANGLADESH
   </text>
-  <line x1="278" y1="54" x2="296" y2="54" stroke="#475569" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="278" y1="54" x2="296" y2="54" stroke="#94A3B8" stroke-width="1.5" stroke-linecap="round"/>
 </svg>

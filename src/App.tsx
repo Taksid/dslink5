@@ -16,6 +16,7 @@ import { ResellPublicHubPage } from './pages/ResellPublicHubPage';
 import { ResellerPortalPage } from './pages/ResellerPortalPage';
 import { KitsCatalogPage } from './pages/KitsCatalogPage';
 import { KitDetailPage } from './pages/KitDetailPage';
+import { DSLinkPayPage } from './pages/DSLinkPayPage';
 import { OfflineIndicator } from './components/OfflineIndicator';
 import { PWAInstallButton } from './components/PWAInstallButton';
 import { SiteHeader } from './components/SiteHeader';
@@ -331,6 +332,11 @@ export default function App() {
   const isBangladeshRoute = normalizedPath === '/starlink-bangladesh';
   const isMyanmarRoute = normalizedPath === '/starlink-myanmar';
   const isCartRoute = normalizedPath === '/cart' || normalizedPath === '/checkout';
+  const rawPayPath = parsedRoute.basePath.replace(/\/+$/, '');
+  const payToken = rawPayPath.toLowerCase().startsWith('/pay/')
+    ? rawPayPath.slice('/pay/'.length).split('/')[0] || ''
+    : null;
+  const isPayRootRoute = normalizedPath === '/pay';
   const isAdminGlobalRoute = normalizedPath === '/admin/global';
   const isKitsCatalogRoute = normalizedPath === '/kits' || normalizedPath === '/products';
   const kitDetailProductId = normalizedPath.startsWith('/kits/')
@@ -366,6 +372,8 @@ export default function App() {
   const isKnownCurrentRoute = isRetailerSubdomainRoot || isKnownSiteRoute(currentPath);
   const hideFloatingPwaButton =
     isCartRoute ||
+    Boolean(payToken) ||
+    isPayRootRoute ||
     isPromoRoute ||
     isRentalRoute ||
     isResellerPortalRoute ||
@@ -453,6 +461,8 @@ export default function App() {
         <WorldwideDeliveryPage regionMode="myanmar" onNavigate={navigateTo} />
       ) : isCartRoute ? (
         <CartCheckoutPage onNavigate={navigateTo} />
+      ) : payToken !== null || isPayRootRoute ? (
+        <DSLinkPayPage token={payToken || ''} onNavigate={navigateTo} />
       ) : isKitsCatalogRoute ? (
         <KitsCatalogPage
           onNavigate={navigateTo}

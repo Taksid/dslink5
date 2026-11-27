@@ -10,10 +10,8 @@ import {
 } from 'lucide-react';
 import { SiteHeader } from '../components/SiteHeader';
 import { Footer } from '../components/Footer';
-import { BanglaQrPaymentBox, QrPaymentChannel } from '../components/BanglaQrPaymentBox';
 import { CompactShippingNotice } from '../components/CompactShippingNotice';
 import { useGeoLanguage } from '../lib/geoLanguage';
-import { notifyAdminActivity } from '../lib/activityNotify';
 import {
   GLOBAL_DELIVERY_COPY,
   RENTAL_TERMS_SUMMARY,
@@ -22,6 +20,11 @@ import {
   useCentralPricing,
 } from '../lib/pricingConfig';
 import { useGlobalCurrency } from '../lib/currencyConfig';
+import {
+  DEFAULT_RENTAL_SHIPPING_FEE_BDT,
+  RENTAL_SHIPPING_EXCLUSION_NOTICE_BN,
+  RENTAL_SUBSCRIPTION_PLANS,
+} from '../lib/dslinkPayRules';
 
 interface RentalPlanPageProps {
   onNavigate?: (path: string) => void;
@@ -87,19 +90,52 @@ export const RentalPlanPage: React.FC<RentalPlanPageProps> = ({
     'residential-lite'
   );
 
-  // Checkout Form State (Scan QR via bKash / Nagad / Rocket / Any Bank -> Enter TrxID -> Submit for Manual Confirmation)
+  // Checkout Address Form State -> Routes to dedicated white DSLink Pay (/pay/<secure-token>)
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [district, setDistrict] = useState('Dhaka');
   const [registeredAddress, setRegisteredAddress] = useState('');
-  const [paymentChannel, setPaymentChannel] = useState<QrPaymentChannel>('bKash');
-  const [banglaQrTrxId, setBanglaQrTrxId] = useState('');
   const [notes, setNotes] = useState('');
   const [agreePolicies, setAgreePolicies] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [submittedOrderId, setSubmittedOrderId] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
+
+  // Server-configured rental shipping & activation fee rule
+  const [rentalShippingFeeBdt, setRentalShippingFeeBdt] = useState<number>(DEFAULT_RENTAL_SHIPPING_FEE_BDT);
+  const [activationRule, setActivationRule] = useState<'upfront' | 'on_activation'>('upfront');
+
+  // Existing Rental Customer Activation -> Single Shared Subscription Payment Request
+  const [activationOrderId, setActivationOrderId] = useState('');
+  const [activationPlanId, setActivationPlanId] = useState<string>(RENTAL_SUBSCRIPTION_PLANS[0].id);
+  const [activationBillingPeriod, setActivationBillingPeriod] = useState<string>(() =>
+    new Date().toISOString().slice(0, 7)
+  );
+  const [activationLoading, setActivationLoading] = useState(false);
+  const [activationError, setActivationError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    fetch('/api/payments/config', { cache: 'no-store' })
+      .then((res) => res.json())
+      .then((data) => {
+        if (!active || !data?.success || !data?.rules) return;
+        if (typeof data.rules.bangladeshRentalShippingBdt === 'number') {
+          setRentalShippingFeeBdt(data.rules.bangladeshRentalShippingBdt);
+        }
+        if (data.rules.rentalActivationCollectionRule === 'on_activation') {
+          setActivationRule('on_activation');
+        } else {
+          setActivationRule('upfront');
+        }
+      })
+      .catch(() => {
+        // Keep safe defaults
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const activeKit = RENTAL_KIT_MODEL;
   const activePlan =
@@ -107,8 +143,9 @@ export const RentalPlanPage: React.FC<RentalPlanPageProps> = ({
   const monthlyRecurringTotal = activePlan.subFee;
   const countryCode = 'BD';
   const carrierSupported = true;
-  const shippingFee = 0;
-  const totalPayableNow = rentalKitPrice + shippingFee;
+  const shippingFee = rentalShippingFeeBdt;
+  const totalPayableNow =
+    activationRule === 'on_activation' ? shippingFee : rentalKitPrice + shippingFee;
   const formattedPriceEn = formatBdt(rentalKitPrice);
   const formattedPriceBn = formatBdtBn(rentalKitPrice);
   const formattedTotalEn = formatBdt(totalPayableNow);
@@ -131,8 +168,28 @@ export const RentalPlanPage: React.FC<RentalPlanPageProps> = ({
     }
   };
 
+  const getOrCreateRentalIdempotencyKey = (): string => {
+    const fp = [
+      'starlink-rental-kit',
+      phone.replace(/[^0-9]/g, ''),
+      district.trim().toLowerCase(),
+      registeredAddress.trim().toLowerCase().slice(0, 40),
+    ].join('|');
+    const storageKey = `dslink_rental_idem_${fp}`;
+    try {
+      const existing = window.sessionStorage.getItem(storageKey);
+      if (existing && existing.length >= 12) return existing;
+      const fresh = `RNTL-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+      window.sessionStorage.setItem(storageKey, fresh);
+      return fresh;
+    } catch {
+      return `RNTL-${fp.slice(0, 56)}`;
+    }
+  };
+
   const handleRentalBooking = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (submitting) return;
     setSubmitError(null);
 
     if (!agreePolicies) {
@@ -140,7 +197,7 @@ export const RentalPlanPage: React.FC<RentalPlanPageProps> = ({
         t3(
           'অর্ডার সাবমিট করতে নীতিমালা সম্মতি বক্সে টিক (✓) দিন।',
           'အော်ဒါတင်ရန် စည်းကမ်းချက် သဘောတူညီချက်ကို အမှန်ခြစ်ပေးပါ။',
-          'Please agree to the Legal & Policy terms before submitting.'
+          'Please agree to the Legal & Policy terms before continuing.'
         )
       );
       return;
@@ -157,83 +214,103 @@ export const RentalPlanPage: React.FC<RentalPlanPageProps> = ({
       return;
     }
 
-    if (!banglaQrTrxId.trim()) {
-      setSubmitError(
-        t3(
-          `${formattedPriceBn} পেমেন্টের Transaction ID (TrxID) লিখে “আমি পেমেন্ট করেছি” ক্লিক করুন।`,
-          `${formattedPriceEn} ငွေပေးချေမှု Transaction ID (TrxID) ဖြည့်စွက်ပါ။`,
-          `Please enter your Transaction ID (TrxID) for the ${formattedPriceEn} QR payment.`
-        )
-      );
-      return;
-    }
-
-    if (!carrierSupported) {
-      setSubmitError(
-        t3(
-          'এই দেশে সরাসরি কুরিয়ার ডেলিভারি চালু নেই। ডেলিভারি ইনকোয়ারি পেজে যোগাযোগ করুন।',
-          'ဤနိုင်ငံသို့ တိုက်ရိုက်ပို့ဆောင်မှု မရနိုင်ပါ။ Delivery Inquiry မှ ဆက်သွယ်ပါ။',
-          'Direct carrier delivery is currently unavailable for the selected country. Please submit a Delivery Inquiry on the Worldwide Delivery page.'
-        )
-      );
-      return;
-    }
-
     setSubmitting(true);
     try {
-      const orderId = `DSR-${Math.floor(100000 + Math.random() * 900000)}`;
-      const productName = `${activeKit.title} (${formattedPriceEn} One-Time Charge via ${paymentChannel} · Plan: ${activePlan.nameEn} ৳${activePlan.subFee}/mo separate)`;
-
+      const checkoutIdempotencyKey = getOrCreateRentalIdempotencyKey();
       const res = await fetch('/api/promos/order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          orderId,
           productId: 'starlink-rental-kit',
           quantity: 1,
-          countryCode,
+          countryCode: 'BD',
           currency,
           fullName: fullName.trim(),
           phone: phone.trim(),
           email: email.trim(),
           district: district.trim() || 'Dhaka',
           address: `${registeredAddress.trim()}${notes ? ` | Note: ${notes.trim()}` : ''}`,
-          paymentMethod: 'bangla_qr',
-          trxId: banglaQrTrxId.trim(),
-          senderBankName: `Bangla QR (${paymentChannel})`,
-          productName,
-          price: totalPayableNow,
-          shippingFee,
+          shippingAddress: {
+            fullName: fullName.trim(),
+            phone: phone.trim(),
+            houseFlat: registeredAddress.trim(),
+            roadStreet: registeredAddress.trim(),
+            area: district.trim() || 'Dhaka',
+            cityDistrict: district.trim() || 'Dhaka',
+            stateDivision: 'Bangladesh',
+            postalCode: '1200',
+            countryCode: 'BD',
+            landmarkNote: notes.trim() || undefined,
+          },
+          paymentMethod: 'dslink_pay',
+          requireDeliveryAddress: true,
+          checkoutIdempotencyKey,
+          items: [
+            {
+              productId: 'starlink-rental-kit',
+              name: activeKit.title,
+              quantity: 1,
+            },
+          ],
         }),
       });
 
-      const data = await res.json();
-      if (!res.ok || !data?.success) {
-        throw new Error(data?.error || 'Order submission failed');
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data?.success || !data?.paymentRequest?.payPath) {
+        throw new Error(data?.error || 'Could not create DSLink Pay link for your rental kit.');
       }
 
-      notifyAdminActivity({
-        activityType: 'rental_payment_submitted',
-        title: `Rental Order #${orderId} Submitted — Verify ${formattedPriceEn} (${paymentChannel})`,
-        userName: fullName.trim(),
-        userPhone: phone.trim(),
-        userEmail: email.trim(),
-        details: {
-          orderId,
-          kit: activeKit.title,
-          channel: paymentChannel,
-          trxId: banglaQrTrxId.trim(),
-          amountPaid: formattedPriceEn,
-        },
-      });
-
-      setSubmittedOrderId(orderId);
+      const targetPayPath = String(data.paymentRequest.payPath);
+      if (onNavigate) {
+        onNavigate(targetPayPath);
+      } else {
+        window.location.assign(targetPayPath);
+      }
     } catch (err: any) {
       setSubmitError(
-        err?.message || 'Submission failed. Please contact WhatsApp +880 1326-370218.'
+        err?.message || 'চেকআউট শুরু করা যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন বা WhatsApp +880 1326-370218-এ যোগাযোগ করুন।'
       );
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handleStartRentalActivation = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (activationLoading) return;
+    setActivationError(null);
+    const cleanedOrderId = activationOrderId.trim().toUpperCase().replace(/^#/, '');
+    if (!cleanedOrderId) {
+      setActivationError('অনুগ্রহ করে আপনার রেন্টাল অর্ডার নম্বর লিখুন (যেমন: DS-123456)।');
+      return;
+    }
+    setActivationLoading(true);
+    try {
+      const res = await fetch(
+        `/api/rental/orders/${encodeURIComponent(cleanedOrderId)}/start-activation`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            planId: activationPlanId,
+            billingPeriod: activationBillingPeriod.trim() || new Date().toISOString().slice(0, 7),
+          }),
+        }
+      );
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data?.success || !data?.paymentRequest?.payPath) {
+        throw new Error(data?.error || 'রেন্টাল অর্ডারটি পাওয়া যায়নি বা অ্যাক্টিভেশন লিংক তৈরি হয়নি।');
+      }
+      const payPath = String(data.paymentRequest.payPath);
+      if (onNavigate) {
+        onNavigate(payPath);
+      } else {
+        window.location.assign(payPath);
+      }
+    } catch (err: any) {
+      setActivationError(err?.message || 'অ্যাক্টিভেশন লিংক খুলতে সমস্যা হয়েছে।');
+    } finally {
+      setActivationLoading(false);
     }
   };
 
@@ -459,96 +536,20 @@ export const RentalPlanPage: React.FC<RentalPlanPageProps> = ({
           </div>
         </section>
 
-        {/* Step 3: Clean Checkout Form + Scannable QR Payment */}
+        {/* Step 3: Delivery Details -> Dedicated White DSLink Pay */}
         <section id="rental-checkout" className="space-y-4">
           <h2 className="text-base sm:text-lg font-semibold text-white">
             {t3(
-              '৩. আপনার তথ্য ও QR পেমেন্ট সাবমিট',
-              '၃။ အချက်အလက်နှင့် QR ငွေပေးချေမှု',
-              '3. Your Details & QR Payment'
+              '৩. ডেলিভারি তথ্য ও DSLink Pay চেকআউট',
+              '၃။ ပို့ဆောင်ရန် အချက်အလက်နှင့် DSLink Pay ငွေပေးချေမှု',
+              '3. Delivery Details & DSLink Pay Checkout'
             )}
           </h2>
 
-          {submittedOrderId ? (
-            <div className="rounded-[4px] border border-emerald-500/40 bg-[#0b0f0d] p-6 sm:p-8 space-y-5">
-              <div className="flex items-start gap-3">
-                <CheckCircle2 className="w-7 h-7 text-emerald-400 shrink-0 mt-0.5" />
-                <div className="space-y-1">
-                  <h3 className="text-lg sm:text-xl font-bold text-white">
-                    {t3(
-                      'অর্ডার সাবমিট হয়েছে — ম্যানুয়াল কনফার্মেশনের অপেক্ষায়',
-                      'အော်ဒါတင်ပြီးပါပြီ — ကိုယ်တိုင်အတည်ပြုရန် စောင့်ဆိုင်းနေသည်',
-                      'Order Submitted — Pending Manual Confirmation'
-                    )}
-                  </h3>
-                  <p className="text-sm text-neutral-300">
-                    {t3(
-                      'আপনার পেমেন্ট তথ্য ও Transaction ID আমাদের কাছে পৌঁছেছে। আমরা ম্যানুয়ালি যাচাই করে শীঘ্রই কল বা WhatsApp-এ কনফার্ম করবো।',
-                      'သင့်ငွေပေးချေမှုနှင့် Transaction ID ကို လက်ခံရရှိပါပြီ။ ကျွန်ုပ်တို့ ကိုယ်တိုင်စစ်ဆေးပြီး မကြာမီ ဆက်သွယ်အတည်ပြုပေးပါမည်။',
-                      'Your payment details and Transaction ID have been sent to our team. We will manually verify and confirm your order shortly.'
-                    )}
-                  </p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 rounded-[4px] border border-white/10 bg-black/60 p-4 text-xs">
-                <div>
-                  <span className="text-neutral-400">Order ID:</span>{' '}
-                  <strong className="text-white font-mono">{submittedOrderId}</strong>
-                </div>
-                <div>
-                  <span className="text-neutral-400">Status:</span>{' '}
-                  <strong className="text-amber-300">Pending Manual Confirmation</strong>
-                </div>
-                <div>
-                  <span className="text-neutral-400">Kit:</span>{' '}
-                  <strong className="text-white">{activeKit.title}</strong>
-                </div>
-                <div>
-                  <span className="text-neutral-400">Paid via QR ({paymentChannel}):</span>{' '}
-                  <strong className="text-white">{formattedPriceEn}</strong>
-                </div>
-                <div className="sm:col-span-2">
-                  <span className="text-neutral-400">Transaction ID (TrxID):</span>{' '}
-                  <strong className="text-white font-mono">{banglaQrTrxId}</strong>
-                </div>
-                <div className="sm:col-span-2">
-                  <span className="text-neutral-400">Address:</span>{' '}
-                  <strong className="text-white">{formattedLocation}</strong>
-                </div>
-              </div>
-
-              <div className="flex flex-wrap items-center gap-3">
-                <a
-                  href={`https://wa.me/+8801326370218?text=${encodeURIComponent(
-                    `Rental Order ${submittedOrderId} | Kit: ${activeKit.title} | Plan: ${activePlan.nameEn} (separate) | One-Time Charge Paid: ${formattedPriceEn} (${paymentChannel}) | TrxID: ${banglaQrTrxId} | Address: ${formattedLocation}`
-                  )}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-[4px] bg-white text-black hover:bg-neutral-200 text-xs font-semibold transition-colors"
-                >
-                  <Phone className="w-3.5 h-3.5" />
-                  <span>
-                    {t3('WhatsApp-এ দ্রুত কনফার্ম করুন', 'WhatsApp ဖြင့် အတည်ပြုရန်', 'Message on WhatsApp')}
-                  </span>
-                </a>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSubmittedOrderId(null);
-                    setBanglaQrTrxId('');
-                  }}
-                  className="inline-flex items-center px-4 py-2.5 rounded-[4px] border border-white/20 text-xs font-medium text-white hover:bg-white/10 transition-colors cursor-pointer"
-                >
-                  {t3('নতুন অর্ডার করুন', 'အော်ဒါအသစ်တင်ရန်', 'Place Another Order')}
-                </button>
-              </div>
-            </div>
-          ) : (
-            <form
-              onSubmit={handleRentalBooking}
-              className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start"
-            >
+          <form
+            onSubmit={handleRentalBooking}
+            className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start"
+          >
               {/* Left Column: Customer Details + Scannable QR Payment + Submit */}
               <div className="lg:col-span-7 min-w-0 space-y-5">
                 {/* Customer Details */}
@@ -674,17 +675,15 @@ export const RentalPlanPage: React.FC<RentalPlanPageProps> = ({
                   </div>
                 </div>
 
-                {/* Scannable QR Payment Box (bKash / Nagad / Rocket / Any Bank) */}
-                <BanglaQrPaymentBox
-                  payableAmount={totalPayableNow}
-                  selectedChannel={paymentChannel}
-                  onSelectChannel={setPaymentChannel}
-                  trxId={banglaQrTrxId}
-                  onTrxIdChange={setBanglaQrTrxId}
-                  kitTitle={activeKit.title}
-                />
+                {/* Rental Shipping & Subscription Notice (No Embedded QR — Opens Dedicated DSLink Pay) */}
+                <div className="rounded-xl border border-cyan-500/40 bg-cyan-950/25 p-4 text-xs sm:text-sm text-cyan-100 space-y-1.5 leading-relaxed">
+                  <p className="font-semibold text-white">{RENTAL_SHIPPING_EXCLUSION_NOTICE_BN}</p>
+                  <p className="text-xs text-slate-300">
+                    রেন্টাল কিটের জন্য ক্যাশ অন ডেলিভারি (COD) প্রযোজ্য নয়। পরবর্তী ধাপে DSLink Pay পেজে MFS (Bangla QR) বা ব্যাংক ট্রান্সফারের মাধ্যমে অগ্রিম পরিশোধ করুন।
+                  </p>
+                </div>
 
-                {/* Clean Policy Consent & "আমি পেমেন্ট করেছি" Submit Button */}
+                {/* Policy Consent & Continue to DSLink Pay */}
                 <div className="rounded-xl border border-slate-700 bg-[#0b0f17] p-4 sm:p-5 space-y-4">
                   <label className="flex items-start gap-3 cursor-pointer text-xs sm:text-sm text-slate-200 leading-relaxed">
                     <input
@@ -732,12 +731,8 @@ export const RentalPlanPage: React.FC<RentalPlanPageProps> = ({
                     className="w-full min-h-[48px] py-3.5 px-5 rounded-lg bg-cyan-400 text-[#04131a] hover:bg-cyan-300 disabled:opacity-60 font-bold text-sm transition-colors cursor-pointer"
                   >
                     {submitting
-                      ? t3('সাবমিট হচ্ছে...', 'တင်သွင်းနေသည်...', 'Submitting...')
-                      : t3(
-                          `আমি পেমেন্ট করেছি — অর্ডার সাবমিট করুন (${formattedTotalBn})`,
-                          `ငွေပေးချေပြီးပါပြီ — အော်ဒါတင်ရန် (${formattedTotalEn})`,
-                          `I Have Paid — Submit Order (${formattedTotalEn})`
-                        )}
+                      ? 'পেমেন্ট লিংক তৈরি হচ্ছে...'
+                      : `পেমেন্টে এগিয়ে যান · Continue to DSLink Pay (${formattedTotalEn})`}
                   </button>
                 </div>
               </div>
@@ -800,7 +795,7 @@ export const RentalPlanPage: React.FC<RentalPlanPageProps> = ({
 
                     <div className="border-t border-white/15 pt-3 flex items-center justify-between gap-3">
                       <dt className="text-white font-semibold">
-                        {t3('মোট পরিশোধযোগ্য (QR)', 'ယခုပေးချေရန် (QR)', 'Payable Now (QR)')}
+                        {t3('এখন পরিশোধযোগ্য (BDT)', 'ယခုပေးချေရန် (BDT)', 'Payable Now (BDT)')}
                       </dt>
                       <dd className="text-right">
                         <div className="text-lg font-bold text-white tabular-nums">
@@ -816,17 +811,10 @@ export const RentalPlanPage: React.FC<RentalPlanPageProps> = ({
 
                     <div className="flex items-center justify-between gap-3 pt-1">
                       <dt className="text-neutral-400">
-                        {t3('পেমেন্ট মাধ্যম', 'ငွေပေးချေမှု', 'Payment App')}
+                        {t3('পেমেন্ট মাধ্যম', 'ငွေပေးချေမှု', 'Payment Gateway')}
                       </dt>
-                      <dd className="text-white font-medium">Bangla QR ({paymentChannel})</dd>
+                      <dd className="text-white font-medium">DSLink Pay (Prepaid Only · No COD)</dd>
                     </div>
-
-                    {banglaQrTrxId.trim() && (
-                      <div className="flex items-center justify-between gap-3">
-                        <dt className="text-neutral-400">TrxID</dt>
-                        <dd className="text-white font-mono text-xs">{banglaQrTrxId.trim()}</dd>
-                      </div>
-                    )}
                   </dl>
                 </div>
 
@@ -886,6 +874,78 @@ export const RentalPlanPage: React.FC<RentalPlanPageProps> = ({
                 </div>
               </aside>
             </form>
+        </section>
+
+        {/* CUSTOMER RENTAL ACTIVATION & SINGLE SUBSCRIPTION PAYMENT LAUNCHER */}
+        <section className="rounded-xl border border-slate-700 bg-[#0b0f17] p-5 sm:p-6 space-y-4">
+          <div className="space-y-1">
+            <h2 className="text-base sm:text-lg font-bold text-white">
+              রেন্টাল কিট হাতে পেয়েছেন? অ্যাক্টিভেশন ও মাসিক সাবস্ক্রিপশন পেমেন্ট শুরু করুন
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-300">
+              কিট ডেলিভারির পর আপনার রেন্টাল অর্ডার নম্বর দিয়ে একই নির্ধারিত সাবস্ক্রিপশন পেমেন্ট লিংক খুলুন।
+            </p>
+          </div>
+          <form
+            onSubmit={handleStartRentalActivation}
+            className="grid grid-cols-1 sm:grid-cols-4 gap-3 items-end"
+          >
+            <div>
+              <label htmlFor="rental-act-order-id" className="block text-xs font-semibold text-slate-200 mb-1">
+                Rental Order ID *
+              </label>
+              <input
+                id="rental-act-order-id"
+                type="text"
+                required
+                value={activationOrderId}
+                onChange={(e) => setActivationOrderId(e.target.value)}
+                placeholder="DS-123456"
+                className="w-full min-h-[44px] px-3 py-2 rounded-lg bg-[#04070c] border border-slate-600 text-sm font-mono text-white placeholder:text-slate-400 outline-none focus:border-cyan-400"
+              />
+            </div>
+            <div>
+              <label htmlFor="rental-act-plan" className="block text-xs font-semibold text-slate-200 mb-1">
+                Subscription Plan
+              </label>
+              <select
+                id="rental-act-plan"
+                value={activationPlanId}
+                onChange={(e) => setActivationPlanId(e.target.value)}
+                className="w-full min-h-[44px] px-3 py-2 rounded-lg bg-[#04070c] border border-slate-600 text-xs sm:text-sm text-white outline-none focus:border-cyan-400"
+              >
+                {RENTAL_SUBSCRIPTION_PLANS.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.name} (৳{p.monthlyFeeBdt.toLocaleString('en-US')}/mo)
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label htmlFor="rental-act-period" className="block text-xs font-semibold text-slate-200 mb-1">
+                Billing Period
+              </label>
+              <input
+                id="rental-act-period"
+                type="text"
+                value={activationBillingPeriod}
+                onChange={(e) => setActivationBillingPeriod(e.target.value)}
+                placeholder="2026-11"
+                className="w-full min-h-[44px] px-3 py-2 rounded-lg bg-[#04070c] border border-slate-600 text-sm font-mono text-white outline-none focus:border-cyan-400"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={activationLoading}
+              className="min-h-[44px] px-4 py-2 rounded-lg bg-cyan-400 hover:bg-cyan-300 text-[#04131a] font-bold text-xs sm:text-sm cursor-pointer disabled:opacity-50"
+            >
+              {activationLoading ? 'খুলছে...' : 'সাবস্ক্রিপশন পেমেন্ট খুলুন'}
+            </button>
+          </form>
+          {activationError && (
+            <p role="alert" className="text-xs text-rose-300">
+              {activationError}
+            </p>
           )}
         </section>
       </main>

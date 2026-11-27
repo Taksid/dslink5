@@ -10,6 +10,17 @@
       window.$RefreshReg$ = window.$RefreshReg$ || function () {};
       window.$RefreshSig$ = window.$RefreshSig$ || function () { return function (type) { return type; }; };
       window.__vite_plugin_react_preamble_installed__ = true;
+      (function () {
+        if (window.location && /^\/pay(\/|$)/i.test(window.location.pathname)) {
+          document.documentElement.classList.remove('dark');
+          document.documentElement.classList.add('dslink-pay-light');
+          document.addEventListener('DOMContentLoaded', function () {
+            if (document.body) document.body.classList.add('dslink-pay-light');
+            var tc = document.querySelector('meta[name="theme-color"]');
+            if (tc) tc.setAttribute('content', '#ffffff');
+          });
+        }
+      })();
     </script>
 
     <!-- SEO_HEAD_START -->

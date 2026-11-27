@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { SiteHeader } from '../components/SiteHeader';
 import { Footer } from '../components/Footer';
+import { AdminDSLinkPayPanel } from '../components/AdminDSLinkPayPanel';
 import { syncAdminProductPriceToServer, useCentralPricing, formatBdt } from '../lib/pricingConfig';
 
 interface AdminGlobalHubProps {
@@ -61,6 +62,7 @@ export const AdminGlobalHubPage: React.FC<AdminGlobalHubProps> = ({
   });
 
   const [activeSection, setActiveSection] = useState<
+    | 'dslink-pay'
     | 'reseller-management'
     | 'applications'
     | 'pending-reseller-orders'
@@ -73,8 +75,9 @@ export const AdminGlobalHubPage: React.FC<AdminGlobalHubProps> = ({
       const tabParam = new URLSearchParams(window.location.search).get('tab');
       if (tabParam === 'print-labels') return 'print-labels';
       if (tabParam === 'pending-reseller-orders') return 'pending-reseller-orders';
+      if (tabParam === 'reseller-management') return 'reseller-management';
     }
-    return 'reseller-management';
+    return 'dslink-pay';
   });
 
   const [loading, setLoading] = useState(false);
@@ -425,10 +428,11 @@ export const AdminGlobalHubPage: React.FC<AdminGlobalHubProps> = ({
           </div>
         )}
 
-        {/* Required 6 Admin Navigation Items + Global Operations */}
+        {/* Admin Navigation Tabs (DSLink Pay & Customer Orders + Reseller & Operations) */}
         <div className="flex flex-wrap gap-2 bg-[#0b0b0e] p-2 rounded-xl border border-white/15 print:hidden">
           {(
             [
+              { id: 'dslink-pay', label: 'DSLink Pay ও অর্ডার' },
               { id: 'reseller-management', label: 'Reseller Management' },
               { id: 'applications', label: `Applications (${resellerAdminData.applications.length})` },
               { id: 'pending-reseller-orders', label: `Pending Reseller Orders (${resellerAdminData.resellerOrders.length})` },
@@ -442,16 +446,21 @@ export const AdminGlobalHubPage: React.FC<AdminGlobalHubProps> = ({
               key={nav.id}
               type="button"
               onClick={() => setActiveSection(nav.id)}
-              className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-colors cursor-pointer ${
+              className={`min-h-[40px] px-3.5 py-2 rounded-lg text-xs font-bold transition-colors cursor-pointer ${
                 activeSection === nav.id
-                  ? 'bg-emerald-600 text-white'
-                  : 'text-neutral-300 hover:bg-white/10'
+                  ? 'bg-cyan-400 text-[#04131a]'
+                  : 'text-slate-200 hover:bg-white/10'
               }`}
             >
               {nav.label}
             </button>
           ))}
         </div>
+
+        {/* ================= SECTION 0: DSLINK PAY & CUSTOMER ORDERS ================= */}
+        {activeSection === 'dslink-pay' && (
+          <AdminDSLinkPayPanel adminEmail={adminEmail} onNavigate={onNavigate} />
+        )}
 
         {/* ================= SECTION 1: RESELLER MANAGEMENT ================= */}
         {activeSection === 'reseller-management' && (
